@@ -69,8 +69,9 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
 
-
--libraryjars libs/alipaySDK-20150602.jar
+-keep class com.tencent.mm.sdk.** {
+   *;
+}
 
 -keep class com.alipay.android.app.IAlixPay{*;}
 -keep class com.alipay.android.app.IAlixPay$Stub{*;}
