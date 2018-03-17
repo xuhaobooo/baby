@@ -98,7 +98,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.dvastarter"
+        applicationId "com.comama.baby"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-baidu-map')
     compile project(':react-native-yunpeng-alipay')
     compile project(':react-native-wechat')
     compile fileTree(dir: "libs", include: ["*.jar"])

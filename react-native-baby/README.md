@@ -20,3 +20,10 @@ Also there is another workaround for a missing feature https://github.com/react-
 ## LICENSE
 
 MIT
+
+
+##百度地图
+BaseMoule.h  里把 #import "RCTBridgeModule.h"  改成 #import "React/RCTBridgeModule.h" 否则报 Redefinition of 'RCTMethodInfo'
+RCTBaiduMapView.h #import "RCTViewManager.h" 改成 "React/RCTViewManager.h"
+                                    #import "RCTConvert+CoreLocation.h" 改成  #import "React/RCTConvert+CoreLocation.h"
+要把js替换，否则报 undifined is not an object,  PropTypes
