@@ -1,0 +1,69 @@
+import React, { Component } from 'react'
+import { StyleSheet, View, } from 'react-native'
+import { connect } from 'react-redux'
+
+import {Button, InputItem,TextareaItem } from 'antd-mobile'
+
+import { NavigationActions, createAction } from '../utils'
+
+@connect()
+class ApplyDetail extends Component {
+
+  state = {
+    
+  }
+
+  static navigationOptions = {
+    title: '接单者详情',
+  }
+
+  selectApply = (applyInfo) => {
+    this.props.dispatch(createAction('requirement/selectApply')({
+      applyId: applyInfo.id,
+      requireCode:applyInfo.requireCode,
+    }))
+  }
+
+  render() {
+    const { navigation } = this.props
+    const applyInfo = navigation.state.params.applyDetail
+    return (
+      <View style={styles.container}>
+        <InputItem style={styles.itemStyle} value={applyInfo.userName} editable={false}>接单者：</InputItem> 
+        <InputItem style={styles.itemStyle} value={applyInfo.userRole} editable={false}>类    型：</InputItem>
+        <InputItem style={styles.itemStyle} value={applyInfo.tel} editable={false}>电    话：</InputItem> 
+        <InputItem style={styles.itemStyle} value={'' + applyInfo.creditValue} editable={false}>信任值：</InputItem> 
+        <InputItem style={styles.itemStyle} value={applyInfo.addrName} editable={false}>地    点：</InputItem>
+        <InputItem style={styles.itemStyle} value={applyInfo.distance+' 公里'} editable={false}>距    离：</InputItem>      
+        <TextareaItem
+            style={{marginTop:5}}
+            title="简介"
+            placeholder="click the button below to focus"
+            editable={false}
+            value={applyInfo.note}
+          />
+        <Button type="primary" style={{margin:10}} onClick={()=>this.selectApply(applyInfo)}>选择此接单者</Button>
+
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+  },
+  itemStyle:{
+    backgroundColor:'white',
+    marginLeft: 0,
+    paddingLeft:20,
+  },
+  actionStyle:{
+    flex:7,
+    marginTop:5,
+  }
+})
+
+export default ApplyDetail

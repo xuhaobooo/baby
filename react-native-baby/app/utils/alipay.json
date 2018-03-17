@@ -1,0 +1,6 @@
+{"alipay_trade_app_pay_response":
+{"code":"10000","msg":"Success","app_id":"2018010401578779","auth_app_id":"2018010401578779",
+"charset":"utf-8","timestamp":"2018-03-14 23:08:37","total_amount":"0.01","trade_no":"2018031421001004630541433743",
+"seller_id":"2088921410304192","out_trade_no":"PY973938887936061440"},
+"sign":"TpzL7YGKT0b91AYVqEbEMRQ8FWVhNE2KMBAJSd0BrdeDOlj6XYBkj2MU+vI322wRd72GbdLYYPhpXzijkivCul4w9Qtl1efbCHgPNy8u7dCI2XKjPwscAnpHwlPv9AMZ6in4eZ6HnE+jE5yf4z/WpviVxUEFBL9cLQLETixeA2wSyiKCa4FUg2d5Adarodktt/gCBPNgQZKQxp6FLapFI23srLQtqsk83vO6Av0vj15m+ySxxpmc4V/mnnqSfCjuxgwZBl/CYT8p/RJS6rG0F9Vtg+MQDhFUWLBjOW6NDwuz9M8goVPlPLmlQPQqnoWsgl4UyWOoPXcL6qAIelnd+A==",
+"sign_type":"RSA2"}
