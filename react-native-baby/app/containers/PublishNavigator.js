@@ -328,7 +328,7 @@ class PublishRequire extends Component {
           onChange={date => this.setState({ endTime:date })} >
           <Item style={styles.selectItem} arrow="horizontal">结束时间</Item>
         </DatePicker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(24),}}>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(31),}}>
           <View style={{flex:8}}>
             <Picker data={babyData} cols={1} title="选择宝贝" 
               onChange={this.babyChanged} value={this.state.babyCode}>
@@ -347,7 +347,7 @@ class PublishRequire extends Component {
           onChange={this.trustChanged} value={this.state.trustCode}>
           <List.Item style={styles.selectItem} arraw="horizontal">信任期待</List.Item>
         </Picker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(24)}}>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(31)}}>
           <View style={{flex:8}}>
             <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:20,}} 
               value={position && position.label} editable={false}>地    点</InputItem>
@@ -361,16 +361,19 @@ class PublishRequire extends Component {
         <InputItem type='number' labelNumber={7} style={styles.itemStyle} value={''+this.state.payMore}
           onChange={(value) => Number.isNaN(Number(value)) ? Toast.info('请输入数字',1) : this.setState({payMore:Number(value)})}
         >附加小费</InputItem>
-        <View style={{flex:8,marginTop:5, marginBottom:5,backgroundColor:'white'}}>
+        <View style={{flex:10,backgroundColor:'white'}}>
       
             <FlatList data={serviceWithCatalog} extraData={this.state} keyExtractor={(item, index) => item.cataCode} 
             renderItem={({item})=><View>
-                <Text style={{fontSize:ScreenUtil.setSpText(18), textAlign:'center',marginTop:10,marginBottom:5}}>{item.cataName}</Text>
+                <Text style={{fontSize:ScreenUtil.setSpText(18), textAlign:'center',marginTop:ScreenUtil.setSpText(10),
+                marginBottom:ScreenUtil.setSpText(10)}}>{item.cataName}</Text>
                 <View style={styles.serviceContainer}>
                   {item.list.map(serv => (
-                    <Checkbox style={{width:ScreenUtil.setSpText(12),height:ScreenUtil.setSpText(12), marginLeft:5,marginBottom:5}} key={serv.itemCode}
+                    <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14), 
+                      marginLeft:ScreenUtil.setSpText(5),marginBottom:ScreenUtil.setSpText(10)}} key={serv.itemCode}
                     onChange={(e)=>this.serviceChanged(e,serv)} checked={this.state.serviceItems.hasOwnProperty(serv.itemCode)}>
-                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:ScreenUtil.setSpText(12),marginBottom:5}}>{ serv.itemName }</Text>
+                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:ScreenUtil.setSpText(14),
+                        marginBottom:ScreenUtil.setSpText(10)}}>{ serv.itemName }</Text>
                     </Checkbox>))}
                 </View>
                 </View>}>
@@ -378,7 +381,7 @@ class PublishRequire extends Component {
       
         </View>
 
-        <Button type='primary' style={{marginLeft:10,marginRight:10,marginBottom:5,height:ScreenUtil.setSpText(30)}} onClick={() => this.validateData() && alert('请确认',   this.generateMsg(), [
+        <Button type='primary' style={{margin:5,height:ScreenUtil.setSpText(35)}} onClick={() => this.validateData() && alert('请确认',   this.generateMsg(), [
           { text: '取消' },
           { text: '确定', onPress: () => this.publishRequirement() },
         ])}
@@ -397,11 +400,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   icon: {
-    width: ScreenUtil.setSpText(24),
-    height: ScreenUtil.setSpText(24),
+    width: ScreenUtil.setSpText(32),
+    height: ScreenUtil.setSpText(32),
   },
   itemStyle: {
-    height:ScreenUtil.setSpText(24),
+    height:ScreenUtil.setSpText(30),
     backgroundColor:'white',
     marginLeft:0,
     paddingLeft:15,
@@ -415,7 +418,7 @@ const styles = StyleSheet.create({
     borderBottomColor:'#eaeaea',
   },
   selectItem : {
-    height:ScreenUtil.setSpText(24),
+    height:ScreenUtil.setSpText(30),
     borderBottomWidth: 1,
     borderBottomColor:'#eaeaea',
   }

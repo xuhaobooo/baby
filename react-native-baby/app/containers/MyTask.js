@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: ScreenUtil.setSpText(24),
-    height: ScreenUtil.setSpText(24),
+    width: ScreenUtil.setSpText(32),
+    height: ScreenUtil.setSpText(32),
   },
   tabView: {
     flex:1,

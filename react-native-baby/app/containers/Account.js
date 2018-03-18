@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: ScreenUtil.setSpText(32),
+    height: ScreenUtil.setSpText(32),
   },
 })
 

@@ -129,19 +129,19 @@ export default class BaiduMapDemo extends Component {
               this.setState({
                 zoom: this.state.zoom + 1
               });
-            }}><Text style={{fontSize:30}}>+</Text></TouchableOpacity>
-            <TouchableOpacity title="-" onPress={() => {
+            }}><Text style={{fontSize:ScreenUtil.setSpText(30)}}>+</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => {
               if(this.state.zoom > 0) {
                 this.setState({
                   zoom: this.state.zoom - 1
                 });
               }
               
-            }} ><Text style={{fontSize:30}}>-</Text></TouchableOpacity>
+            }} ><Text style={{fontSize:ScreenUtil.setSpText(40),textAlign:'center'}}>-</Text></TouchableOpacity>
           </View>
         }
         {showBtn && 
-          <Button type='primary' style={{width:'95%',margin:5}} onClick={() => {
+          <Button type='primary' style={{width:'95%',margin:5,height:ScreenUtil.setSpText(35)}} onClick={() => {
             const {marker} = this.state
 
             if(marker){
@@ -166,11 +166,12 @@ export default class BaiduMapDemo extends Component {
 const styles = StyleSheet.create({
   row: {
     position : 'absolute',
-    bottom: ScreenUtil.setSpText(70),
+    bottom: ScreenUtil.setSpText(80),
     right:ScreenUtil.setSpText(15),
   },
   btn: {
-    height: 20,
+    height: ScreenUtil.setSpText(20),
+    width: ScreenUtil.setSpText(20),
     color:'white',
   },
   container: {

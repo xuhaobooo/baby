@@ -116,14 +116,14 @@ class MyRequire extends Component {
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
             thumb={
-              <View>
-                <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(30),height:ScreenUtil.setSpText(30),backgroundColor:'#336699',
-                marginRight:10,color:'#ffffff',
-                alignContent:'center',alignItems:'center',borderRadius:5,borderWidth:0}}>
+              <View style={{alignItems:'center',marginRight:ScreenUtil.setSpText(10)}}>
+                <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(32),height:ScreenUtil.setSpText(32),
+                backgroundColor:'#336699',color:'#ffffff',
+                alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:ScreenUtil.setSpText(5)}}>
                   <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>新</Text>
                 </TouchableOpacity>
-                {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966',marginLeft:5}}>已支付</Text>:
-                  <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000',marginLeft:5}}>未支付</Text>
+                {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966'}}>已支付</Text>:
+                  <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000'}}>未支付</Text>
                 }
               </View>    
             }
@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: ScreenUtil.setSpText(24),
-    height: ScreenUtil.setSpText(24),
+    width: ScreenUtil.setSpText(32),
+    height: ScreenUtil.setSpText(32),
   },
   tabView: {
     flex:1,
