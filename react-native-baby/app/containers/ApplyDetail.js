@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, } from 'react-native'
+import { StyleSheet, View,Text, } from 'react-native'
 import { connect } from 'react-redux'
 
 import {Button, InputItem,TextareaItem } from 'antd-mobile'
 
 import { NavigationActions, createAction } from '../utils'
+import * as ScreenUtil from '../utils/ScreenUtil'
 
 @connect()
 class ApplyDetail extends Component {
@@ -14,7 +15,9 @@ class ApplyDetail extends Component {
   }
 
   static navigationOptions = {
-    title: '接单者详情',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>接单者</Text>),
+    headerRight:<View/>,
+
   }
 
   selectApply = (applyInfo) => {

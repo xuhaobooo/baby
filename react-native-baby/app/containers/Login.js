@@ -15,7 +15,6 @@ class Login extends Component {
     passwordError:true,
     password:'',
     guest:null,
-    fetching:false,
   }
 
   static navigationOptions = {
@@ -24,7 +23,7 @@ class Login extends Component {
 
   onLogin = () => {
     if(this.state.mobileError || this.state.passwordError){
-      Toast.info('请输入账号密码');
+      Toast.info('请输入正确的账号密码');
       return;
     }
     this.props.dispatch(createAction('login/login')({
@@ -79,7 +78,7 @@ class Login extends Component {
 
 
   render() {
-    const { fetching } = this.props
+    const { fetching } = this.props.app
     const guestData=[{value:'13312312312',label:'需求方'},{value:'13412312312',label:'供应方'}]
     const {windowHeight} = this.props.app
     return (

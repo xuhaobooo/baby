@@ -4,8 +4,6 @@ import * as authService from '../services/auth'
 export default {
   namespace: 'login',
   state: {
-    login: false,
-    fetching: false,
     userInfo: null,
   },
   reducers: {
@@ -19,12 +17,12 @@ export default {
       yield put(createAction('updateState')({ login, loading: false }))
     },
     *login({ payload }, { call, put }) {
-      yield put(createAction('updateState')({ fetching: true }))
+      yield put(createAction('app/updateState')({ fetching: true }))
       
       const data = yield call(authService.fakeAccountLogin, payload)
       if (data) {
         yield put(createAction('getUserInfo')({ userCode:data.code }))
-        yield put(createAction('updateState')({ login:true, fetching: false }))
+        yield put(createAction('app/updateState')({ fetching: false }))
         Storage.set('token', data.accessCode)
         Storage.set('userCode', data.code)
       }
@@ -37,10 +35,12 @@ export default {
         const login = yield call(authService.fakeTokenLogin, {token, userCode})
         if (login) {
           yield put(createAction('getUserInfo')({userCode}))
-          yield put(createAction('updateState')({ login }))
+          yield put(createAction('app/updateState')({ login }))
         }
+        yield put(createAction('app/updateState')({ fetching: false }))
       }else{
         yield call(authService.wait,1000)
+        yield put(createAction('app/updateState')({ fetching: false }))
         yield put(
           NavigationActions.reset({
             index: 0,
@@ -63,9 +63,7 @@ export default {
       }
     },
     *logout(action, { call, put }) {
-      yield call(Storage.remove, 'token')
-      yield call(Storage.remove, 'userCode')
-      yield put(createAction('updateState')({ token: null }))
+      Storage.clear()
       yield put(
         NavigationActions.navigate({ routeName: 'Login' })
       )

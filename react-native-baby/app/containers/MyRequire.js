@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text, FlatList, ImageBackground} from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList, ImageBackground, TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 
 import {forEach, map} from 'lodash'
+import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { NavigationActions, createAction } from '../utils'
 import { Tabs, List, WhiteSpace,Button } from 'antd-mobile'
@@ -18,7 +19,7 @@ class MyRequire extends Component {
   }
 
   static navigationOptions = {
-    title: '我的发布',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的发布</Text>),
     tabBarLabel: '需求',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
@@ -106,9 +107,9 @@ class MyRequire extends Component {
         page={curTab}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1}}
+        style={{flex:1,minHeight:16}}
       />
-        <View style={{flex:10}}>
+        <View style={{flex:20}}>
         <FlatList data={myRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
           renderItem={({item})=><Item key={item.requireCode}
             style={{paddingLeft:10}}
@@ -116,11 +117,14 @@ class MyRequire extends Component {
             arrow="horizontal"
             thumb={
               <View>
-                <Button disabled={true} style={{width:30,height:30,backgroundColor:'#336699',marginRight:5,color:'#ffffff',
-                textAlign:'center',paddingTop:5,fontSize:20,borderRadius:5,borderWidth:0}}>
-                  <Text style={{color:'#ffffff'}}>新</Text>
-                </Button>
-                <Text style={{fontSize:10,color:'#FF9966'}}>已支付</Text>
+                <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(30),height:ScreenUtil.setSpText(30),backgroundColor:'#336699',
+                marginRight:10,color:'#ffffff',
+                alignContent:'center',alignItems:'center',borderRadius:5,borderWidth:0}}>
+                  <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>新</Text>
+                </TouchableOpacity>
+                {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966',marginLeft:5}}>已支付</Text>:
+                  <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000',marginLeft:5}}>未支付</Text>
+                }
               </View>    
             }
             multipleLine> 
@@ -142,8 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: ScreenUtil.setSpText(24),
+    height: ScreenUtil.setSpText(24),
   },
   tabView: {
     flex:1,

@@ -1,14 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes  } from 'react';
 import { connect } from 'react-redux'
 
 import { NavigationActions, createAction } from '../utils'
 
 import { MapView, MapTypes, Geolocation } from 'react-native-baidu-map';
+import {Button} from 'antd-mobile'
+import * as ScreenUtil from '../utils/ScreenUtil'
+var Platform = require('Platform'); 
 
 import {
-  Button,
+  TouchableOpacity,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 
 import Dimensions from 'Dimensions';
@@ -119,24 +123,25 @@ export default class BaiduMapDemo extends Component {
           }}
         >
         </MapView>
-
-        <View style={styles.row}>
-          <Button title="+" style={styles.btn} onPress={() => {
-            this.setState({
-              zoom: this.state.zoom + 1
-            });
-          }} />
-          <Button title="-" onPress={() => {
-            if(this.state.zoom > 0) {
+        {Platform.OS === 'ios' &&
+          <View style={styles.row}>
+            <TouchableOpacity style={styles.btn} onPress={() => {
               this.setState({
-                zoom: this.state.zoom - 1
+                zoom: this.state.zoom + 1
               });
-            }
-            
-          }} />
-        </View>
+            }}><Text style={{fontSize:30}}>+</Text></TouchableOpacity>
+            <TouchableOpacity title="-" onPress={() => {
+              if(this.state.zoom > 0) {
+                this.setState({
+                  zoom: this.state.zoom - 1
+                });
+              }
+              
+            }} ><Text style={{fontSize:30}}>-</Text></TouchableOpacity>
+          </View>
+        }
         {showBtn && 
-          <Button title="确定" onPress={() => {
+          <Button type='primary' style={{width:'95%',margin:5}} onClick={() => {
             const {marker} = this.state
 
             if(marker){
@@ -150,7 +155,7 @@ export default class BaiduMapDemo extends Component {
               
               this.props.dispatch(NavigationActions.back())
             }
-          }} />
+          }} >确定</Button>
         }
         
       </View>
@@ -161,8 +166,8 @@ export default class BaiduMapDemo extends Component {
 const styles = StyleSheet.create({
   row: {
     position : 'absolute',
-    bottom: 40,
-    right:10,
+    bottom: ScreenUtil.setSpText(70),
+    right:ScreenUtil.setSpText(15),
   },
   btn: {
     height: 20,

@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text, FlatList,ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 
 import {forEach, map} from 'lodash'
+import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { NavigationActions, createAction } from '../utils'
 import { Tabs, List, WhiteSpace } from 'antd-mobile'
@@ -18,7 +19,7 @@ class MyTask extends Component {
   }
 
   static navigationOptions = {
-    title: '我的任务',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的任务</Text>),
     tabBarLabel: '任务',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
@@ -91,9 +92,9 @@ class MyTask extends Component {
         initialPage={0}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1}}
+        style={{flex:1,minHeight:16}}
       />
-        <View style={{flex:10}}>
+        <View style={{flex:20}}>
         <FlatList data={myTaskList} extraData={this.state} keyExtractor={(item, index) => item.taskCode} 
           renderItem={({item})=><Item key={item.taskCode} style={item.taskStatus==='AF'?{backgroundColor:'#cfcfcf'}:{backgroundColor:'white'}}
             onClick={() => this.onItemClick(item)}
@@ -119,8 +120,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: ScreenUtil.setSpText(24),
+    height: ScreenUtil.setSpText(24),
   },
   tabView: {
     flex:1,

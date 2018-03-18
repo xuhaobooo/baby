@@ -6,6 +6,7 @@ import {Button, InputItem,Text } from 'antd-mobile'
 import { CompanySelector } from '../components'
 
 import { NavigationActions, createAction } from '../utils'
+import * as ScreenUtil from '../utils/ScreenUtil'
 import {map} from 'lodash'
 
 @connect()
@@ -16,7 +17,8 @@ class AppluRequire extends Component {
   }
 
   static navigationOptions = {
-    title: '需求详情',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>需求详情</Text>),
+    headerRight:<View/>,
   }
 
   applyRequire = (requireCode) => {

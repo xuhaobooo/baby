@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text, FlatList } from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList,TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 
 import {forEach, map} from 'lodash'
+import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { NavigationActions, createAction } from '../utils'
 import { InputItem, DatePicker,List, WhiteSpace, Button, Picker, Checkbox, Modal, Toast } from 'antd-mobile'
@@ -34,7 +35,7 @@ class PublishRequire extends Component {
   }
 
   static navigationOptions = {
-    title: '发布需求',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>发布需求</Text>),
     tabBarLabel: '发布',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
@@ -249,7 +250,7 @@ class PublishRequire extends Component {
     msg = msg + '附加小费：' + this.state.payMore + '元\n'
     const totalFee = this.state.servicePay + timeFee + this.state.payMore
     msg = msg + '总  费  用：' + (Math.round(totalFee*100)/100) + '元\n'
-    return msg
+    return <Text style={{fontSize:ScreenUtil.setSpText(12)}}>{msg}</Text>
   }
 
   clearData =() => {
@@ -327,16 +328,17 @@ class PublishRequire extends Component {
           onChange={date => this.setState({ endTime:date })} >
           <Item style={styles.selectItem} arrow="horizontal">结束时间</Item>
         </DatePicker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%'}}>
-        <View style={{flex:8}}>
-          <Picker data={babyData} cols={1} title="选择宝贝" 
-            onChange={this.babyChanged} value={this.state.babyCode}>
-            <Item style={styles.selectItem} arraw="horizontal">宝        贝</Item>
-          </Picker>
-        </View>
-          <Button style={{width:22,height:22,borderColor:'white'}} onClick={() => this.setState({showAddModal:true})}>
-            <Image style={{marginTop:3,width:20,height:20}} source={require('../images/user-add.png')} resizeMode='stretch'/>
-          </Button>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(24),}}>
+          <View style={{flex:8}}>
+            <Picker data={babyData} cols={1} title="选择宝贝" 
+              onChange={this.babyChanged} value={this.state.babyCode}>
+              <Item style={styles.selectItem} arraw="horizontal">宝        贝</Item>
+            </Picker>
+          </View>
+          <TouchableOpacity onPress={() => this.setState({showAddModal:true})}>
+          <Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+            source={require('../images/user-add.png')} resizeMode='stretch' />
+          </TouchableOpacity>
         </View> 
         
         <InputItem style={styles.itemStyle} labelNumber={7} value={this.state.babyAge} editable={false}>年    龄</InputItem>
@@ -345,27 +347,30 @@ class PublishRequire extends Component {
           onChange={this.trustChanged} value={this.state.trustCode}>
           <List.Item style={styles.selectItem} arraw="horizontal">信任期待</List.Item>
         </Picker>
-        <View style={{flex:1,flexDirection:'row',alignItems: 'center',backgroundColor:'white'}}>
-          <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:20,}} 
-          value={position && position.label} editable={false}>地    点</InputItem>
-          <Button style={{width:22,height:22,borderColor:'white'}} onClick={this.addrClick}>
-            <Image style={{marginTop:3,width:20,height:20}} source={require('../images/map.png')} resizeMode='stretch'/>
-          </Button>
-        </View> 
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(24)}}>
+          <View style={{flex:8}}>
+            <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:20,}} 
+              value={position && position.label} editable={false}>地    点</InputItem>
+          </View>
+
+          <TouchableOpacity onPress={this.addrClick}><Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+            source={require('../images/map.png')} resizeMode='stretch' />
+          </TouchableOpacity>
+        </View>
 
         <InputItem type='number' labelNumber={7} style={styles.itemStyle} value={''+this.state.payMore}
           onChange={(value) => Number.isNaN(Number(value)) ? Toast.info('请输入数字',1) : this.setState({payMore:Number(value)})}
         >附加小费</InputItem>
-        <View style={{flex:6,marginTop:5, marginBottom:5,backgroundColor:'white'}}>
+        <View style={{flex:8,marginTop:5, marginBottom:5,backgroundColor:'white'}}>
       
             <FlatList data={serviceWithCatalog} extraData={this.state} keyExtractor={(item, index) => item.cataCode} 
             renderItem={({item})=><View>
-                <Text style={{fontSize:20, textAlign:'center',marginTop:10,marginBottom:5}}>{item.cataName}</Text>
+                <Text style={{fontSize:ScreenUtil.setSpText(18), textAlign:'center',marginTop:10,marginBottom:5}}>{item.cataName}</Text>
                 <View style={styles.serviceContainer}>
                   {item.list.map(serv => (
-                    <Checkbox style={{width:14,height:14, marginLeft:5,marginBottom:5}} key={serv.itemCode}
+                    <Checkbox style={{width:ScreenUtil.setSpText(12),height:ScreenUtil.setSpText(12), marginLeft:5,marginBottom:5}} key={serv.itemCode}
                     onChange={(e)=>this.serviceChanged(e,serv)} checked={this.state.serviceItems.hasOwnProperty(serv.itemCode)}>
-                      <Text style={{width:this.props.app.windowWidth/3-20,fontSize:14,marginBottom:5}}>{ serv.itemName }</Text>
+                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:ScreenUtil.setSpText(12),marginBottom:5}}>{ serv.itemName }</Text>
                     </Checkbox>))}
                 </View>
                 </View>}>
@@ -373,7 +378,7 @@ class PublishRequire extends Component {
       
         </View>
 
-        <Button type='primary' style={{marginLeft:10,marginRight:10,marginBottom:5,height:35}} onClick={() => this.validateData() && alert('请确认',   this.generateMsg(), [
+        <Button type='primary' style={{marginLeft:10,marginRight:10,marginBottom:5,height:ScreenUtil.setSpText(30)}} onClick={() => this.validateData() && alert('请确认',   this.generateMsg(), [
           { text: '取消' },
           { text: '确定', onPress: () => this.publishRequirement() },
         ])}
@@ -392,11 +397,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: ScreenUtil.setSpText(24),
+    height: ScreenUtil.setSpText(24),
   },
   itemStyle: {
-    height:30,
+    height:ScreenUtil.setSpText(24),
     backgroundColor:'white',
     marginLeft:0,
     paddingLeft:15,
@@ -410,7 +415,7 @@ const styles = StyleSheet.create({
     borderBottomColor:'#eaeaea',
   },
   selectItem : {
-    height:30,
+    height:ScreenUtil.setSpText(24),
     borderBottomWidth: 1,
     borderBottomColor:'#eaeaea',
   }

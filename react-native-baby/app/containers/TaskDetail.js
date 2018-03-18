@@ -7,6 +7,7 @@ import { CompanySelector } from '../components'
 
 import { NavigationActions, createAction } from '../utils'
 import {map} from 'lodash'
+import * as ScreenUtil from '../utils/ScreenUtil'
 
 const alert = Modal.alert;
 
@@ -18,7 +19,8 @@ class TaskDetail extends Component {
   }
 
   static navigationOptions = {
-    title: '需求详情',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>任务详情</Text>),
+    headerRight:<View/>
   }
 
   arrive = (task) => {
