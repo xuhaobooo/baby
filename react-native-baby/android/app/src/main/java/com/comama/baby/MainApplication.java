@@ -3,8 +3,8 @@ package com.comama.baby;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.lovebing.reactnative.baidumap.BaiduMapPackage;
 import com.yunpeng.alipay.AlipayPackage;
-import com.theweflex.react.WeChatPackage;
 import com.theweflex.react.WeChatPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -19,16 +19,16 @@ public class MainApplication extends Application implements ReactApplication {
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+      return true;
     }
 
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new AlipayPackage(),
-            new WeChatPackage(),
-              new BaiduMapPackage(getApplicationContext())
+        new BaiduMapPackage(getApplicationContext()),
+        new AlipayPackage(),
+        new WeChatPackage()
       );
     }
 

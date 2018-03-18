@@ -1,7 +1,6 @@
 package com.comama.baby;
 
 import com.facebook.react.ReactActivity;
-import cn.reactnative.alipay.AlipayPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,9 +11,5 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "DvaStarter";
-    }
-    @Override
-    protected boolean getUserDeveloperSupport(){
-        return false;
     }
 }

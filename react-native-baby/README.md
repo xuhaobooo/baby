@@ -23,7 +23,12 @@ MIT
 
 
 ##百度地图
+IOS 
 BaseMoule.h  里把 #import "RCTBridgeModule.h"  改成 #import "React/RCTBridgeModule.h" 否则报 Redefinition of 'RCTMethodInfo'
 RCTBaiduMapView.h #import "RCTViewManager.h" 改成 "React/RCTViewManager.h"
-                                    #import "RCTConvert+CoreLocation.h" 改成  #import "React/RCTConvert+CoreLocation.h"
+                  #import "RCTConvert+CoreLocation.h" 改成  #import "React/RCTConvert+CoreLocation.h"
+
 要把js替换，否则报 undifined is not an object,  PropTypes
+
+微信支付
+IOS的timeStamp是Int32,Android的timeStamp是String, 所以要区分
