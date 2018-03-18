@@ -19,7 +19,7 @@ class RequireDetail extends Component {
   }
 
   static navigationOptions = {
-    title: '需求详情',
+    headerTitle: '需求详情',
   }
 
   //进行渲染数据
