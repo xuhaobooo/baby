@@ -7,8 +7,8 @@ export default {
     login: false,
     loading: true,
     fetching: false,
-    windowHeight:null,
-    windowWidth:null,
+    windowHeight: null,
+    windowWidth: null,
   },
   reducers: {
     updateState(state, { payload }) {

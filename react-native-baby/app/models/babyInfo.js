@@ -4,7 +4,7 @@ import * as babyService from '../services/babyInfo'
 export default {
   namespace: 'babyInfo',
   state: {
-    babyList:[],
+    babyList: [],
   },
   reducers: {
     updateState(state, { payload }) {
@@ -12,13 +12,11 @@ export default {
     },
   },
   effects: {
-    
-    *addBaby({payload,callback},{call, put}) {
+    *addBaby({ payload, callback }, { call, put }) {
       yield call(babyService.addBaby, payload)
-      if(callback) callback()
-      yield put(createAction('requirement/queryMyBaby')({ }))
+      if (callback) callback()
+      yield put(createAction('requirement/queryMyBaby')({}))
     },
-   
   },
   subscriptions: {
     setup({ dispatch }) {

@@ -10,7 +10,19 @@ import { createAction, NavigationActions } from '../utils'
 @connect()
 class Account extends Component {
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的</Text>),
+    headerTitle: (
+      <Text
+        style={{
+          fontSize: ScreenUtil.setSpText(20),
+          alignSelf: 'center',
+          textAlign: 'center',
+          flex: 1,
+          color: '#FF6600',
+        }}
+      >
+        我的
+      </Text>
+    ),
     tabBarLabel: '我的',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
@@ -32,9 +44,7 @@ class Account extends Component {
     const { login } = this.props
     return (
       <View style={styles.container}>
-
-          <Button text="Logout" onPress={this.logout} />
-
+        <Button text="Logout" onPress={this.logout} />
       </View>
     )
   }

@@ -16,6 +16,9 @@ import { connect } from 'react-redux'
 
 import Loading from './containers/Loading'
 import Login from './containers/Login'
+import Register from './containers/Register'
+import ViewPermit from './containers/PermitView'
+
 import Splash from './containers/Splash'
 import MyRequire from './containers/MyRequire'
 import RequireDetail from './containers/RequireDetail'
@@ -34,10 +37,10 @@ import BaiduMapPage from './containers/BaiduMap'
 const MyRequireNavigator = TabNavigator(
   {
     MyRequire: { screen: MyRequire },
-    PublishRequire: {screen : PublishRequire},
+    PublishRequire: { screen: PublishRequire },
     Account: { screen: Account },
-    OrderNaigator: {screen:OrderNaigator},
-    MyTask : {screen : MyTask},
+    OrderNaigator: { screen: OrderNaigator },
+    MyTask: { screen: MyTask },
   },
   {
     tabBarComponent: TabBarBottom,
@@ -52,25 +55,39 @@ const MainNavigator = StackNavigator(
   {
     MyRequireNavigator: { screen: MyRequireNavigator },
     RequireDetail: { screen: RequireDetail },
-    ApplyDetail:{screen:ApplyDetail},
-    ApplyRequireDetail:{screen:ApplyRequireDetail},
+    ApplyDetail: { screen: ApplyDetail },
+    ApplyRequireDetail: { screen: ApplyRequireDetail },
     Detail: { screen: Detail },
-    BaiduMapPage : {screen: BaiduMapPage},
-    TaskDetail:{screen:TaskDetail},
+    BaiduMapPage: { screen: BaiduMapPage },
+    TaskDetail: { screen: TaskDetail },
   },
   {
     headerMode: 'float',
     navigationOptions: {
-      headerBackTitle:null,
+      headerBackTitle: null,
+    },
+  }
+)
 
-    }
+const LoginNavigator = StackNavigator(
+  {
+    Login: { screen: Login },
+    Register: { screen: Register },
+    ViewPermit: { screen: ViewPermit },
+    RegisterBaiduMap: { screen: BaiduMapPage },
+  },
+  {
+    headerMode: 'float',
+    navigationOptions: {
+      headerBackTitle: null,
+    },
   }
 )
 
 const AppNavigator = StackNavigator(
   {
-    Splash: { screen: Splash},
-    Login: { screen: Login },
+    Splash: { screen: Splash },
+    LoginNavigator: { screen: LoginNavigator },
     Main: { screen: MainNavigator },
   },
   {
@@ -133,17 +150,15 @@ class Router extends PureComponent {
     BackHandler.removeEventListener('hardwareBackPress', this.backHandle)
   }
 
-  onLayout = (event) => {
-    var {x, y, width, height} = event.nativeEvent.layout;
+  onLayout = event => {
+    const { x, y, width, height } = event.nativeEvent.layout
     if (this.props.app.windowHeight) {
-      return;
+      return
     }
-    this.props.dispatch(
-      {
-        type:'app/updateState',
-        payload:{windowHeight:height, windowWidth:width},
-      }
-    )
+    this.props.dispatch({
+      type: 'app/updateState',
+      payload: { windowHeight: height, windowWidth: width },
+    })
   }
 
   backHandle = () => {
@@ -156,7 +171,7 @@ class Router extends PureComponent {
       return true
     }
 
-    if (currentScreen !== 'MyRequire'){
+    if (currentScreen !== 'MyRequire') {
       return true
     }
     return false
@@ -170,9 +185,10 @@ class Router extends PureComponent {
       addListener,
     })
     return (
-    <View onLayout={this.onLayout} style={{flex:1}}>
-        <AppNavigator navigation={navigation} />    
-    </View>)
+      <View onLayout={this.onLayout} style={{ flex: 1 }}>
+        <AppNavigator navigation={navigation} />
+      </View>
+    )
   }
 }
 

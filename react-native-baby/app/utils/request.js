@@ -1,6 +1,5 @@
-
-import { startsWith, mapValues } from 'lodash';
-import moment from 'moment';
+import { startsWith, mapValues } from 'lodash'
+import moment from 'moment'
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',
@@ -18,48 +17,52 @@ const codeMessage = {
   502: '网关错误',
   503: '服务不可用，服务器暂时过载或维护',
   504: '网关超时',
-};
+}
 function checkStatus(response) {
-
   if (response.status >= 200 && response.status < 300) {
-    return response;
+    return response
   }
- 
-  const errortext = codeMessage[response.status] || response.statusText;
+
+  const errortext = codeMessage[response.status] || response.statusText
   notification.error({
     message: `请求错误 ${response.status}: ${response.url}`,
     description: errortext,
-  });
-  const error = new Error(errortext);
-  error.name = response.status;
-  error.response = response;
-  throw error;
+  })
+  const error = new Error(errortext)
+  error.name = response.status
+  error.response = response
+  throw error
 }
 
-function convertDate(date,fmt){
-  var o = {  
-    "M+": date.getMonth()+1,  
-    "d+": date.getDate(),  
-    "H+": date.getHours(),  
-    "m+": date.getMinutes(),  
-    "s+": date.getSeconds(),  
-    "S+": date.getMilliseconds()  
-};  
+function convertDate(date, fmt) {
+  const o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'H+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds(),
+    'S+': date.getMilliseconds(),
+  }
 
-  //因位date.getFullYear()出来的结果是number类型的,所以为了让结果变成字符串型，下面有两种方法：  
-  if(/(y+)/.test(fmt)){  
-    //第一种：利用字符串连接符“+”给date.getFullYear()+""，加一个空字符串便可以将number类型转换成字符串。  
-    fmt=fmt.replace(RegExp.$1,(date.getFullYear()+"").substr(4-RegExp.$1.length));  
-  }    
-  for(var k in o){  
-    if (new RegExp("(" + k +")").test(fmt)){  
+  // 因位date.getFullYear()出来的结果是number类型的,所以为了让结果变成字符串型，下面有两种方法：
+  if (/(y+)/.test(fmt)) {
+    // 第一种：利用字符串连接符“+”给date.getFullYear()+""，加一个空字符串便可以将number类型转换成字符串。
+    fmt = fmt.replace(
+      RegExp.$1,
+      `${date.getFullYear()}`.substr(4 - RegExp.$1.length)
+    )
+  }
+  for (const k in o) {
+    if (new RegExp(`(${k})`).test(fmt)) {
+      // 第二种：使用String()类型进行强制数据类型转换String(date.getFullYear())，这种更容易理解。
 
-        //第二种：使用String()类型进行强制数据类型转换String(date.getFullYear())，这种更容易理解。  
-
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(String(o[k]).length)));  
-    }  
-  }     
-  return fmt;
+      fmt = fmt.replace(
+        RegExp.$1,
+        RegExp.$1.length == 1 ? o[k] : `00${o[k]}`.substr(String(o[k]).length)
+      )
+    }
+  }
+  return fmt
 }
 
 /**
@@ -70,91 +73,86 @@ function convertDate(date,fmt){
  * @return {object}           An object containing either "data" or "err"
  */
 export default function request(url, options) {
-
-  var headers = new Headers();
-  headers.append('Content-Type', 'text/plain');
-  headers.append('X-My-Custom-Header', 'CustomValue');
+  const headers = new Headers()
+  headers.append('Content-Type', 'text/plain')
+  headers.append('X-My-Custom-Header', 'CustomValue')
 
   const defaultOptions = {
-    'credentials': 'include',
-    headers:{
-      'X-Requested-With':'XMLHttpRequest'
-    }
-    
-  };
-  const newOptions = { ...defaultOptions, ...options };
-  if ((newOptions.method === 'POST' || newOptions.method === 'PUT' || newOptions.method === 'PATCH') && url !== '/security/login') {
+    credentials: 'include',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  }
+  const newOptions = { ...defaultOptions, ...options }
+  if (
+    (newOptions.method === 'POST' ||
+      newOptions.method === 'PUT' ||
+      newOptions.method === 'PATCH') &&
+    url !== '/security/login'
+  ) {
     newOptions.headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
       ...newOptions.headers,
-    };
+    }
 
-    const convertedBody = mapValues(newOptions.body, (value)=>{
-      
-      if(value instanceof moment){
-      
-        return value.format('YYYY-MM-DD HH:mm:ss');
-      }else if(value instanceof Date){
-        
-        const d = convertDate(value,'yyyy-MM-dd HH:mm:ss');
+    const convertedBody = mapValues(newOptions.body, value => {
+      if (value instanceof moment) {
+        return value.format('YYYY-MM-DD HH:mm:ss')
+      } else if (value instanceof Date) {
+        const d = convertDate(value, 'yyyy-MM-dd HH:mm:ss')
         return d
-      }else{
-        return value;
       }
-    });
-    //console.log(JSON.stringify(convertedBody))
-    newOptions.body = JSON.stringify(convertedBody);
+      return value
+    })
+    // console.log(JSON.stringify(convertedBody))
+    newOptions.body = JSON.stringify(convertedBody)
   }
 
-  if(!startsWith(url,"/api")){
-    url = "http://www.co-mama.cn/bgms" + url;
+  if (!startsWith(url, '/api')) {
+    url = `http://www.co-mama.cn/bgms${url}`
   }
 
-  var code;
-  var msg;
-  var total;
-  var current;
-  var pageSize;
+  let code
+  let msg
+  let total
+  let current
+  let pageSize
 
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then((response) => {
-      code = response.headers.get('return_code');
-      msg = response.headers.get('return_msg');
-      total = response.headers.get('x-total-count');
-      current = response.headers.get('x-current-page');
-      pageSize = response.headers.get('x-page-size');
+    .then(response => {
+      code = response.headers.get('return_code')
+      msg = response.headers.get('return_msg')
+      total = response.headers.get('x-total-count')
+      current = response.headers.get('x-current-page')
+      pageSize = response.headers.get('x-page-size')
 
-      if(code == null){
-        return response.text();
-      }else{
-        
-        if(code === '10010000'){
-          
-        }
-        const error = new Error(decodeURI(msg));
-        error.name = code;
-        error.response = response;
-        throw error;
-
+      if (code == null) {
+        return response.text()
       }
+      if (code === '10010000') {
+      }
+      const error = new Error(decodeURI(msg))
+      error.name = code
+      error.response = response
+      throw error
     })
-    .then((data)=>{
-      if(data){
-          return JSON.parse(data);
-        }else{
-          return {};
-        }
+    .then(data => {
+      if (data) {
+        return JSON.parse(data)
+      }
+      return {}
     })
-    .then((data) =>{
-                    
-        if(total !=null && current !=null && pageSize !=null){
-          var pagination = {"total":Number(total),"pageSize":Number(pageSize),"current":Number(current)};
-          data = {list:data, pagination}
+    .then(data => {
+      if (total != null && current != null && pageSize != null) {
+        const pagination = {
+          total: Number(total),
+          pageSize: Number(pageSize),
+          current: Number(current),
         }
-        return data;
- 
-    });
+        data = { list: data, pagination }
+      }
+      return data
+    })
 }
-

@@ -5,6 +5,7 @@ export default {
   namespace: 'login',
   state: {
     userInfo: null,
+    position: null,
   },
   reducers: {
     updateState(state, { payload }) {
@@ -18,55 +19,52 @@ export default {
     },
     *login({ payload }, { call, put }) {
       yield put(createAction('app/updateState')({ fetching: true }))
-      
+
       const data = yield call(authService.fakeAccountLogin, payload)
       if (data) {
-        yield put(createAction('getUserInfo')({ userCode:data.code }))
-        yield put(createAction('app/updateState')({ fetching: false }))
+        yield put(createAction('getUserInfo')({ userCode: data.code }))
         Storage.set('token', data.accessCode)
         Storage.set('userCode', data.code)
       }
+      yield put(createAction('app/updateState')({ fetching: false }))
     },
-    *tokenLogin({payload}, { call, put }) {
+    *tokenLogin({ payload }, { call, put }) {
       const token = yield call(Storage.get, 'token', null)
       const userCode = yield call(Storage.get, 'userCode', null)
-      
-      if(token && userCode){
-        const login = yield call(authService.fakeTokenLogin, {token, userCode})
+
+      if (token && userCode) {
+        const login = yield call(authService.fakeTokenLogin, {
+          token,
+          userCode,
+        })
         if (login) {
-          yield put(createAction('getUserInfo')({userCode}))
-          yield put(createAction('app/updateState')({ login }))
+          yield put(createAction('getUserInfo')({ userCode }))
         }
         yield put(createAction('app/updateState')({ fetching: false }))
-      }else{
-        yield call(authService.wait,1000)
+      } else {
+        yield call(authService.wait, 1000)
         yield put(createAction('app/updateState')({ fetching: false }))
         yield put(
           NavigationActions.reset({
             index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Login' })],
+            actions: [
+              NavigationActions.navigate({ routeName: 'LoginNavigator' }),
+            ],
           })
         )
       }
     },
-    *getUserInfo({payload},{call, put}) {
-      const {userCode} = payload
+    *getUserInfo({ payload }, { call, put }) {
+      const { userCode } = payload
       const userInfo = yield call(authService.getUserInfo, userCode)
-      if(userInfo){
+      if (userInfo) {
         yield put(createAction('updateState')({ userInfo }))
-        yield put(
-          NavigationActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Main' })],
-          })
-        )
+        yield put(NavigationActions.navigate({ routeName: 'Main' }))
       }
     },
     *logout(action, { call, put }) {
       Storage.clear()
-      yield put(
-        NavigationActions.navigate({ routeName: 'Login' })
-      )
+      yield put(NavigationActions.navigate({ routeName: 'LoginNavigator' }))
     },
   },
   subscriptions: {
