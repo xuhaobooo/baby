@@ -105,7 +105,7 @@ export default function request(url, options) {
       }
       return value
     })
-    // console.log(JSON.stringify(convertedBody))
+    console.log(JSON.stringify(convertedBody))
     newOptions.body = JSON.stringify(convertedBody)
   }
 

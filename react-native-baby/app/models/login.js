@@ -1,5 +1,6 @@
 import { createAction, NavigationActions, Storage, delay } from '../utils'
 import * as authService from '../services/auth'
+import {Toast} from 'antd-mobile'
 
 export default {
   namespace: 'login',
@@ -65,6 +66,18 @@ export default {
     *logout(action, { call, put }) {
       Storage.clear()
       yield put(NavigationActions.navigate({ routeName: 'LoginNavigator' }))
+    },
+    *getCathcha({payload}, { call, put }) {
+      yield call(authService.getCathcha, payload.mobile)
+      Toast.info('验证码已通过短信发送，请查收',1)
+    },
+    *registUser({payload, callback}, { call, put }) {
+      console.log(payload)
+      const registerInfo = yield call(authService.registUser, payload)
+      console.log(registerInfo)
+      payload.userCode = registerInfo.userCode
+      yield call(authService.addUserInfo, payload)
+      if(callback) callback()
     },
   },
   subscriptions: {

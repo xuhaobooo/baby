@@ -26,6 +26,34 @@ export async function fakeRegister(params) {
   })
 }
 
+export async function getCathcha(mobile) {
+  return request(`/security/captcha/${mobile}`, {
+    method: 'POST',
+  })
+}
+
+export async function registUser(params) {
+  const {cathcha,userName:lastName,userName:firstName,loginName,password} = params
+  return request('/user/current', {
+    method: 'POST',
+    body:{
+      cathcha,lastName,firstName,loginName,password
+    }
+  })
+}
+
+export async function addUserInfo(params) {
+  const {addrName,addrPosX,addrPosY,note,userCode,visitCode,userName,loginName} = params
+  return request('/babyUserInfo/addUserInfo', {
+    method: 'POST',
+    body:{
+      addrName,addrPosX,addrPosY,note,userCode,visitCode,userName,tel:loginName,userRole:'DD'
+    }
+  })
+}
+
+
+
 export const wait = async time => {
   await delay(time)
 }

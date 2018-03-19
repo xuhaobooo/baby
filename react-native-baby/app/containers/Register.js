@@ -28,16 +28,22 @@ import * as ScreenUtil from '../utils/ScreenUtil'
 
 @connect(({ login, app }) => ({ ...login, app }))
 class Register extends Component {
+
   state = {
-    mobileError: true,
-    mobile: '',
-    passwordError: true,
-    password: '',
-    cathcha: '',
-    cathchaError: true,
-    nameError: true,
-    name: '',
-    guest: null,
+    mobileError: false,
+    mobile: null,
+    passwordError: false,
+    password: null,
+    passwordConfError:false,
+    passwordConf:null,
+    cathcha: null,
+    cathchaError: false,
+    nameError: false,
+    name: null,
+    inviteError:false,
+    invite:null,
+    note:null,
+    agree:false,
   }
 
   static navigationOptions = {
@@ -57,17 +63,58 @@ class Register extends Component {
     headerRight: <View />,
   }
 
-  onLogin = () => {
-    if (this.state.mobileError || this.state.passwordError) {
-      Toast.info('请输入正确的账号密码')
-      return
-    }
-    this.props.dispatch(
-      createAction('login/login')({
+  onRegister = () => {
+      const {position} = this.props
+      if (this.state.mobileError || !this.state.mobile) {
+        Toast.info('请输入11位的手机号码',1)
+        return
+      }
+      if (this.state.cathchaError || !this.state.cathcha) {
+        Toast.info('请输入六位验证码',1)
+        return
+      }
+      if (this.state.nameError || !this.state.name) {
+        Toast.info('请输入两个字以上的名称',1)
+        return
+      }
+      if (!position) {
+        Toast.info('请点右边图标，在地图上选择一个建筑物',2)
+        return
+      }
+      if (this.state.passwordError || !this.state.password) {
+        Toast.info('请输入6位以上的密码',1)
+        return
+      }
+      if (this.state.passwordConfError || !this.state.passwordConf) {
+        Toast.info('两次密码必须相同',1)
+        return
+      }
+      if(!this.state.agree){
+        Toast.info('您必须同意软件许可，才可以使用本软件',1)
+        return
+      }
+    
+    this.props.dispatch({
+        type:'login/registUser',
+        payload:{
         loginName: this.state.mobile.replace(/\s/g, ''),
+        cathcha:this.state.cathcha,
+        userName:this.state.name,
         password: this.state.password,
-      })
+        addrName:position.label,
+        addrPosX:position.posX,
+        addrPosY:position.posY,
+        note:this.state.note,
+        visitCode:this.state.invite.replace(/\s/g, ''),
+        },
+        callback: this.afterRegister
+      }
     )
+  }
+
+  afterRegister =() => {
+    Toast.info('注册成功,请登录',1)
+    this.props.dispatch(NavigationActions.back())
   }
 
   cancel = () => {
@@ -75,7 +122,7 @@ class Register extends Component {
   }
 
   onMobileChange = value => {
-    if (value.replace(/\s/g, '').length < 11) {
+    if (value.replace(/\s/g, '').length !== 11) {
       this.setState({
         mobileError: true,
       })
@@ -89,6 +136,36 @@ class Register extends Component {
     })
   }
 
+  onInviteChange = value => {
+    if (value.replace(/\s/g, '').length === 11 || value.replace(/\s/g, '').length === 0) {
+      this.setState({
+        inviteError: false,
+      })
+    } else {
+      this.setState({
+        inviteError: true,
+      })
+    }
+    this.setState({
+      invite: value,
+    })
+  } 
+
+  onCathchaChange = (value) => {
+    if (value.replace(/\s/g, '').length !== 6) {
+      this.setState({
+        cathchaError: true,
+      })
+    }else{
+      this.setState({
+        cathchaError: false,
+      })
+    }
+    this.setState({
+      cathcha: value,
+    })
+  }
+
   onPasswordChange = value => {
     if (value.replace(/\s/g, '').length < 6) {
       this.setState({
@@ -99,32 +176,108 @@ class Register extends Component {
         passwordError: false,
       })
     }
+    if(value === this.passwordConf){
+      this.setState({
+        passwordConfError: false,
+      })
+    }else{
+      this.setState({
+        passwordConfError: true,
+      })
+    }
     this.setState({
       password: value,
     })
   }
 
-  onGuestChange = value => {
-    this.setState({ guest: value })
-    this.props.dispatch(
-      createAction('login/login')({
-        loginName: value[0],
-        password: '123456',
+  onPasswordConfChange = value => {
+    if (value.replace(/\s/g, '').length < 6) {
+      this.setState({
+        passwordConfError: true,
       })
-    )
+    } else {
+      this.setState({
+        passwordConfError: false,
+      })
+    }
+    if(value===this.state.password){
+      this.setState({
+        passwordConfError: false,
+      })
+    }else{
+      this.setState({
+        passwordConfError: true,
+      })
+    }
+    this.setState({
+      passwordConf: value,
+    })
+  }
+
+  onNameChange = value => {
+    if (value.replace(/\s/g, '').length < 2) {
+      this.setState({
+        nameError: true,
+      })
+    }else{
+      this.setState({
+        nameError: false,
+      })
+    }
+    this.setState({ name: value })
+  }
+
+  onNoteChange = value => {
+    this.setState({
+      note:value
+    })
   }
 
   addrClick = () => {
     this.props.dispatch(
       NavigationActions.navigate({
         routeName: 'RegisterBaiduMap',
-        params: { showBtn: true, moduleName: login },
+        params: { showBtn: true, moduleName: 'login' },
       })
     )
   }
 
+  getCathcha = () => {
+  
+    if (this.state.mobile && this.state.mobile.replace(/\s/g, '').length === 11) {
+      this.props.dispatch(
+        createAction('login/getCathcha')({
+          mobile: this.state.mobile.replace(/\s/g, ''),
+        })      
+      )
+      this.setState({
+        cathchaTime:30
+      })
+      this.state.timer = setInterval(  
+        () => {
+          if(this.state.cathchaTime === 0){
+            clearInterval(this.timer);
+            return
+          }
+          this.setState({cathchaTime:this.state.cathchaTime-1})
+        },  
+        1000 
+      );
+    } else {
+      Toast.info('请输入正确的手机号码',1)
+    }
+    
+  }
+
+  componentWillUnmount() {  
+    // 如果存在this.timer，则使用clearTimeout清空。  
+    // 如果你使用多个timer，那么用多个变量，或者用个数组来保存引用，然后逐个clear  
+    this.state.timer && clearInterval(this.state.timer);  
+  }  
+
   render() {
     const { fetching } = this.props.app
+    const {position} = this.props
     const guestData = [
       { value: '13312312312', label: '需求方' },
       { value: '13412312312', label: '供应方' },
@@ -165,30 +318,19 @@ class Register extends Component {
           >
             <View style={{ flex: 8, backgroundColor: 'white' }}>
               <InputItem
+                type="number"
                 placeholder="手机验证码"
                 error={this.state.cathchaError}
                 value={this.state.cathcha}
                 maxLength={6}
                 onChange={this.onCathchaChange}
-                editable={false}
+                style={{height: '100%'}}
               />
             </View>
-
-            <TouchableOpacity
-              onPress={this.getCathcha}
-              style={{ marginRight: 10 }}
-            >
-              <Button type="primary">获取</Button>
-            </TouchableOpacity>
+              <Button type={this.state.cathchaTime >0 ? 'ghost':'primary'} disabled={this.state.cathchaTime >0} onClick={this.getCathcha} style={{height:'80%',marginRight:10}}>
+              {this.state.cathchaTime >0 ? this.state.cathchaTime : '获取'}
+              </Button>
           </View>
-          <InputItem
-            type="text"
-            placeholder="手机验证码"
-            error={this.state.cathchaError}
-            value={this.state.cathcha}
-            maxLength={6}
-            onChange={this.onCathchaChange}
-          />
 
           <InputItem
             type="text"
@@ -213,7 +355,7 @@ class Register extends Component {
                 labelNumber={7}
                 error={this.state.positionError}
                 style={{ flex: 8, backgroundColor: 'white' }}
-                value={this.state.position && this.state.position.label}
+                value={position && position.label}
                 editable={false}
                 placeholder="地点"
               />
@@ -248,17 +390,18 @@ class Register extends Component {
 
           <InputItem
             type="password"
-            placeholder="密码"
-            error={this.state.passwordError}
-            value={this.state.password}
-            onChange={this.onPasswordChange}
+            placeholder="再输一次密码"
+            error={this.state.passwordConfError}
+            value={this.state.passwordConf}
+            onChange={this.onPasswordConfChange}
           />
 
           <InputItem
             type="phone"
             placeholder="邀请者手机号码(已注册的)"
-            value={this.state.name}
-            onChange={this.onNameChange}
+            value={this.state.invite}
+            error={this.state.inviteError}
+            onChange={this.onInviteChange}
           />
 
           <TextareaItem
@@ -267,6 +410,7 @@ class Register extends Component {
             rows={6}
             count={100}
             onChange={this.onNoteChange}
+            style={{marginLeft:10,marginRight:10}}
           />
           <View style={{ marginTop: 5, marginLeft: 20 }}>
             <Checkbox
@@ -275,8 +419,8 @@ class Register extends Component {
                 width: ScreenUtil.setSpText(14),
                 height: ScreenUtil.setSpText(14),
               }}
-              onChange={e => this.setState({ permit: e.target.checked })}
-              checked={this.state.permit}
+              onChange={e => this.setState({ agree: e.target.checked })}
+              checked={this.state.agree}
             >
               <View style={{ flexDirection: 'row' }}>
                 <Text>我同意 </Text>
@@ -294,13 +438,7 @@ class Register extends Component {
             </Checkbox>
           </View>
           <WhiteSpace />
-          <Button
-            style={styles.registerBtn}
-            onClick={this.onRegister}
-            type="primary"
-          >
-            注册
-          </Button>
+          <Button style={styles.registerBtn} onClick={this.onRegister} type="primary">注册</Button>
         </View>
       </KeyboardAwareScrollView>
     )
@@ -325,6 +463,7 @@ const styles = StyleSheet.create({
   registerBtn: {
     margin: 10,
     marginTop: 15,
+    
   },
 })
 

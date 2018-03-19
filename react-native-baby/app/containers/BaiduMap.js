@@ -21,23 +21,10 @@ export default class BaiduMapDemo extends Component {
     this.state = {
       mayType: MapTypes.NORMAL,
       zoom: 15,
-      center: {
-        longitude: 113.981718,
-        latitude: 22.542449,
-      },
       trafficEnabled: false,
       baiduHeatMapEnabled: false,
       markers: [
-        {
-          longitude: 113.981718,
-          latitude: 22.542449,
-          title: 'Window of the world',
-        },
-        {
-          longitude: 113.995516,
-          latitude: 22.537642,
-          title: '',
-        },
+        
       ],
     }
   }
@@ -165,8 +152,9 @@ export default class BaiduMapDemo extends Component {
               const { marker } = this.state
 
               if (marker) {
+                const path = moduleName+'/updateState'
                 this.props.dispatch(
-                  createAction(`${moduleName}/updateState`)({
+                  createAction(path)({
                     position: {
                       posX: marker.latitude,
                       posY: marker.longitude,

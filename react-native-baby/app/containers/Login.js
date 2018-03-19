@@ -117,7 +117,7 @@ class Login extends Component {
           <InputItem
             type="phone"
             placeholder="手机号码"
-            style={{ flex: 1.5 }}
+            style={{ flex: 1 }}
             error={this.state.mobileError}
             value={this.state.mobile}
             onChange={this.onChange}
@@ -126,7 +126,7 @@ class Login extends Component {
           <InputItem
             type="password"
             placeholder="密码"
-            style={{ flex: 1.5 }}
+            style={{ flex: 1 }}
             error={this.state.passwordError}
             value={this.state.password}
             onChange={this.onPasswordChange}
@@ -151,7 +151,7 @@ class Login extends Component {
               找回密码
             </Text>
           </View>
-          <WhiteSpace style={{ flex: 2, flexBasis: 0 }} />
+          <WhiteSpace style={{ flex: 4, flexBasis: 0 }} />
           <Picker
             style={styles.guest}
             data={guestData}
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   loginBtn: {
     margin: 10,
     marginTop: 15,
-    flex: 1.5,
+    flex: 1,
   },
   actionBar: {
     flexDirection: 'row',
