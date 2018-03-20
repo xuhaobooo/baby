@@ -132,7 +132,7 @@ class MyRequire extends Component {
         <View style={{flex:20}}>
         <FlatList data={myRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
           renderItem={({item})=><Item key={item.requireCode}
-            style={{paddingLeft:10}}
+            style={{paddingLeft:10,marginBottom:3}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
             thumb={

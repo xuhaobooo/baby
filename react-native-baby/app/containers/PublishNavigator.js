@@ -159,7 +159,7 @@ class PublishRequire extends Component {
 
   addrClick = () => {
     const {position} = this.props
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'BaiduMapPage',params:{position,showBtn:true} }))
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'BaiduMapPage',params:{position,showBtn:true, moduleName:'requirement'} }))
   }
 
   componentDidMount = () => {

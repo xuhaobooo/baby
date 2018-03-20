@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Button, InputItem, Text, Modal,WhiteSpace } from 'antd-mobile'
+import { Button, InputItem, Text, Modal,WhiteSpace,Checkbox,TextareaItem,Toast } from 'antd-mobile'
 import { CompanySelector } from '../components'
 
 import { NavigationActions, createAction } from '../utils'
@@ -12,9 +12,9 @@ import Timeline from '../components/Timeline'
 
 const alert = Modal.alert
 
-@connect(({ login, requirement }) => ({ login, requirement }))
+@connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
 class TaskDetail extends Component {
-  state = {}
+  state = {showAddModal:false,level:null,evalution:null}
 
   static navigationOptions = {
     headerTitle: (
@@ -96,27 +96,131 @@ class TaskDetail extends Component {
         case 'CC':
           return <Text>订单已取消</Text>
           break
-        case 'AF':
-          return (
-            <Button
-              type="primary"
-              style={styles.actionBtn}
-              onClick={() => this.comment()}
-            >
-              发表评论
-            </Button>
-          )
+          case 'AF':
+          const {login,evalution} = this.props
+          
+          if(!evalution.EvaList || evalution.EvaList.length ===0){
+            return (
+              <Button
+                type="primary"
+                style={styles.actionBtn}
+                onClick={() => this.comment()}
+              >
+                发表评论
+              </Button>
+            )
+          }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==login.userInfo.userCode){
+            return (
+              <Button
+                type="primary"
+                style={styles.actionBtn}
+                onClick={() => this.comment()}
+              >
+                发表评论
+              </Button>
+            )
+          }else{
+            var ev;
+            if(evalution.EvaList[0].sendUserCode === login.userInfo.userCode){
+              ev = evalution.EvaList[0]
+            }else{
+              ev=evalution.EvaList[1]
+            }
+            return (
+              <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10}}>
+                <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
+                <Text>{ev.notes}</Text>
+              </View>
+            )
+          }
           break
+        default:
+          return (<View style={{heigth:50}}>
+            <Text>错误状态</Text>
+          </View>)
     }
   }
 
-  componentDidMount = () => {}
+  comment = task => {
+    this.setState({showAddModal:true})
+  }
+
+  addEvalution = () => {
+    const { navigation } = this.props
+    const task = navigation.state.params.task
+    this.props.dispatch({
+      type:'evalution/addEvalution',
+      payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:task.sendUserCode,
+        requireCode:task.requireCode,sendUserCode:task.getUserCode},
+      callback:this.afterEvalutionAdd
+      }
+    )
+  }
+
+  afterEvalutionAdd = () => {
+    this.setState({showAddModal:false,level:null,evalution:null})
+    Toast.success('发表成功',2)
+    this.findEvalution()
+  }
+
+  findEvalution = () =>{
+    const { navigation } = this.props
+    const task = navigation.state.params.task
+    this.props.dispatch(
+      createAction('evalution/findEvaByBcode')({
+        requireCode: task.requireCode
+      })
+    )
+  }
+
+  componentDidMount = () => {
+    this.findEvalution()
+  }
 
   render() {
     const { navigation } = this.props
     const task = navigation.state.params.task
     return (
       <View style={styles.container}>
+        <Modal
+          style={{width:'90%'}}
+          visible={this.state.showAddModal}
+          transparent
+          maskClosable={false}
+          title="发表评论"
+          footer={[{ text: '取消', onPress: () => { this.setState({showAddModal:false}) } },
+          { text: '确定', onPress: () => { this.addEvalution() } }]}
+        >
+          <WhiteSpace/>
+          <View style={{flexDirection: 'row',borderBottomWidth:1,borderBottomColor:'#eaeaea'}}>
+            <View style={{flex:1,alignItems:'center'}}><Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='low' 
+              onChange={(e)=>this.setState({level:'LOW'})} checked={this.state.level==='LOW'}>
+              <Text>差评</Text>
+            </Checkbox>
+            </View>
+            <View style={{flex:1,alignItems:'center'}}>
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='mid'
+              onChange={(e)=>this.setState({level:'MID'})} checked={this.state.level==='MID'}>
+              <Text>中评</Text>
+            </Checkbox>
+            </View>
+            <View style={{flex:1,alignItems:'center'}}>
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='high'
+              onChange={(e)=>this.setState({level:'HIGH'})} checked={this.state.level==='HIGH'}>
+              <Text>好评</Text>
+            </Checkbox>
+            </View>
+          </View>
+          <TextareaItem
+            placeholder="写点评价吧，您的评价对其他人很重要"
+            value={this.state.evalution}
+            rows={6}
+            count={100}
+            onChange={(value) => this.setState({evalution:value})}
+          />
+          <WhiteSpace style={{height:10,backgroundColor:'white',}} />
+
+        </Modal>
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
@@ -171,7 +275,7 @@ class TaskDetail extends Component {
           总费用：
         </InputItem>
         <WhiteSpace size="xs" />
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 8 }}>
           <Timeline list={task ? task.stepList : []} />
         </View>
         <View style={styles.actionStyle}>{this.renderAction(task)}</View>

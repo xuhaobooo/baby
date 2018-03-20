@@ -1,10 +1,5 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  View,
-  Image,
-  ImageBackground,
-} from 'react-native'
+import { StyleSheet, View, Image, ImageBackground, TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 
 import { Button, InputItem, Text, WhiteSpace, Toast, Modal,Checkbox,TextareaItem } from 'antd-mobile'
@@ -20,7 +15,7 @@ const operation = Modal.operation
 
 @connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
 class RequireDetail extends Component {
-  state = {showAddModal:false}
+  state = {showAddModal:false,level:null,evalution:null}
 
   static navigationOptions = {
     headerTitle: (
@@ -46,23 +41,6 @@ class RequireDetail extends Component {
         params: { applyDetail: value },
       })
     )
-  }
-
-  componentDidMount = () => {
-    const { requirement } = this.props.requirement
-    if (requirement.requireStatus === 'NEW') {
-      this.props.dispatch(
-        createAction('requirement/findApply')({
-          requireCode: requirement.requireCode,
-        })
-      )
-    } else {
-      this.props.dispatch(
-        createAction('requirement/findTaskByRequireCode')({
-          requireCode: requirement.requireCode,
-        })
-      )
-    }
   }
 
   selectPayWay = () => {
@@ -121,6 +99,7 @@ class RequireDetail extends Component {
   }
 
   renderAction = task => {
+    
     switch (task.taskStatus) {
       case 'CONF':
         return <Text>等待接单者到达工作地点，接单者到达后您可以选择支付或等待接单者完成工作后支付</Text>
@@ -177,7 +156,8 @@ class RequireDetail extends Component {
         break
       case 'AF':
         const {login,evalution} = this.props
-        if(!evalution || evalution.length ===0){
+        
+        if(!evalution.EvaList || evalution.EvaList.length ===0){
           return (
             <Button
               type="primary"
@@ -187,20 +167,46 @@ class RequireDetail extends Component {
               发表评论
             </Button>
           )
-        }else(evalution.length ===1 && evalution[0].sendUserCode !==login.)
-        
+        }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==login.userInfo.userCode){
+          return (
+            <Button
+              type="primary"
+              style={styles.actionBtn}
+              onClick={() => this.comment()}
+            >
+              发表评论
+            </Button>
+          )
+        }else{
+          var ev;
+          if(evalution.EvaList[0].sendUserCode === login.userInfo.userCode){
+            ev = evalution.EvaList[0]
+          }else{
+            ev=evalution.EvaList[1]
+          }
+          return (
+            <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10}}>
+              <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
+              <Text>{ev.notes}</Text>
+            </View>
+          )
+        }
         break
+      default:
+        return (<View style={{heigth:50}}>
+          <Text>错误状态</Text>
+        </View>)
     }
   }
 
-  onEvalutionChange = value => {
-    this.setState({evalution:value})
-  }
-
   addEvalution = () => {
+    const {
+      requirement: { requirement },
+    } = this.props
     this.props.dispatch({
       type:'evalution/addEvalution',
-      payload:{},
+      payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:requirement.companyCode,
+        requireCode:requirement.requireCode,sendUserCode:requirement.userCode},
       callback:this.afterEvalutionAdd
       }
     )
@@ -216,9 +222,41 @@ class RequireDetail extends Component {
     const { requirement: { requirement }} = this.props
     this.props.dispatch(
       createAction('evalution/findEvaByBcode')({
-        requirementCode: requirement.requireCode
+        requireCode: requirement.requireCode
       })
     )
+  }
+
+  showBaiduMap = requirement => {
+    const position = {
+      posX: requirement.addrPosX,
+      posY: requirement.addrPosY,
+      label: requirement.addrName,
+    }
+    this.props.dispatch(
+      NavigationActions.navigate({
+        routeName: 'BaiduMapPage',
+        params: { position, showBtn: false },
+      })
+    )
+  }
+
+  componentDidMount = () => {
+    const { requirement } = this.props.requirement
+    if (requirement.requireStatus === 'NEW') {
+      this.props.dispatch(
+        createAction('requirement/findApply')({
+          requireCode: requirement.requireCode,
+        })
+      )
+    } else {
+      this.props.dispatch(
+        createAction('requirement/findTaskByRequireCode')({
+          requireCode: requirement.requireCode,
+        })
+      )
+    }
+    this.findEvalution()
   }
 
   render() {
@@ -226,6 +264,7 @@ class RequireDetail extends Component {
       login: { userInfo },
       requirement: { applies, requirement, task },
     } = this.props
+
     return (
       <View style={styles.container}>
         <Modal
@@ -262,7 +301,7 @@ class RequireDetail extends Component {
             value={this.state.evalution}
             rows={6}
             count={100}
-            onChange={this.onEvalutionChange}
+            onChange={(value) => this.setState({evalution:value})}
           />
           <WhiteSpace style={{height:10,backgroundColor:'white',}} />
 
@@ -291,14 +330,18 @@ class RequireDetail extends Component {
         >
           到：
         </InputItem>
-        <InputItem
-          labelNumber={5}
-          style={styles.itemStyle}
-          value={requirement.addrName}
-          editable={false}
-        >
-          地 点：
-        </InputItem>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(31)}}>
+          <View style={{flex:8}}>
+            <InputItem labelNumber={5} style={{flex:8,backgroundColor:'#ffffff',height:'99%',marginLeft: 0,paddingLeft:20,}} 
+              value={requirement.addrName} editable={false}>地    点</InputItem>
+          </View>
+
+          <TouchableOpacity onPress={() => this.showBaiduMap(requirement)}>
+          <Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+            source={require('../images/map.png')} resizeMode='stretch' />
+          </TouchableOpacity>
+        </View>
+
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
@@ -311,10 +354,8 @@ class RequireDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
-            `${requirement.feeAmount}元` +
-            `           ` +
-            `附加小费：` +
-            `   ${requirement.payMore}`
+            requirement.feeAmount + '元' + (requirement.paid ? '(已付)':'(未付)')+
+            '      ' + '附加小费：' +  requirement.payMore
           }
           editable={false}
         >
@@ -348,6 +389,7 @@ class RequireDetail extends Component {
               <View style={{ flex: 6 }}>
                 <Timeline list={task ? task.stepList : []} />
               </View>
+              <WhiteSpace size="xs" />
               {task && this.renderAction(task)}
             </View>
           )}
@@ -370,7 +412,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   actionStyle: {
-    flex: 8,
+    flex: 10,
   },
   actionBtn: {
     margin: 10,

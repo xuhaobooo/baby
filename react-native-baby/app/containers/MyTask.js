@@ -116,7 +116,7 @@ class MyTask extends Component {
       />
         <View style={{flex:20}}>
         <FlatList data={myTaskList} extraData={this.state} keyExtractor={(item, index) => item.taskCode} 
-          renderItem={({item})=><Item key={item.taskCode} style={item.taskStatus==='AF'?{backgroundColor:'#cfcfcf'}:{backgroundColor:'white'}}
+          renderItem={({item})=><Item key={item.taskCode} style={item.taskStatus==='AF'?{backgroundColor:'#cfcfcf',marginBottom:3}:{backgroundColor:'white',marginBottom:3}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
             thumb={
