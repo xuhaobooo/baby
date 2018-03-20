@@ -131,7 +131,15 @@ export default function request(url, options) {
       if (code == null) {
         return response.text()
       }
+      global.app._store.dispatch({
+        type:'app/updateState',
+        payload:{fetching:false}
+      })
       if (code === '10010000') {
+        global.app._store.dispatch({
+          type:'login/logout',
+          payload:{}
+        })
       }
       const error = new Error(decodeURI(msg))
       error.name = code

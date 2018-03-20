@@ -147,8 +147,13 @@ class Login extends Component {
             >
               注册
             </Text>
-            <Text style={{ flex: 1, textAlign: 'right', marginRight: 20 }}>
-              找回密码
+            <Text style={{ flex: 1, textAlign: 'right', marginRight: 20 }}
+            onPress={() =>
+              this.props.dispatch(
+                NavigationActions.navigate({ routeName: 'ForgetPassword' })
+              )
+            }>
+              重置密码
             </Text>
           </View>
           <WhiteSpace style={{ flex: 4, flexBasis: 0 }} />

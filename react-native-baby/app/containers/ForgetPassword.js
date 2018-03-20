@@ -4,7 +4,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Image,
   Dimensions,
   KeyboardAvoidingView,
   TouchableOpacity,
@@ -15,19 +14,16 @@ import { createAction, NavigationActions } from '../utils'
 import {
   Button,
   InputItem,
-  Picker,
   List,
   WhiteSpace,
   Toast,
-  TextareaItem,
-  Checkbox,
 } from 'antd-mobile'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import * as ScreenUtil from '../utils/ScreenUtil'
 
 @connect(({ login, app }) => ({ ...login, app }))
-class Register extends Component {
+class ForgetPassword extends Component {
 
   state = {
     mobileError: false,
@@ -38,12 +34,6 @@ class Register extends Component {
     passwordConf:null,
     cathcha: null,
     cathchaError: false,
-    nameError: false,
-    name: null,
-    inviteError:false,
-    invite:null,
-    note:null,
-    agree:false,
   }
 
   static navigationOptions = {
@@ -57,13 +47,13 @@ class Register extends Component {
           color: '#FF6600',
         }}
       >
-        用户注册
+        重置密码
       </Text>
     ),
     headerRight: <View />,
   }
 
-  onRegister = () => {
+  resetPassword = () => {
       const {position} = this.props
       if (this.state.mobileError || !this.state.mobile) {
         Toast.info('请输入11位的手机号码',1)
@@ -73,14 +63,7 @@ class Register extends Component {
         Toast.info('请输入六位验证码',1)
         return
       }
-      if (this.state.nameError || !this.state.name) {
-        Toast.info('请输入两个字以上的名称',1)
-        return
-      }
-      if (!position) {
-        Toast.info('请点右边图标，在地图上选择一个建筑物',2)
-        return
-      }
+      
       if (this.state.passwordError || !this.state.password) {
         Toast.info('请输入6位以上的密码',1)
         return
@@ -89,31 +72,21 @@ class Register extends Component {
         Toast.info('两次密码必须相同',1)
         return
       }
-      if(!this.state.agree){
-        Toast.info('您必须同意软件许可，才可以使用本软件',1)
-        return
-      }
     
     this.props.dispatch({
-        type:'login/registUser',
+        type:'login/resetPassword',
         payload:{
         loginName: this.state.mobile.replace(/\s/g, ''),
-        cathcha:this.state.cathcha,
-        userName:this.state.name,
+        captcha:this.state.cathcha,
         password: this.state.password,
-        addrName:position.label,
-        addrPosX:position.posX,
-        addrPosY:position.posY,
-        note:this.state.note,
-        visitCode:this.state.invite.replace(/\s/g, ''),
         },
-        callback: this.afterRegister
+        callback: this.afterResetPassword
       }
     )
   }
 
-  afterRegister =() => {
-    Toast.info('注册成功,请登录',1)
+  afterResetPassword =() => {
+    Toast.info('密码重置成功',1)
     this.props.dispatch(NavigationActions.back())
   }
 
@@ -135,21 +108,6 @@ class Register extends Component {
       mobile: value,
     })
   }
-
-  onInviteChange = value => {
-    if (value.replace(/\s/g, '').length === 11 || value.replace(/\s/g, '').length === 0) {
-      this.setState({
-        inviteError: false,
-      })
-    } else {
-      this.setState({
-        inviteError: true,
-      })
-    }
-    this.setState({
-      invite: value,
-    })
-  } 
 
   onCathchaChange = (value) => {
     if (value.replace(/\s/g, '').length !== 6) {
@@ -214,34 +172,6 @@ class Register extends Component {
     })
   }
 
-  onNameChange = value => {
-    if (value.replace(/\s/g, '').length < 2) {
-      this.setState({
-        nameError: true,
-      })
-    }else{
-      this.setState({
-        nameError: false,
-      })
-    }
-    this.setState({ name: value })
-  }
-
-  onNoteChange = value => {
-    this.setState({
-      note:value
-    })
-  }
-
-  addrClick = () => {
-    this.props.dispatch(
-      NavigationActions.navigate({
-        routeName: 'RegisterBaiduMap',
-        params: { showBtn: true, moduleName: 'login' },
-      })
-    )
-  }
-
   getCathcha = () => {
   
     if (this.state.mobile && this.state.mobile.replace(/\s/g, '').length === 11) {
@@ -277,11 +207,6 @@ class Register extends Component {
 
   render() {
     const { fetching } = this.props.app
-    const {position} = this.props
-    const guestData = [
-      { value: '13312312312', label: '需求方' },
-      { value: '13412312312', label: '供应方' },
-    ]
     const { windowHeight } = this.props.app
     return (
       <KeyboardAwareScrollView
@@ -332,53 +257,6 @@ class Register extends Component {
           </View>
 
           <InputItem
-            type="text"
-            placeholder="姓名"
-            maxLength={30}
-            error={this.state.nameError}
-            value={this.state.name}
-            onChange={this.onNameChange}
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              width: '100%',
-              height: 40,
-            }}
-          >
-            <View style={{ flex: 8 }}>
-              <InputItem
-                labelNumber={7}
-                error={this.state.positionError}
-                style={{ flex: 8, backgroundColor: 'white' }}
-                value={position && position.label}
-                editable={false}
-                placeholder="地点"
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={this.addrClick}
-              style={{ marginRight: 10 }}
-            >
-              <Image
-                style={{
-                  marginTop: 3,
-                  width: 20,
-                  height: 20,
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                }}
-                source={require('../images/map.png')}
-                resizeMode="stretch"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <InputItem
             type="password"
             placeholder="密码"
             maxLength={30}
@@ -395,49 +273,8 @@ class Register extends Component {
             onChange={this.onPasswordConfChange}
           />
 
-          <InputItem
-            type="phone"
-            placeholder="邀请者手机号码(已注册的)"
-            value={this.state.invite}
-            error={this.state.inviteError}
-            onChange={this.onInviteChange}
-          />
-
-          <TextareaItem
-            placeholder="自我介绍，能让人更好的了解您"
-            value={this.state.note}
-            rows={6}
-            count={100}
-            onChange={this.onNoteChange}
-            style={{marginLeft:10,marginRight:10}}
-          />
-          <View style={{ marginTop: 5, marginLeft: 20 }}>
-            <Checkbox
-              key="viewPermit"
-              style={{
-                width: ScreenUtil.setSpText(14),
-                height: ScreenUtil.setSpText(14),
-              }}
-              onChange={e => this.setState({ agree: e.target.checked })}
-              checked={this.state.agree}
-            >
-              <View style={{ flexDirection: 'row' }}>
-                <Text>我同意 </Text>
-                <Text
-                  style={{ borderBottomWidth: 1, borderBottomColor: 'blue' }}
-                  onPress={() =>
-                    this.props.dispatch(
-                      NavigationActions.navigate({ routeName: 'ViewPermit' })
-                    )
-                  }
-                >
-                  《软件许可及服务协议》
-                </Text>
-              </View>
-            </Checkbox>
-          </View>
           <WhiteSpace />
-          <Button style={styles.registerBtn} onClick={this.onRegister} type="primary">注册</Button>
+          <Button style={styles.registerBtn} onClick={this.resetPassword} type="primary">注册</Button>
         </View>
       </KeyboardAwareScrollView>
     )
@@ -466,4 +303,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Register
+export default ForgetPassword

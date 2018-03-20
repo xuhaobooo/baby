@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
-  ListView,
   Image,
   ImageBackground,
 } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Button, InputItem, Text, WhiteSpace, Toast, Modal } from 'antd-mobile'
+import { Button, InputItem, Text, WhiteSpace, Toast, Modal,Checkbox,TextareaItem } from 'antd-mobile'
 import { CompanySelector } from '../components'
 import * as ScreenUtil from '../utils/ScreenUtil'
+import Timeline from '../components/Timeline'
 
 import { NavigationActions, createAction } from '../utils'
 import { map } from 'lodash'
@@ -18,9 +18,9 @@ import { map } from 'lodash'
 const alert = Modal.alert
 const operation = Modal.operation
 
-@connect(({ login, requirement }) => ({ login, requirement }))
+@connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
 class RequireDetail extends Component {
-  state = {}
+  state = {showAddModal:false}
 
   static navigationOptions = {
     headerTitle: (
@@ -39,49 +39,7 @@ class RequireDetail extends Component {
     headerRight: <View />,
   }
 
-  // 进行渲染数据
-  renderContent = list => {
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-    const dataSource = ds.cloneWithRows(list)
-
-    return (
-      <ListView
-        initialListSize={1}
-        dataSource={dataSource}
-        renderRow={this.renderItem}
-        style={{ flex: 1 }}
-        onEndReachedThreshold={10}
-        enableEmptySections
-      />
-    )
-  }
-  // 渲染每一项的数据
-  renderItem = data => (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require('../images/ic_order_status_item_bg.png')}
-        style={{ height: 35, marginLeft: 10, width: '100%' }}
-      >
-        {this.renderCenterContent(data)}
-      </ImageBackground>
-      <View style={{ height: 1 }} />
-    </View>
-  )
-
-  renderCenterContent = data => (
-    <View style={{ marginLeft: 15, marginTop: 10 }}>
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={{ color: 'black', fontSize: 14 }}>{data.stepContent}</Text>
-        <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 10 }}>
-          <Text style={{ color: '#777', fontSize: 12, paddingRight: 10 }}>
-            {data.doneTime}
-          </Text>
-        </View>
-      </View>
-    </View>
-  )
-
-  gotoDetail = value => {
+  selectCompany = value => {
     this.props.dispatch(
       NavigationActions.navigate({
         routeName: 'ApplyDetail',
@@ -158,10 +116,15 @@ class RequireDetail extends Component {
     )
   }
 
-  comment = task => {}
+  comment = task => {
+    this.setState({showAddModal:true})
+  }
 
   renderAction = task => {
     switch (task.taskStatus) {
+      case 'CONF':
+        return <Text>等待接单者到达工作地点，接单者到达后您可以选择支付或等待接单者完成工作后支付</Text>
+        break;
       case 'ARRV':
         if (!task.paid) {
           return (
@@ -186,7 +149,7 @@ class RequireDetail extends Component {
               支付
             </Button>
           )
-        }
+        }else{
         return (
           <Button
             type="primary"
@@ -203,24 +166,59 @@ class RequireDetail extends Component {
           >
             验收完成
           </Button>
-        )
+        )}
 
         break
       case 'CF':
-        return <Text>后台未收到支付信息，请稍后在查看</Text>
+        return <Text>正在获取支付信息，请稍后在查看</Text>
+        break
+      case 'CC':
+        return <Text>订单已取消</Text>
         break
       case 'AF':
-        return (
-          <Button
-            type="primary"
-            style={styles.actionBtn}
-            onClick={() => this.comment()}
-          >
-            发表评论
-          </Button>
-        )
+        const {login,evalution} = this.props
+        if(!evalution || evalution.length ===0){
+          return (
+            <Button
+              type="primary"
+              style={styles.actionBtn}
+              onClick={() => this.comment()}
+            >
+              发表评论
+            </Button>
+          )
+        }else(evalution.length ===1 && evalution[0].sendUserCode !==login.)
+        
         break
     }
+  }
+
+  onEvalutionChange = value => {
+    this.setState({evalution:value})
+  }
+
+  addEvalution = () => {
+    this.props.dispatch({
+      type:'evalution/addEvalution',
+      payload:{},
+      callback:this.afterEvalutionAdd
+      }
+    )
+  }
+
+  afterEvalutionAdd = () => {
+    this.setState({showAddModal:false,level:null,evalution:null})
+    Toast.success('发表成功',1)
+    this.findEvalution()
+  }
+
+  findEvalution = () =>{
+    const { requirement: { requirement }} = this.props
+    this.props.dispatch(
+      createAction('evalution/findEvaByBcode')({
+        requirementCode: requirement.requireCode
+      })
+    )
   }
 
   render() {
@@ -230,7 +228,47 @@ class RequireDetail extends Component {
     } = this.props
     return (
       <View style={styles.container}>
+        <Modal
+          style={{width:'90%'}}
+          visible={this.state.showAddModal}
+          transparent
+          maskClosable={false}
+          title="发表评论"
+          footer={[{ text: '取消', onPress: () => { this.setState({showAddModal:false}) } },
+          { text: '确定', onPress: () => { this.addEvalution() } }]}
+        >
+          <WhiteSpace/>
+          <View style={{flexDirection: 'row',borderBottomWidth:1,borderBottomColor:'#eaeaea'}}>
+            <View style={{flex:1,alignItems:'center'}}><Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+              onChange={(e)=>this.setState({level:'LOW'})} checked={this.state.level==='LOW'}>
+              <Text>差评</Text>
+            </Checkbox>
+            </View>
+            <View style={{flex:1,alignItems:'center'}}>
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+              onChange={(e)=>this.setState({level:'MID'})} checked={this.state.level==='MID'}>
+              <Text>中评</Text>
+            </Checkbox>
+            </View>
+            <View style={{flex:1,alignItems:'center'}}>
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+              onChange={(e)=>this.setState({level:'HIGH'})} checked={this.state.level==='HIGH'}>
+              <Text>好评</Text>
+            </Checkbox>
+            </View>
+          </View>
+          <TextareaItem
+            placeholder="写点评价吧，您的评价对其他人很重要"
+            value={this.state.evalution}
+            rows={6}
+            count={100}
+            onChange={this.onEvalutionChange}
+          />
+          <WhiteSpace style={{height:10,backgroundColor:'white',}} />
+
+        </Modal>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={requirement.babyName}
           editable={false}
@@ -238,6 +276,7 @@ class RequireDetail extends Component {
           姓 名：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={requirement.startTime}
           editable={false}
@@ -245,6 +284,7 @@ class RequireDetail extends Component {
           从：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={requirement.endTime}
           editable={false}
@@ -252,6 +292,7 @@ class RequireDetail extends Component {
           到：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={requirement.addrName}
           editable={false}
@@ -259,6 +300,7 @@ class RequireDetail extends Component {
           地 点：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={map(requirement.items, value => value.itemName).join(',')}
           editable={false}
@@ -266,6 +308,7 @@ class RequireDetail extends Component {
           服务：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={
             `${requirement.feeAmount}元` +
@@ -280,7 +323,7 @@ class RequireDetail extends Component {
         <WhiteSpace size="xs" />
         <View style={styles.actionStyle}>
           {requirement.requireStatus === 'NEW' ? (
-            <CompanySelector list={applies} clickHandle={this.gotoDetail}>
+            <CompanySelector list={applies} clickHandle={this.selectCompany}>
               客户
             </CompanySelector>
           ) : (
@@ -303,7 +346,7 @@ class RequireDetail extends Component {
               </InputItem>
               <WhiteSpace size="xs" />
               <View style={{ flex: 6 }}>
-                {this.renderContent(task ? task.stepList : [])}
+                <Timeline list={task ? task.stepList : []} />
               </View>
               {task && this.renderAction(task)}
             </View>

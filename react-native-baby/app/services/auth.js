@@ -52,7 +52,11 @@ export async function addUserInfo(params) {
   })
 }
 
-
+export async function resetPassword(params) {
+  return request(`/security/forgetChangePassword?${stringify(params)}`, {
+    method: 'POST',
+  })
+}
 
 export const wait = async time => {
   await delay(time)

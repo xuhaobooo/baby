@@ -4,6 +4,7 @@ import * as WeChat from 'react-native-wechat'
 
 import dva from './utils/dva'
 import Router, { routerMiddleware } from './router'
+import { connect } from 'react-redux'
 
 import { Toast } from 'antd-mobile'
 
@@ -12,16 +13,20 @@ import routerModel from './models/router'
 import loginModel from './models/login'
 import requireModel from './models/requirement'
 import babyModel from './models/babyInfo'
+import EvaModel from './models/evalution'
 
 console.disableYellowBox = true
+
 const app = dva({
   initialState: {},
-  models: [appModel, routerModel, loginModel, requireModel, babyModel],
+  models: [appModel, routerModel, loginModel, requireModel, babyModel,EvaModel],
   onAction: [routerMiddleware],
   onError(e) {
     Toast.fail(e.message)
   },
 })
+
+global.app = app
 
 const App = app.start(<Router />)
 WeChat.registerApp('wx1751ba892d97acaf')

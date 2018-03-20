@@ -3,6 +3,7 @@ import * as requireService from '../services/requirement'
 import * as payUtil from '../utils/payUtil'
 import { Toast } from 'antd-mobile'
 import * as WeChat from 'react-native-wechat'
+import * as DateUtil from '../utils/TimeUtil'
 
 export default {
   namespace: 'requirement',
@@ -11,7 +12,7 @@ export default {
     pendRequireList: [],
     applies: [],
     requirement: null,
-    myBabys: [],
+    myBabys: null,
     trustDict: null,
     serviceWithCatalog: null,
     timePrice: null,
@@ -47,6 +48,14 @@ export default {
         yield put(createAction('updateState')({ applies }))
       }
     },
+    *findRequire({ payload }, { call, put }) {
+      const { requireCode } = payload
+      yield put(createAction('updateState')({ requirement:null}))
+      const requirement = yield call(requireService.findRequire, requireCode)
+      if (requirement) {
+        yield put(createAction('updateState')({ requirement }))
+      }
+    },
     *selectApply({ payload }, { select, call, put }) {
       const { applyId, requireCode } = payload
       yield call(requireService.selectApply, applyId)
@@ -64,6 +73,7 @@ export default {
         }
         return item
       })
+      Toast.success('已选择')
       yield put(createAction('updateState')({ myRequireList: newArray }))
       yield put(NavigationActions.back())
     },
@@ -137,6 +147,7 @@ export default {
         }
         return item
       })
+      Toast.success('抢单成功，请等待反馈')
       yield put(createAction('updateState')({ pendRequireList: newArray }))
       yield put(NavigationActions.back())
     },
@@ -153,41 +164,94 @@ export default {
         yield put(createAction('updateState')({ task }))
       }
     },
-    *arrive({ payload }, { call, put }) {
+    *arrive({ payload }, { select,call, put }) {
       const { task } = payload
       yield call(requireService.arrive, task)
       task.taskStatus = 'ARRV'
+      task.stepList.push({stepContent:'到达目的地',doneTime:DateUtil.formatTimeFull(new Date())})
       yield put(createAction('updateState')({ task }))
+
+      const myTaskList = yield select(state => state.requirement.myTaskList)
+      const newArray = myTaskList.map(item => {
+        if (item.taskCode === task.taskCode) {
+          item.taskStatus = task.taskStatus
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myTaskList: newArray }))
+
       Toast.success('已到达！')
     },
-    *complete({ payload }, { call, put }) {
+    *complete({ payload }, { select,call, put }) {
       const { task } = payload
       yield call(requireService.complete, task)
       task.taskStatus = 'PF'
+      task.stepList.push({stepContent:'服务已完成',doneTime:DateUtil.formatTimeFull(new Date())})
       yield put(createAction('updateState')({ task }))
+
+      const myTaskList = yield select(state => state.requirement.myTaskList)
+      const newArray = myTaskList.map(item => {
+        if (item.taskCode === task.taskCode) {
+          item.taskStatus = task.taskStatus
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myTaskList: newArray }))
+
       Toast.success('任务完成！')
     },
-    *customerFinish({ payload }, { call, put }) {
+    *customerFinish({ payload }, { select,call, put }) {
       const { task } = payload
       yield call(requireService.customerFinish, task.requireCode)
+      var status = task.taskStatus
       if (task.paid) {
+        status = 'AF'
         task.taskStatus = 'AF'
+        task.stepList.push({stepContent:'用户已确认完成',doneTime:DateUtil.formatTimeFull(new Date())})
+        task.stepList.push({stepContent:'服务结束',doneTime:DateUtil.formatTimeFull(new Date())})
       } else {
+        status = 'CF'
+        task.stepList.push({stepContent:'用户已确认完成',doneTime:DateUtil.formatTimeFull(new Date())})
         task.taskStatus = 'CF'
       }
-      console.log(task)
       yield put(createAction('updateState')({ task }))
-      Toast.success('验收完成！')
+
+      const requireList = yield select(state => state.requirement.myRequireList)
+      const newArray = requireList.map(item => {
+        if (item.requireCode === task.requireCode) {
+          item.requireStatus = status
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myRequireList: newArray }))
+
+      Toast.success('确认任务完成！')
     },
-    *alipay({ payload, callback }, { call, put }) {
+    *alipay({ payload, callback }, { select,call, put }) {
       const result = yield call(requireService.alipay, payload)
       yield payUtil.performAlipay(result, callback)
+      const requireList = yield select(state => state.requirement.myRequireList)
+      const newArray = requireList.map(item => {
+        if (item.requireCode === payload.busiCode) {
+          item.paid = true
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myRequireList: newArray }))
     },
-    *wechatPay({ payload, callback }, { call, put }) {
+    *wechatPay({ payload, callback }, { select,call, put }) {
       const flag = yield WeChat.isWXAppInstalled()
       if (true) {
         const result = yield call(requireService.wechatPay, payload)
         payUtil.performWechatPay(result, callback)
+        const requireList = yield select(state => state.requirement.myRequireList)
+        const newArray = requireList.map(item => {
+          if (item.requireCode === payload.busiCode) {
+            item.paid = true
+          }
+          return item
+        })
+        yield put(createAction('updateState')({ myRequireList: newArray }))
       } else {
         Toast.info('没有安装微信！', 1)
       }

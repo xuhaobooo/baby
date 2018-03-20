@@ -71,7 +71,6 @@ class AppluRequire extends Component {
           value={requirement.startTime}
           editable={false}
         >
-          {' '}
           从：
         </InputItem>
         <InputItem
@@ -79,7 +78,6 @@ class AppluRequire extends Component {
           value={requirement.endTime}
           editable={false}
         >
-          {' '}
           到：
         </InputItem>
         <View

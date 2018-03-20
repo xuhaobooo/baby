@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text, FlatList,ScrollView} from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList,TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 
 import {forEach, map} from 'lodash'
@@ -10,6 +10,7 @@ import { Tabs, List, WhiteSpace } from 'antd-mobile'
 
 const Item = List.Item;
 const Brief = Item.Brief;
+var Platform = require('Platform'); 
 
 @connect(({ requirement }) => ({ ...requirement }))
 class MyTask extends Component {
@@ -75,6 +76,25 @@ class MyTask extends Component {
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' 23:59:59';
   }
 
+  generateStatus = (status) =>{
+    switch(status){
+      case 'NEW':
+        return '新'
+      case 'CONF':
+        return '确'
+      case 'ARRV':
+        return '达'
+      case 'PF':
+        return '完'
+      case 'CF':
+        return '验'
+      case 'AF':
+        return '结'
+      default:
+        return '错'
+    }
+  }
+
   componentDidMount = () => {
     const date = new Date()
     this.props.dispatch(createAction('requirement/queryMyTask')({
@@ -99,7 +119,20 @@ class MyTask extends Component {
           renderItem={({item})=><Item key={item.taskCode} style={item.taskStatus==='AF'?{backgroundColor:'#cfcfcf'}:{backgroundColor:'white'}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
-            thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"
+            thumb={
+              <View style={{alignItems:'center',marginRight:ScreenUtil.setSpText(10)}}>
+                <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(32),height:ScreenUtil.setSpText(32),
+                backgroundColor:'#336699',color:'#ffffff',alignContent:'center',
+                alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:Platform.OS === 'android'?0:ScreenUtil.setSpText(5)}}>
+                  <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>
+                    {this.generateStatus(item.taskStatus)}
+                  </Text>
+                </TouchableOpacity>
+                {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966'}}>已支付</Text>:
+                  <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000'}}>未支付</Text>
+                }
+              </View>
+            }
             multipleLine>
               {item.requireItems}
               <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>

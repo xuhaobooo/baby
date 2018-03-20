@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Button, InputItem, TextareaItem } from 'antd-mobile'
+import { Button, InputItem, TextareaItem, Modal } from 'antd-mobile'
 
 import { NavigationActions, createAction } from '../utils'
 import * as ScreenUtil from '../utils/ScreenUtil'
 
+const alert = Modal.alert
 @connect()
 class ApplyDetail extends Component {
   state = {}
@@ -29,12 +30,19 @@ class ApplyDetail extends Component {
   }
 
   selectApply = applyInfo => {
-    this.props.dispatch(
-      createAction('requirement/selectApply')({
-        applyId: applyInfo.id,
-        requireCode: applyInfo.requireCode,
-      })
-    )
+    alert('请确定', `是否选择${applyInfo.userName}?`, [
+      { text: '取消' },
+      {
+        text: '确定',
+        onPress: () => this.props.dispatch(
+          createAction('requirement/selectApply')({
+            applyId: applyInfo.id,
+            requireCode: applyInfo.requireCode,
+          })
+        ),
+      },
+    ]) 
+    
   }
 
   render() {

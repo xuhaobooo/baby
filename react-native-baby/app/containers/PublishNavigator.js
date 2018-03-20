@@ -171,8 +171,6 @@ class PublishRequire extends Component {
       startTime,
       endTime,
     })
-    this.props.dispatch(createAction('requirement/queryMyBaby')({
-    }))
 
     this.props.dispatch(createAction('requirement/queryTrustDict')({
     }))
@@ -277,9 +275,13 @@ class PublishRequire extends Component {
     
     const {serviceItems} = this.state
     const {myBabys, trustDict, serviceWithCatalog, position} = this.props
-    !this.state.babyCode && myBabys.length>0 && this.babyChanged([myBabys[0].babyCode])
+    if(!myBabys){
+      this.props.dispatch(createAction('requirement/queryMyBaby')({
+      }))
+    }
+    !this.state.babyCode && myBabys && myBabys.length>0 && this.babyChanged([myBabys[0].babyCode])
     !this.state.trustCode && trustDict && trustDict.length>0 && this.setState({trustCode:[trustDict[0].dicCode]})
-    const babyData=map(myBabys,(item)=>{return {value:item.babyCode,label:item.babyName}})
+    const babyData=myBabys && map(myBabys,(item)=>{return {value:item.babyCode,label:item.babyName}})
     const trustData = map(trustDict,(item)=>{return {value:item.dicCode,label:item.dicLabel}})
     
     return (

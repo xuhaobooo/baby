@@ -91,6 +91,25 @@ class MyRequire extends Component {
   getEndOfDate = (date) => {
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' 23:59:59';
   }
+  
+  generateStatus = (status) =>{
+    switch(status){
+      case 'NEW':
+        return '新'
+      case 'CONF':
+        return '确'
+      case 'ARRV':
+        return '达'
+      case 'PF':
+        return '完'
+      case 'CF':
+        return '验'
+      case 'AF':
+        return '结'
+      default:
+        return '错'
+    }
+  }
 
   componentDidMount = () => {
     const date = new Date()
@@ -121,7 +140,9 @@ class MyRequire extends Component {
                 <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(32),height:ScreenUtil.setSpText(32),
                 backgroundColor:'#336699',color:'#ffffff',alignContent:'center',
                 alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:Platform.OS === 'android'?0:ScreenUtil.setSpText(5)}}>
-                  <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>新</Text>
+                  <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>
+                    {this.generateStatus(item.requireStatus)}
+                  </Text>
                 </TouchableOpacity>
                 {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966'}}>已支付</Text>:
                   <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000'}}>未支付</Text>

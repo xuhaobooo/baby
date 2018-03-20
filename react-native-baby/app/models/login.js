@@ -65,6 +65,7 @@ export default {
     },
     *logout(action, { call, put }) {
       Storage.clear()
+      yield put(createAction('requirement/updateState')({ myBabys:null }))
       yield put(NavigationActions.navigate({ routeName: 'LoginNavigator' }))
     },
     *getCathcha({payload}, { call, put }) {
@@ -72,11 +73,13 @@ export default {
       Toast.info('验证码已通过短信发送，请查收',1)
     },
     *registUser({payload, callback}, { call, put }) {
-      console.log(payload)
       const registerInfo = yield call(authService.registUser, payload)
-      console.log(registerInfo)
       payload.userCode = registerInfo.userCode
       yield call(authService.addUserInfo, payload)
+      if(callback) callback()
+    },
+    *resetPassword({payload, callback}, { call, put }) {
+      yield call(authService.resetPassword, payload)
       if(callback) callback()
     },
   },

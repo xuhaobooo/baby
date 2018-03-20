@@ -18,6 +18,7 @@ import Loading from './containers/Loading'
 import Login from './containers/Login'
 import Register from './containers/Register'
 import ViewPermit from './containers/PermitView'
+import ForgetPassword from './containers/ForgetPassword'
 
 import Splash from './containers/Splash'
 import MyRequire from './containers/MyRequire'
@@ -75,6 +76,7 @@ const LoginNavigator = StackNavigator(
     Register: { screen: Register },
     ViewPermit: { screen: ViewPermit },
     RegisterBaiduMap: { screen: BaiduMapPage },
+    ForgetPassword: {screen: ForgetPassword},
   },
   {
     headerMode: 'float',

@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Button, InputItem, Text, Modal } from 'antd-mobile'
+import { Button, InputItem, Text, Modal,WhiteSpace } from 'antd-mobile'
 import { CompanySelector } from '../components'
 
 import { NavigationActions, createAction } from '../utils'
 import { map } from 'lodash'
 import * as ScreenUtil from '../utils/ScreenUtil'
+import Timeline from '../components/Timeline'
 
 const alert = Modal.alert
 
@@ -86,6 +87,26 @@ class TaskDetail extends Component {
             完成
           </Button>
         )
+        case 'PF':
+          return <Text>请等待用户确认</Text>
+          break
+        case 'CF':
+          return <Text>正在获取支付信息，请稍后在查看</Text>
+          break
+        case 'CC':
+          return <Text>订单已取消</Text>
+          break
+        case 'AF':
+          return (
+            <Button
+              type="primary"
+              style={styles.actionBtn}
+              onClick={() => this.comment()}
+            >
+              发表评论
+            </Button>
+          )
+          break
     }
   }
 
@@ -97,6 +118,7 @@ class TaskDetail extends Component {
     return (
       <View style={styles.container}>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={task.babyName}
           editable={false}
@@ -104,22 +126,23 @@ class TaskDetail extends Component {
           姓名：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={task.requireStartTime}
           editable={false}
         >
-          {' '}
           从：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={task.requireEndTime}
           editable={false}
         >
-          {' '}
           到：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={task.addrName}
           editable={false}
@@ -127,6 +150,7 @@ class TaskDetail extends Component {
           地点：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={task.requireItems}
           editable={false}
@@ -134,6 +158,7 @@ class TaskDetail extends Component {
           服务：
         </InputItem>
         <InputItem
+          labelNumber={5}
           style={styles.itemStyle}
           value={
             `${task.feeAmount}元` +
@@ -145,6 +170,10 @@ class TaskDetail extends Component {
         >
           总费用：
         </InputItem>
+        <WhiteSpace size="xs" />
+        <View style={{ flex: 6 }}>
+          <Timeline list={task ? task.stepList : []} />
+        </View>
         <View style={styles.actionStyle}>{this.renderAction(task)}</View>
       </View>
     )
