@@ -156,7 +156,7 @@ class Login extends Component {
               重置密码
             </Text>
           </View>
-          <WhiteSpace style={{ flex: 4, flexBasis: 0 }} />
+          <WhiteSpace style={{ flex: 3, flexBasis: 0 }} />
           <Picker
             style={styles.guest}
             data={guestData}

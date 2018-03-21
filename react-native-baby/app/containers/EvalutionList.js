@@ -1,27 +1,27 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text, FlatList, ImageBackground, TouchableOpacity} from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList,TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 
 import {forEach, map} from 'lodash'
 import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { NavigationActions, createAction } from '../utils'
-import { Tabs, List, WhiteSpace,Button } from 'antd-mobile'
+import { Tabs, List, WhiteSpace } from 'antd-mobile'
+var Platform = require('Platform'); 
 
 const Item = List.Item;
 const Brief = Item.Brief;
-var Platform = require('Platform'); 
 
 @connect(({ requirement }) => ({ ...requirement }))
-class MyRequire extends Component {
+class OrderNaigator extends Component {
 
   state = {
-    curTab : 0,
+    
   }
 
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的发布</Text>),
-    tabBarLabel: '需求',
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>附近的需求</Text>),
+    tabBarLabel: '接单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
@@ -35,54 +35,41 @@ class MyRequire extends Component {
   }
 
   onTabChange = (tab, index) => {
-    this.setState({
-      curTab:index
-    })
     const date = new Date()
     switch(index){
       case 0:
-        this.props.dispatch(createAction('requirement/queryMyRequire')({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
+        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
+          startTime:this.getStartOfDate(date),
+          endTime:this.getEndOfDate(date),
         }))
         break;
       case 1:
         date.setDate(date.getDate()+1);
-        this.props.dispatch(createAction('requirement/queryMyRequire')({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
+        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
+          startTime:this.getStartOfDate(date),
+          endTime:this.getEndOfDate(date),
         }))
         break;
       case 2:
-        date.setDate(date.getDate()+7);
-        this.props.dispatch(createAction('requirement/queryMyRequire')({
-          startDate:this.getStartOfDate(new Date()),
-          endDate:this.getEndOfDate(date),
-        }))
-        break;
-      case 3:
-        date.setDate(date.getMonth() - 1);
-        this.props.dispatch(createAction('requirement/queryMyRequire')({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getStartOfDate(new Date()),
+        date.setDate(date.getDate()+2);
+        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
+          startTime:this.getStartOfDate(date),
+          endTime:this.getEndOfDate(date),
         }))
         break;
       default:
          break;
     }
-    
   }
 
   onItemClick = (value) => {
-    this.props.dispatch(createAction('requirement/updateState')({ requirement:value }))
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'RequireDetail' }))
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'ApplyRequireDetail', params:{requirement:value} }))
   }
 
   tabs2 = [
     { title: '今天' },
     { title: '明天'},
-    { title: '一周內' },
-    { title: '前一月' },
+    { title: '后天' },
   ];
 
   getStartOfDate = (date) => {
@@ -92,47 +79,29 @@ class MyRequire extends Component {
   getEndOfDate = (date) => {
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' 23:59:59';
   }
-  
-  generateStatus = (status) =>{
-    switch(status){
-      case 'NEW':
-        return '新'
-      case 'CONF':
-        return '确'
-      case 'ARRV':
-        return '达'
-      case 'PF':
-        return '完'
-      case 'CF':
-        return '验'
-      case 'AF':
-        return '结'
-      default:
-        return '错'
-    }
-  }
 
   componentDidMount = () => {
     const date = new Date()
-    this.props.dispatch(createAction('requirement/queryMyRequire')({
-      startDate:this.getStartOfDate(date),
-      endDate:this.getEndOfDate(date),
+    this.props.dispatch(createAction('requirement/queryPendMyRequire')({
+      startTime:this.getStartOfDate(date),
+      endTime:this.getEndOfDate(date),
     }))
   }
 
   render() {
-    const {myRequireList} = this.props
+    const {pendRequireList} = this.props
+    
     return (
       <View style={{flex:1}}>
       <Tabs tabs={this.tabs2}
+        initialPage={0}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1,minHeight:ScreenUtil.setSpText(13)}}
+        style={{flex:1,minHeight:16}}
       />
         <View style={{flex:20}}>
-        <FlatList data={myRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
-          renderItem={({item})=><Item key={item.requireCode}
-            style={{paddingLeft:10,marginBottom:3}}
+        <FlatList data={pendRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
+          renderItem={({item})=><Item key={item.requireCode} style={item.applied?{backgroundColor:'#cfcfcf',marginBottom:3}:{backgroundColor:'white',marginBottom:3}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
             thumb={
@@ -141,15 +110,12 @@ class MyRequire extends Component {
                 backgroundColor:'#336699',color:'#ffffff',alignContent:'center',
                 alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:Platform.OS === 'android'?0:ScreenUtil.setSpText(5)}}>
                   <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>
-                    {this.generateStatus(item.requireStatus)}
+                    {item.applied ? '抢':'新'}
                   </Text>
                 </TouchableOpacity>
-                {item.paid?<Text style={{fontSize:ScreenUtil.setSpText(8),color:'#FF9966'}}>已支付</Text>:
-                  <Text style={{fontSize:ScreenUtil.setSpText(8),color:'#000000'}}>未支付</Text>
-                }
-              </View>    
+              </View>
             }
-            multipleLine> 
+            multipleLine>
               {map(item.items,(value) => value.itemName).join(',')}
               <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>
               <Brief>接单者:{item.companyName}</Brief>
@@ -182,4 +148,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default MyRequire
+export default OrderNaigator

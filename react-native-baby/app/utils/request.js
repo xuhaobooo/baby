@@ -119,6 +119,7 @@ export default function request(url, options) {
   let current
   let pageSize
 
+  console.log(url)
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(response => {

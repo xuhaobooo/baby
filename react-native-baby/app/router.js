@@ -26,6 +26,11 @@ import RequireDetail from './containers/RequireDetail'
 import ApplyDetail from './containers/ApplyDetail'
 import Account from './containers/Account'
 import Detail from './containers/Detail'
+import Balance from './containers/Balance'
+import MoneyFlow from './containers/MoneyFlow'
+import EvalutionList from './containers/EvalutionList'
+import ChangePassword from './containers/ChangePassword'
+import MoneyFlowDetail from './containers/MoneyFlowDetail'
 
 import OrderNaigator from './containers/OrderNaigator'
 import ApplyRequireDetail from './containers/ApplyRequireDetail'
@@ -61,6 +66,11 @@ const MainNavigator = StackNavigator(
     Detail: { screen: Detail },
     BaiduMapPage: { screen: BaiduMapPage },
     TaskDetail: { screen: TaskDetail },
+    Balance: {screen: Balance},
+    MoneyFlow: {screen: MoneyFlow},
+    EvalutionList: {screen: EvalutionList},
+    ChangePassword: {screen: ChangePassword},
+    MoneyFlowDetail:{screen:MoneyFlowDetail},
   },
   {
     headerMode: 'float',

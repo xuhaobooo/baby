@@ -17,7 +17,6 @@ export default {
     serviceWithCatalog: null,
     timePrice: null,
     position: null,
-    curTab: 0,
     myTaskList: [],
     task: null,
   },
@@ -28,10 +27,10 @@ export default {
   },
   effects: {
     *queryMyRequire({ payload }, { call, put }) {
+      yield delay(100)
       yield put(
         createAction('app/updateState')({
           fetching: true,
-          curTab: payload.curTab,
         })
       )
       yield put(createAction('updateState')({ myRequireList: [] }))
@@ -126,6 +125,8 @@ export default {
       }
     },
     *queryPendMyRequire({ payload }, { call, put }) {
+      yield delay(100)
+      yield put(createAction('updateState')({ pendRequireList:[] }))
       const pendRequireList = yield call(
         requireService.queryPendMyRequire,
         payload
@@ -152,6 +153,8 @@ export default {
       yield put(NavigationActions.back())
     },
     *queryMyTask({ payload }, { call, put }) {
+      yield delay(100)
+      yield put(createAction('updateState')({ myTaskList:[] }))
       const myTaskList = yield call(requireService.queryMyTask, payload)
       if (myTaskList) {
         yield put(createAction('updateState')({ myTaskList }))

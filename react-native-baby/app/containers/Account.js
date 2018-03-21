@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text } from 'react-native'
+import { StyleSheet, View, Image, Text,ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Button } from '../components'
 import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { createAction, NavigationActions } from '../utils'
+import { List,Button } from 'antd-mobile'
 
-@connect()
+const Item = List.Item
+const Brief = Item.Brief
+@connect(({ login }) => ({ ...login }))
 class Account extends Component {
   static navigationOptions = {
     headerTitle: (
@@ -32,19 +34,43 @@ class Account extends Component {
     ),
   }
 
-  gotoLogin = () => {
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'Login' }))
-  }
-
   logout = () => {
     this.props.dispatch(createAction('login/logout')())
   }
 
   render() {
-    const { login } = this.props
+    const { userInfo } = this.props
     return (
       <View style={styles.container}>
-        <Button text="Logout" onPress={this.logout} />
+        <View style={{flex:5}}>
+        <ImageBackground
+          source={require('../images/BG_daiwanchengv.png')}
+          style={{flex:1,width:'100%',alignItems:'center'}}
+        >
+          <Image style={{width:ScreenUtil.setSpText(120),height:ScreenUtil.setSpText(120),marginTop:30,borderRadius:ScreenUtil.setSpText(120)/2}} source={require('../images/DefaultAvatarx.png')}/>
+          <Text style={{fontSize:28,color:'#ffffff',height:ScreenUtil.setSpText(80),marginTop:10}}>{userInfo.userName}</Text>
+        </ImageBackground>
+          
+        </View>
+        <List style={{flex:4}}>
+            <Item key='tixian' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
+              提取余额
+              <Brief></Brief>
+            </Item>
+            <Item key='money' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
+              交易记录
+              <Brief></Brief>
+            </Item>
+            <Item key='money' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
+              评价记录
+              <Brief></Brief>
+            </Item>
+            <Item key='accountInfo' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
+              密码修改
+              <Brief></Brief>
+            </Item>
+        </List>
+        <Button type="primary" onClick={this.logout} style={{flex:1,margin:10}}>注销</Button>
       </View>
     )
   }
@@ -53,8 +79,8 @@ class Account extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'stretch',
+    //justifyContent: 'center',
   },
   icon: {
     width: ScreenUtil.setSpText(32),

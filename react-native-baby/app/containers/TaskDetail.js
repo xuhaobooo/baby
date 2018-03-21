@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity,Image } from 'react-native'
 import { connect } from 'react-redux'
 
 import { Button, InputItem, Text, Modal,WhiteSpace,Checkbox,TextareaItem,Toast } from 'antd-mobile'
@@ -30,7 +30,10 @@ class TaskDetail extends Component {
         任务详情
       </Text>
     ),
-    headerRight: <View />,
+    headerRight: <TouchableOpacity onPress={() => this.refresh()} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    <Image style={{width:ScreenUtil.setSpText(18),height:ScreenUtil.setSpText(18),paddingLeft:0,paddingRight:0,}} 
+      source={require('../images/map.png')} resizeMode='stretch' />
+    </TouchableOpacity>,
   }
 
   arrive = task => {
@@ -88,7 +91,18 @@ class TaskDetail extends Component {
           </Button>
         )
         case 'PF':
-          return <Text>请等待用户确认</Text>
+        return (
+          <View>
+          <Button
+            type="primary"
+            style={styles.actionBtn}
+            disabled={true}
+          >
+            发表评价
+          </Button>
+          <Text style={{textAlign:'center',color:'pink'}}>等待用户支付并确认后，您可进行评价</Text>
+          </View>
+        )
           break
         case 'CF':
           return <Text>正在获取支付信息，请稍后在查看</Text>
@@ -139,6 +153,16 @@ class TaskDetail extends Component {
             <Text>错误状态</Text>
           </View>)
     }
+  }
+
+  refresh =()=>{
+    const { navigation } = this.props
+    const task = navigation.state.params.task
+    this.props.dispatch(
+      createAction('requirement/findTaskByRequireCode')({
+        requireCode:task.requireCode,
+      })
+    )
   }
 
   comment = task => {
@@ -265,17 +289,15 @@ class TaskDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
-            `${task.feeAmount}元` +
-            `           ` +
-            `附加小费：` +
-            `   ${task.payMore}`
+            task.feeAmount + '元' + (task.paid ? '(已付)':'(未付)')+
+            '      ' + '附加小费：' +  task.payMore
           }
           editable={false}
         >
           总费用：
         </InputItem>
         <WhiteSpace size="xs" />
-        <View style={{ flex: 8 }}>
+        <View style={{ flex: 6 }}>
           <Timeline list={task ? task.stepList : []} />
         </View>
         <View style={styles.actionStyle}>{this.renderAction(task)}</View>
@@ -297,7 +319,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   actionStyle: {
-    flex: 7,
+    flex: 4,
     marginTop: 5,
     backgroundColor: 'white',
   },
