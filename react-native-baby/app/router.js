@@ -31,6 +31,7 @@ import MoneyFlow from './containers/MoneyFlow'
 import EvalutionList from './containers/EvalutionList'
 import ChangePassword from './containers/ChangePassword'
 import MoneyFlowDetail from './containers/MoneyFlowDetail'
+import EvalutionDetail from './containers/EvalutionDetail'
 
 import OrderNaigator from './containers/OrderNaigator'
 import ApplyRequireDetail from './containers/ApplyRequireDetail'
@@ -71,6 +72,7 @@ const MainNavigator = StackNavigator(
     EvalutionList: {screen: EvalutionList},
     ChangePassword: {screen: ChangePassword},
     MoneyFlowDetail:{screen:MoneyFlowDetail},
+    EvalutionDetail: {screen: EvalutionDetail},
   },
   {
     headerMode: 'float',
@@ -175,6 +177,7 @@ class Router extends PureComponent {
 
   backHandle = () => {
     const currentScreen = getCurrentScreen(this.props.router)
+    
     if (currentScreen === 'Login') {
       return true
     }
@@ -183,10 +186,26 @@ class Router extends PureComponent {
       return true
     }
 
-    if (currentScreen !== 'MyRequire') {
+    if (currentScreen === 'MyRequire') {
       return true
     }
-    return false
+
+    if (currentScreen === 'Account') {
+      return true
+    }
+
+    if (currentScreen === 'OrderNaigator') {
+      return true
+    }
+    if (currentScreen === 'MyTask') {
+      return true
+    }
+    if (currentScreen === 'PublishRequire') {
+      return true
+    }
+    //console.log(NavigationActions)
+    this.props.dispatch(NavigationActions.back())
+    return true
   }
 
   render() {

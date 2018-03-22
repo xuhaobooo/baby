@@ -10,8 +10,13 @@ export async function addEvalution(params) {
 }
 
 export async function findEvaByBcode(requireCode) {
-  console.log(requireCode)
   return request(`/babyEvaluate/findByRequireCode/${requireCode}`, {
+    method: 'GET',
+  })
+}
+
+export async function findMyEvalution() {
+  return request(`/babyEvaluate/findMine`, {
     method: 'GET',
   })
 }

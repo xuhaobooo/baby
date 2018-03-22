@@ -24,12 +24,9 @@ function checkStatus(response) {
   }
 
   const errortext = codeMessage[response.status] || response.statusText
-  notification.error({
-    message: `请求错误 ${response.status}: ${response.url}`,
-    description: errortext,
-  })
-  const error = new Error(errortext)
-  error.name = response.status
+
+  const error = "请求服务器失败"
+  error.name = "连接错误"
   error.response = response
   throw error
 }
@@ -138,10 +135,17 @@ export default function request(url, options) {
       })
       if (code === '10010000') {
         global.app._store.dispatch({
-          type:'login/logout',
+          type:'login/tokenLogin', 
           payload:{}
         })
       }
+      if (code === '10010002' || code === '10010004'||code === '10010005'||code === '10010006') {
+        global.app._store.dispatch({
+          type:'login/logout', 
+          payload:{}
+        })
+      }
+      
       const error = new Error(decodeURI(msg))
       error.name = code
       error.response = response

@@ -53,19 +53,19 @@ class Account extends Component {
           
         </View>
         <List style={{flex:4}}>
-            <Item key='tixian' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
+            <Item key='tixian' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
               提取余额
               <Brief></Brief>
             </Item>
-            <Item key='money' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
+            <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
               交易记录
               <Brief></Brief>
             </Item>
-            <Item key='money' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
+            <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
               评价记录
               <Brief></Brief>
             </Item>
-            <Item key='accountInfo' onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
+            <Item key='accountInfo' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
               密码修改
               <Brief></Brief>
             </Item>

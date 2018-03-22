@@ -14,10 +14,6 @@ export default {
     },
   },
   effects: {
-    *loadStorage(action, { call, put }) {
-      const login = yield call(Storage.get, 'login', false)
-      yield put(createAction('updateState')({ login, loading: false }))
-    },
     *login({ payload }, { call, put }) {
       yield put(createAction('app/updateState')({ fetching: true }))
 
@@ -46,12 +42,7 @@ export default {
         yield call(authService.wait, 1000)
         yield put(createAction('app/updateState')({ fetching: false }))
         yield put(
-          NavigationActions.reset({
-            index: 0,
-            actions: [
-              NavigationActions.navigate({ routeName: 'LoginNavigator' }),
-            ],
-          })
+          NavigationActions.navigate({ routeName: 'LoginNavigator' }),
         )
       }
     },
@@ -66,7 +57,8 @@ export default {
     *logout(action, { call, put }) {
       Storage.clear()
       yield put(createAction('requirement/updateState')({ myBabys:null }))
-      yield put(NavigationActions.navigate({ routeName: 'LoginNavigator' }))
+      yield put(
+        NavigationActions.navigate({ routeName: 'LoginNavigator' }))
     },
     *getCathcha({payload}, { call, put }) {
       yield call(authService.getCathcha, payload.mobile)
@@ -82,10 +74,13 @@ export default {
       yield call(authService.resetPassword, payload)
       if(callback) callback()
     },
+    *changePassword({payload, callback}, { call, put }) {
+      yield call(authService.changePassword, payload)
+      if(callback) callback()
+    },
   },
   subscriptions: {
     setup({ dispatch }) {
-      dispatch({ type: 'loadStorage' })
     },
   },
 }

@@ -5,6 +5,7 @@ export default {
   namespace: 'evalution',
   state: {
     EvaList: [],
+    myEvalutionList:[],
   },
   reducers: {
     updateState(state, { payload }) {
@@ -16,11 +17,15 @@ export default {
       yield call(evalutionService.addEvalution, payload)
       if (callback) callback()
     },
-    *findEvaByBcode({ payload, callback }, { call, put }) {
+    *findEvaByBcode({ payload }, { call, put }) {
       const EvaList = yield call(evalutionService.findEvaByBcode, payload.requireCode)
       yield put(createAction('updateState')({ EvaList }))
-      if (callback) callback()
     },
+    *findMyEvalution({ payload }, { call, put }) {
+      const myEvalutionList = yield call(evalutionService.findMyEvalution)
+      yield put(createAction('updateState')({ myEvalutionList }))
+    },
+
   },
   subscriptions: {
     setup({ dispatch }) {

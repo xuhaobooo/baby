@@ -30,7 +30,7 @@ class Login extends Component {
 
   onLogin = () => {
     if (this.state.mobileError || this.state.passwordError) {
-      Toast.info('请输入正确的账号密码')
+      Toast.info('请输入正确的账号密码',1)
       return
     }
     this.props.dispatch(

@@ -1,5 +1,6 @@
 import { createAction, NavigationActions, Storage } from '../utils'
 import * as authService from '../services/auth'
+import * as updateService from '../services/update'
 
 export default {
   namespace: 'app',
@@ -9,6 +10,8 @@ export default {
     fetching: false,
     windowHeight: null,
     windowWidth: null,
+    updateFlag:false,
+    originVersion:6,
   },
   reducers: {
     updateState(state, { payload }) {
@@ -16,32 +19,19 @@ export default {
     },
   },
   effects: {
-    *loadStorage(action, { call, put }) {
-      const login = yield call(Storage.get, 'login', false)
-      yield put(createAction('updateState')({ login, loading: false }))
-    },
-    *login({ payload }, { call, put }) {
-      yield put(createAction('updateState')({ fetching: true }))
-      const login = yield call(authService.login, payload)
-      if (login) {
-        yield put(
-          NavigationActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Main' })],
-          })
-        )
+
+    *getLastVersion({payload,callback}, { select, call, put }) {
+      const originVersion = yield select(state => state.app.originVersion)
+      const versionCode = yield call(updateService.getLastVersion)
+      if(versionCode && originVersion < versionCode){
+        yield put(createAction('updateState')({ updateFlag: true }))
       }
-      yield put(createAction('updateState')({ login, fetching: false }))
-      Storage.set('login', login)
-    },
-    *logout(action, { call, put }) {
-      yield call(Storage.set, 'login', false)
-      yield put(createAction('updateState')({ login: false }))
+      if(callback) callback()
     },
   },
   subscriptions: {
     setup({ dispatch }) {
-      dispatch({ type: 'loadStorage' })
+      dispatch({ type: 'getLastVersion' })
     },
   },
 }

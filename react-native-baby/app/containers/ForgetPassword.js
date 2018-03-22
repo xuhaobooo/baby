@@ -54,7 +54,6 @@ class ForgetPassword extends Component {
   }
 
   resetPassword = () => {
-      const {position} = this.props
       if (this.state.mobileError || !this.state.mobile) {
         Toast.info('请输入11位的手机号码',1)
         return
@@ -274,7 +273,7 @@ class ForgetPassword extends Component {
           />
 
           <WhiteSpace />
-          <Button style={styles.registerBtn} onClick={this.resetPassword} type="primary">注册</Button>
+          <Button style={styles.registerBtn} onClick={this.resetPassword} type="primary">确定重置</Button>
         </View>
       </KeyboardAwareScrollView>
     )

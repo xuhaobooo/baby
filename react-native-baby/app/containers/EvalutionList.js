@@ -12,7 +12,7 @@ var Platform = require('Platform');
 const Item = List.Item;
 const Brief = Item.Brief;
 
-@connect(({ requirement }) => ({ ...requirement }))
+@connect(({ evalution }) => ({ ...evalution }))
 class OrderNaigator extends Component {
 
   state = {
@@ -20,41 +20,41 @@ class OrderNaigator extends Component {
   }
 
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>附近的需求</Text>),
-    tabBarLabel: '接单',
-    tabBarIcon: ({ focused, tintColor }) => (
-      <Image
-        style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/house.png')}
-      />
+    headerTitle: (
+      <Text
+        style={{ fontSize: ScreenUtil.setSpText(20), alignSelf: 'center', textAlign: 'center', flex: 1,color: '#FF6600',
+        }}
+      >评价记录</Text>
     ),
+    headerRight: <View />,
   }
 
-  gotoDetail = () => {
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'Detail' }))
+  gotoDetail = (value) => {
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'Detail',params:{evalutionInfo:value} }))
   }
 
   onTabChange = (tab, index) => {
     const date = new Date()
     switch(index){
       case 0:
-        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
-          startTime:this.getStartOfDate(date),
-          endTime:this.getEndOfDate(date),
+        date.setDate(date.getDate()-3);
+        this.props.dispatch(createAction('evalution/findMyEvalution')({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getEndOfDate(new Date()),
         }))
         break;
       case 1:
-        date.setDate(date.getDate()+1);
-        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
-          startTime:this.getStartOfDate(date),
-          endTime:this.getEndOfDate(date),
+        date.setDate(date.getDate()-7);
+        this.props.dispatch(createAction('evalution/findMyEvalution')({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getEndOfDate(new Date()),
         }))
         break;
       case 2:
-        date.setDate(date.getDate()+2);
-        this.props.dispatch(createAction('requirement/queryPendMyRequire')({
-          startTime:this.getStartOfDate(date),
-          endTime:this.getEndOfDate(date),
+        date.setDate(date.getMonth() - 1);
+        this.props.dispatch(createAction('evalution/findMyEvalution')({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getEndOfDate(new Date()),
         }))
         break;
       default:
@@ -63,13 +63,13 @@ class OrderNaigator extends Component {
   }
 
   onItemClick = (value) => {
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'ApplyRequireDetail', params:{requirement:value} }))
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionDetail', params:{evalutionInfo:value} }))
   }
 
   tabs2 = [
-    { title: '今天' },
-    { title: '明天'},
-    { title: '后天' },
+    { title: '近三天' },
+    { title: '一周内'},
+    { title: '一月内' },
   ];
 
   getStartOfDate = (date) => {
@@ -82,14 +82,15 @@ class OrderNaigator extends Component {
 
   componentDidMount = () => {
     const date = new Date()
-    this.props.dispatch(createAction('requirement/queryPendMyRequire')({
-      startTime:this.getStartOfDate(date),
-      endTime:this.getEndOfDate(date),
+    date.setDate(date.getDate()+3);
+    this.props.dispatch(createAction('evalution/findMyEvalution')({
+      startDate:this.getStartOfDate(new Date),
+      endDate:this.getEndOfDate(date),
     }))
   }
 
   render() {
-    const {pendRequireList} = this.props
+    const {myEvalutionList} = this.props
     
     return (
       <View style={{flex:1}}>
@@ -100,8 +101,8 @@ class OrderNaigator extends Component {
         style={{flex:1,minHeight:16}}
       />
         <View style={{flex:20}}>
-        <FlatList data={pendRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
-          renderItem={({item})=><Item key={item.requireCode} style={item.applied?{backgroundColor:'#cfcfcf',marginBottom:3}:{backgroundColor:'white',marginBottom:3}}
+        <FlatList data={myEvalutionList} extraData={this.state} keyExtractor={(item, index) => 'list'+item.id} 
+          renderItem={({item})=><Item key={'item'+item.id} style={{marginBottom:3}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
             thumb={
@@ -110,15 +111,16 @@ class OrderNaigator extends Component {
                 backgroundColor:'#336699',color:'#ffffff',alignContent:'center',
                 alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:Platform.OS === 'android'?0:ScreenUtil.setSpText(5)}}>
                   <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>
-                    {item.applied ? '抢':'新'}
+                    {item.level === 'LOW' ? '差' : item.level ==='MID' ? '中' : '好'}
                   </Text>
                 </TouchableOpacity>
               </View>
             }
             multipleLine>
               {map(item.items,(value) => value.itemName).join(',')}
-              <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>
-              <Brief>接单者:{item.companyName}</Brief>
+              <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex==='M'?'男':'女'}</Brief>
+              <Brief>开始时间:{item.requireStartTime}</Brief>
+              <Brief>{item.notes}</Brief>
             </Item>}>
           </FlatList>
           </View>

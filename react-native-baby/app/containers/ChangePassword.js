@@ -26,14 +26,12 @@ import * as ScreenUtil from '../utils/ScreenUtil'
 class ForgetPassword extends Component {
 
   state = {
-    mobileError: false,
-    mobile: null,
     passwordError: false,
     password: null,
     passwordConfError:false,
     passwordConf:null,
-    cathcha: null,
-    cathchaError: false,
+    oldPasswordError: false,
+    oldPassword: null,
   }
 
   static navigationOptions = {
@@ -47,23 +45,17 @@ class ForgetPassword extends Component {
           color: '#FF6600',
         }}
       >
-        重置密码
+        修改密码
       </Text>
     ),
     headerRight: <View />,
   }
 
-  resetPassword = () => {
-      const {position} = this.props
-      if (this.state.mobileError || !this.state.mobile) {
-        Toast.info('请输入11位的手机号码',1)
+  changePassword = () => {
+      if (this.state.oldPasswordError || !this.state.oldPassword) {
+        Toast.info('请输入6位以上的旧密码',1)
         return
       }
-      if (this.state.cathchaError || !this.state.cathcha) {
-        Toast.info('请输入六位验证码',1)
-        return
-      }
-      
       if (this.state.passwordError || !this.state.password) {
         Toast.info('请输入6位以上的密码',1)
         return
@@ -74,11 +66,10 @@ class ForgetPassword extends Component {
       }
     
     this.props.dispatch({
-        type:'login/resetPassword',
+        type:'login/changePassword',
         payload:{
-        loginName: this.state.mobile.replace(/\s/g, ''),
-        captcha:this.state.cathcha,
-        password: this.state.password,
+          orderPassword: this.state.oldPassword,
+          newPassword: this.state.password,
         },
         callback: this.afterResetPassword
       }
@@ -86,41 +77,23 @@ class ForgetPassword extends Component {
   }
 
   afterResetPassword =() => {
-    Toast.info('密码重置成功',1)
+    Toast.info('密码修改成功',1)
     this.props.dispatch(NavigationActions.back())
   }
 
-  cancel = () => {
-    this.props.dispatch(NavigationActions.back())
-  }
-
-  onMobileChange = value => {
-    if (value.replace(/\s/g, '').length !== 11) {
+  onOldPasswordChange = value => {
+    if (value.replace(/\s/g, '').length < 6) {
       this.setState({
-        mobileError: true,
+        oldPasswordError: true,
       })
     } else {
       this.setState({
-        mobileError: false,
+        oldPasswordError: false,
       })
     }
+    
     this.setState({
-      mobile: value,
-    })
-  }
-
-  onCathchaChange = (value) => {
-    if (value.replace(/\s/g, '').length !== 6) {
-      this.setState({
-        cathchaError: true,
-      })
-    }else{
-      this.setState({
-        cathchaError: false,
-      })
-    }
-    this.setState({
-      cathcha: value,
+      oldPassword: value,
     })
   }
 
@@ -172,37 +145,8 @@ class ForgetPassword extends Component {
     })
   }
 
-  getCathcha = () => {
-  
-    if (this.state.mobile && this.state.mobile.replace(/\s/g, '').length === 11) {
-      this.props.dispatch(
-        createAction('login/getCathcha')({
-          mobile: this.state.mobile.replace(/\s/g, ''),
-        })      
-      )
-      this.setState({
-        cathchaTime:30
-      })
-      this.state.timer = setInterval(  
-        () => {
-          if(this.state.cathchaTime === 0){
-            clearInterval(this.timer);
-            return
-          }
-          this.setState({cathchaTime:this.state.cathchaTime-1})
-        },  
-        1000 
-      );
-    } else {
-      Toast.info('请输入正确的手机号码',1)
-    }
-    
-  }
-
   componentWillUnmount() {  
-    // 如果存在this.timer，则使用clearTimeout清空。  
-    // 如果你使用多个timer，那么用多个变量，或者用个数组来保存引用，然后逐个clear  
-    this.state.timer && clearInterval(this.state.timer);  
+
   }  
 
   render() {
@@ -218,47 +162,22 @@ class ForgetPassword extends Component {
             alignItems: 'stretch',
             justifyContent: 'flex-start',
             backgroundColor: 'white',
-            height: windowHeight - ScreenUtil.setSpText(42),
           }}
         >
-          {fetching && <ActivityIndicator style={styles.indecator} />}
           <WhiteSpace />
-          <InputItem
-            type="phone"
-            placeholder="手机号码(登录账号)"
-            error={this.state.mobileError}
-            value={this.state.mobile}
-            onChange={this.onMobileChange}
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              width: '100%',
-              height: 40,
-            }}
-          >
-            <View style={{ flex: 8, backgroundColor: 'white' }}>
-              <InputItem
-                type="number"
-                placeholder="手机验证码"
-                error={this.state.cathchaError}
-                value={this.state.cathcha}
-                maxLength={6}
-                onChange={this.onCathchaChange}
-                style={{height: '100%'}}
-              />
-            </View>
-              <Button type={this.state.cathchaTime >0 ? 'ghost':'primary'} disabled={this.state.cathchaTime >0} onClick={this.getCathcha} style={{height:'80%',marginRight:10}}>
-              {this.state.cathchaTime >0 ? this.state.cathchaTime : '获取'}
-              </Button>
-          </View>
 
           <InputItem
             type="password"
-            placeholder="密码"
+            placeholder="旧密码"
+            maxLength={30}
+            error={this.state.oldPasswordError}
+            value={this.state.oldPassword}
+            onChange={this.onOldPasswordChange}
+          />
+      
+          <InputItem
+            type="password"
+            placeholder="新密码"
             maxLength={30}
             error={this.state.passwordError}
             value={this.state.password}
@@ -274,7 +193,7 @@ class ForgetPassword extends Component {
           />
 
           <WhiteSpace />
-          <Button style={styles.registerBtn} onClick={this.resetPassword} type="primary">注册</Button>
+          <Button style={styles.registerBtn} onClick={this.changePassword} type="primary">确定修改</Button>
         </View>
       </KeyboardAwareScrollView>
     )

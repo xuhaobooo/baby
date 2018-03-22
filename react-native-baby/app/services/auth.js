@@ -58,6 +58,13 @@ export async function resetPassword(params) {
   })
 }
 
+export async function changePassword(params) {
+  return request(`/user/changePassword?${stringify(params)}`, {
+    method: 'PATCH',
+    body: params
+  })
+}
+
 export const wait = async time => {
   await delay(time)
 }
