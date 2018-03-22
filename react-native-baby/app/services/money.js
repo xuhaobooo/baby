@@ -16,7 +16,7 @@ export async function myBalance(params) {
 }
 
 export async function myMoneyFlow(params) {
-  return request(`/money/findMine`, {
+  return request(`/money/findMine?${stringify(params)}`, {
     method: 'GET',
   })
 }

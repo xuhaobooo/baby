@@ -39,21 +39,21 @@ class OrderNaigator extends Component {
       case 0:
         date.setDate(date.getDate()-3);
         this.props.dispatch(createAction('money/myMoneyFlow')({
-          getStartOfDate:this.getStartOfDate(date),
+          startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(new Date()),
         }))
         break;
       case 1:
         date.setDate(date.getDate()-7);
         this.props.dispatch(createAction('money/myMoneyFlow')({
-          getStartOfDate:this.getStartOfDate(date),
+          startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(new Date()),
         }))
         break;
       case 2:
         date.setDate(date.getMonth() - 1);
         this.props.dispatch(createAction('money/myMoneyFlow')({
-          getStartOfDate:this.getStartOfDate(date),
+          startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(new Date()),
         }))
         break;
@@ -111,11 +111,11 @@ class OrderNaigator extends Component {
 
   componentDidMount = () => {
     const date = new Date()
-    date.setDate(date.getDate()+3);
-    this.props.dispatch(createAction('money/myMoneyFlow')({
-      getStartOfDate:this.getStartOfDate(new Date),
-      endDate:this.getEndOfDate(date),
-    }))
+    date.setDate(date.getDate()-3);
+      this.props.dispatch(createAction('money/myMoneyFlow')({
+        startDate:this.getStartOfDate(date),
+        endDate:this.getEndOfDate(new Date()),
+      }))
   }
 
   render() {

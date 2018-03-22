@@ -15,6 +15,12 @@ const operation = Modal.operation
 
 @connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
 class RequireDetail extends Component {
+
+  constructor(props){
+    super(props)
+    _this = this
+  }
+
   state = {showAddModal:false,level:null,evalution:null}
 
   static navigationOptions = {
@@ -31,7 +37,10 @@ class RequireDetail extends Component {
         需求详情
       </Text>
     ),
-    headerRight: <View />,
+    headerRight: <TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+      source={require('../images/refresh.png')} resizeMode='stretch' />
+    </TouchableOpacity>,
   }
 
   selectCompany = value => {
@@ -262,6 +271,23 @@ class RequireDetail extends Component {
     )
   }
 
+  refresh =()=>{
+    const { requirement } = this.props.requirement
+    if(requirement){
+      this.props.dispatch(
+        createAction('requirement/findRequire')({
+          requireCode:requirement.requireCode,
+        })
+      )
+      this.props.dispatch(
+        createAction('requirement/findTaskByRequireCode')({
+          requireCode:requirement.requireCode,
+        })
+      )
+    } 
+    
+  }
+
   componentDidMount = () => {
     const { requirement } = this.props.requirement
     if (requirement.requireStatus === 'NEW') {
@@ -299,19 +325,20 @@ class RequireDetail extends Component {
         >
           <WhiteSpace/>
           <View style={{flexDirection: 'row',borderBottomWidth:1,borderBottomColor:'#eaeaea'}}>
-            <View style={{flex:1,alignItems:'center'}}><Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+            <View style={{flex:1,alignItems:'center'}}>
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='low' 
               onChange={(e)=>this.setState({level:'LOW'})} checked={this.state.level==='LOW'}>
               <Text>差评</Text>
             </Checkbox>
             </View>
             <View style={{flex:1,alignItems:'center'}}>
-            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='mid' 
               onChange={(e)=>this.setState({level:'MID'})} checked={this.state.level==='MID'}>
               <Text>中评</Text>
             </Checkbox>
             </View>
             <View style={{flex:1,alignItems:'center'}}>
-            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key={requirement.requireCode} 
+            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='high' 
               onChange={(e)=>this.setState({level:'HIGH'})} checked={this.state.level==='HIGH'}>
               <Text>好评</Text>
             </Checkbox>
@@ -330,7 +357,7 @@ class RequireDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={requirement.babyName}
+          value={requirement && requirement.babyName}
           editable={false}
         >
           姓 名：
@@ -338,7 +365,7 @@ class RequireDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={requirement.startTime}
+          value={requirement && requirement.startTime}
           editable={false}
         >
           从：
@@ -346,7 +373,7 @@ class RequireDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={requirement.endTime}
+          value={requirement && requirement.endTime}
           editable={false}
         >
           到：
@@ -354,7 +381,7 @@ class RequireDetail extends Component {
         <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(31)}}>
           <View style={{flex:8}}>
             <InputItem labelNumber={5} style={{flex:8,backgroundColor:'#ffffff',height:'99%',marginLeft: 0,paddingLeft:20,}} 
-              value={requirement.addrName} editable={false}>地    点</InputItem>
+              value={requirement && requirement.addrName} editable={false}>地    点</InputItem>
           </View>
 
           <TouchableOpacity onPress={() => this.showBaiduMap(requirement)}>
@@ -366,7 +393,7 @@ class RequireDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={map(requirement.items, value => value.itemName).join(',')}
+          value={requirement && map(requirement.items, value => value.itemName).join(',')}
           editable={false}
         >
           服务：
@@ -375,8 +402,9 @@ class RequireDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
+            requirement && (
             requirement.feeAmount + '元' + (requirement.paid ? '(已付)':'(未付)')+
-            '      ' + '附加小费：' +  requirement.payMore
+            '      ' + '附加小费：' +  requirement.payMore )
           }
           editable={false}
         >
@@ -384,7 +412,7 @@ class RequireDetail extends Component {
         </InputItem>
         <WhiteSpace size="xs" />
         <View style={styles.actionStyle}>
-          {requirement.requireStatus === 'NEW' ? (
+          {requirement && (requirement.requireStatus === 'NEW' ? (
             <CompanySelector list={applies} clickHandle={this.selectCompany}>
               客户
             </CompanySelector>
@@ -413,7 +441,7 @@ class RequireDetail extends Component {
               <WhiteSpace size="xs" />
               {task && this.renderAction(task)}
             </View>
-          )}
+          ))}
         </View>
       </View>
     )

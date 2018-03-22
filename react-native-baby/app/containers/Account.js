@@ -42,7 +42,7 @@ class Account extends Component {
     const { userInfo } = this.props
     return (
       <View style={styles.container}>
-        <View style={{flex:5}}>
+        <View style={{flex:6}}>
         <ImageBackground
           source={require('../images/BG_daiwanchengv.png')}
           style={{flex:1,width:'100%',alignItems:'center'}}
@@ -52,24 +52,22 @@ class Account extends Component {
         </ImageBackground>
           
         </View>
-        <List style={{flex:4}}>
+        <View style={{flex:6}}>
+        <List >
             <Item key='tixian' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
               提取余额
-              <Brief></Brief>
             </Item>
             <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
               交易记录
-              <Brief></Brief>
             </Item>
             <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
               评价记录
-              <Brief></Brief>
             </Item>
             <Item key='accountInfo' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
               密码修改
-              <Brief></Brief>
             </Item>
         </List>
+        </View>
         <Button type="primary" onClick={this.logout} style={{flex:1,margin:10}}>注销</Button>
       </View>
     )

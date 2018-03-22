@@ -14,6 +14,12 @@ const alert = Modal.alert
 
 @connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
 class TaskDetail extends Component {
+
+  constructor(props){
+    super(props)
+    _this = this
+  }
+
   state = {showAddModal:false,level:null,evalution:null}
 
   static navigationOptions = {
@@ -30,9 +36,9 @@ class TaskDetail extends Component {
         任务详情
       </Text>
     ),
-    headerRight: <TouchableOpacity onPress={() => this.refresh()} style={{marginRight:ScreenUtil.setSpText(10)}}>
-    <Image style={{width:ScreenUtil.setSpText(18),height:ScreenUtil.setSpText(18),paddingLeft:0,paddingRight:0,}} 
-      source={require('../images/map.png')} resizeMode='stretch' />
+    headerRight: <TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+      source={require('../images/refresh.png')} resizeMode='stretch' />
     </TouchableOpacity>,
   }
 
@@ -53,6 +59,7 @@ class TaskDetail extends Component {
   }
 
   renderAction = task => {
+    if(task){
     switch (task.taskStatus) {
       case 'CONF':
         return (
@@ -152,17 +159,17 @@ class TaskDetail extends Component {
           return (<View style={{heigth:50}}>
             <Text>错误状态</Text>
           </View>)
-    }
+    }}
   }
 
   refresh =()=>{
-    const { navigation } = this.props
-    const task = navigation.state.params.task
+    const { task } = this.props.requirement
     this.props.dispatch(
       createAction('requirement/findTaskByRequireCode')({
         requireCode:task.requireCode,
       })
     )
+    
   }
 
   comment = task => {
@@ -170,8 +177,7 @@ class TaskDetail extends Component {
   }
 
   addEvalution = () => {
-    const { navigation } = this.props
-    const task = navigation.state.params.task
+    const { task } = this.props.requirement
     this.props.dispatch({
       type:'evalution/addEvalution',
       payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:task.sendUserCode,
@@ -188,8 +194,7 @@ class TaskDetail extends Component {
   }
 
   findEvalution = () =>{
-    const { navigation } = this.props
-    const task = navigation.state.params.task
+    const { task } = this.props.requirement
     this.props.dispatch(
       createAction('evalution/findEvaByBcode')({
         requireCode: task.requireCode
@@ -198,12 +203,12 @@ class TaskDetail extends Component {
   }
 
   componentDidMount = () => {
-    this.findEvalution()
+    this.findEvalution()  
   }
 
   render() {
-    const { navigation } = this.props
-    const task = navigation.state.params.task
+    var { task } = this.props.requirement
+  
     return (
       <View style={styles.container}>
         <Modal
@@ -248,7 +253,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task.babyName}
+          value={task && task.babyName}
           editable={false}
         >
           姓名：
@@ -256,7 +261,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task.requireStartTime}
+          value={task && task.requireStartTime}
           editable={false}
         >
           从：
@@ -264,7 +269,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task.requireEndTime}
+          value={task && task.requireEndTime}
           editable={false}
         >
           到：
@@ -272,7 +277,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task.addrName}
+          value={task && task.addrName}
           editable={false}
         >
           地点：
@@ -280,7 +285,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task.requireItems}
+          value={task && task.requireItems}
           editable={false}
         >
           服务：
@@ -289,8 +294,8 @@ class TaskDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
-            task.feeAmount + '元' + (task.paid ? '(已付)':'(未付)')+
-            '      ' + '附加小费：' +  task.payMore
+            task && (task.feeAmount + '元' + (task.paid ? '(已付)':'(未付)')+
+            '      ' + '附加小费：' +  task.payMore)
           }
           editable={false}
         >

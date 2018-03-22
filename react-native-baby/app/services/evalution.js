@@ -15,8 +15,8 @@ export async function findEvaByBcode(requireCode) {
   })
 }
 
-export async function findMyEvalution() {
-  return request(`/babyEvaluate/findMine`, {
+export async function findMyEvalution(params) {
+  return request(`/babyEvaluate/findMine?${stringify(params)}`, {
     method: 'GET',
   })
 }

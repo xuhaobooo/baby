@@ -59,7 +59,7 @@ export async function resetPassword(params) {
 }
 
 export async function changePassword(params) {
-  return request(`/user/changePassword?${stringify(params)}`, {
+  return request(`/user/changePassword`, {
     method: 'PATCH',
     body: params
   })

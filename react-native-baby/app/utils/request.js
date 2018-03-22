@@ -107,7 +107,8 @@ export default function request(url, options) {
   }
 
   if (!startsWith(url, '/api')) {
-    url = `http://www.co-mama.cn/bgms${url}`
+    //url = `http://www.co-mama.cn/bgms${url}`
+    url = `http://192.168.1.192:8080/bgms${url}`
   }
 
   let code
@@ -138,12 +139,14 @@ export default function request(url, options) {
           type:'login/tokenLogin', 
           payload:{}
         })
+        return
       }
       if (code === '10010002' || code === '10010004'||code === '10010005'||code === '10010006') {
         global.app._store.dispatch({
           type:'login/logout', 
           payload:{}
         })
+        return
       }
       
       const error = new Error(decodeURI(msg))

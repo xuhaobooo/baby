@@ -59,6 +59,7 @@ class MyTask extends Component {
   }
 
   onItemClick = (value) => {
+    this.props.dispatch(createAction('requirement/updateState')({ task:value }))
     this.props.dispatch(NavigationActions.navigate({ routeName: 'TaskDetail', params:{task:value} }))
   }
 

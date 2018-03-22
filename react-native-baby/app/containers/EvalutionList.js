@@ -82,11 +82,11 @@ class OrderNaigator extends Component {
 
   componentDidMount = () => {
     const date = new Date()
-    date.setDate(date.getDate()+3);
-    this.props.dispatch(createAction('evalution/findMyEvalution')({
-      startDate:this.getStartOfDate(new Date),
-      endDate:this.getEndOfDate(date),
-    }))
+    date.setDate(date.getDate()-3);
+      this.props.dispatch(createAction('evalution/findMyEvalution')({
+        startDate:this.getStartOfDate(date),
+        endDate:this.getEndOfDate(new Date()),
+      }))
   }
 
   render() {

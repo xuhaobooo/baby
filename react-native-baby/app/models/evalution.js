@@ -22,7 +22,7 @@ export default {
       yield put(createAction('updateState')({ EvaList }))
     },
     *findMyEvalution({ payload }, { call, put }) {
-      const myEvalutionList = yield call(evalutionService.findMyEvalution)
+      const myEvalutionList = yield call(evalutionService.findMyEvalution, payload)
       yield put(createAction('updateState')({ myEvalutionList }))
     },
 
