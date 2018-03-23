@@ -7,6 +7,7 @@ export default {
   state: {
     userInfo: null,
     position: null,
+    websocket:null,
   },
   reducers: {
     updateState(state, { payload }) {
@@ -50,6 +51,24 @@ export default {
       const { userCode } = payload
       const userInfo = yield call(authService.getUserInfo, userCode)
       if (userInfo) {
+        setTimeout(()=>{
+          var websocket = new WebSocket("ws://10.2.10.116:8090/bgms/ws");
+        
+        //连接成功建立的回调方法
+        websocket.onopen = (event) =>{
+          console.log('已连接')
+          websocket.send('sadfasdf')
+        }
+
+        websocket.onmessage =(msg) => {
+          this.setState({word: msg});
+        }
+        websocket.onclose = (e) => {
+          // 这里会出现 1001 "Stream end encountered" 错误
+          console.log(e.code, e.reason);
+        }
+        },2000)
+        
         yield put(createAction('updateState')({ userInfo }))
         yield put(NavigationActions.navigate({ routeName: 'Main' }))
       }
