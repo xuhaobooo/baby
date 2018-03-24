@@ -28,6 +28,19 @@ export default {
       }
       if(callback) callback()
     },
+    *updateApply({payload}, { call, put }){
+      yield put(createAction('requirement/findRequire')({ requireCode:payload.value }))
+      yield put(NavigationActions.navigate({ routeName: 'RequireDetail' }))
+      
+    },
+    *updateSelect({payload}, { call, put }){
+      yield put(createAction('requirement/findTaskByTaskCode')({ taskCode:payload.value }))
+      yield put(NavigationActions.navigate({ routeName: 'TaskDetail' }))
+    },
+    *updatePay({payload}, { call, put }){
+      yield put(createAction('requirement/findTaskByTaskCode')({ taskCode:payload.value }))
+      yield put(NavigationActions.navigate({ routeName: 'TaskDetail' }))
+    },
   },
   subscriptions: {
     setup({ dispatch }) {

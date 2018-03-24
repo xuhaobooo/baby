@@ -163,10 +163,10 @@ class TaskDetail extends Component {
   }
 
   refresh =()=>{
-    const { task } = this.props.requirement
+    const { taskDetail } = this.props.requirement
     this.props.dispatch(
-      createAction('requirement/findTaskByRequireCode')({
-        requireCode:task.requireCode,
+      createAction('requirement/findTaskByTaskCode')({
+        taskCode:taskDetail.taskCode,
       })
     )
     
@@ -177,11 +177,11 @@ class TaskDetail extends Component {
   }
 
   addEvalution = () => {
-    const { task } = this.props.requirement
+    const { taskDetail } = this.props.requirement
     this.props.dispatch({
       type:'evalution/addEvalution',
       payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:task.sendUserCode,
-        requireCode:task.requireCode,sendUserCode:task.getUserCode},
+        requireCode:taskDetail.requireCode,sendUserCode:taskDetail.getUserCode},
       callback:this.afterEvalutionAdd
       }
     )
@@ -194,12 +194,14 @@ class TaskDetail extends Component {
   }
 
   findEvalution = () =>{
-    const { task } = this.props.requirement
-    this.props.dispatch(
-      createAction('evalution/findEvaByBcode')({
-        requireCode: task.requireCode
-      })
-    )
+    const { taskDetail } = this.props.requirement
+    if(taskDetail && taskDetail.taskStatus === 'AF'){
+      this.props.dispatch(
+        createAction('evalution/findEvaByBcode')({
+          requireCode: taskDetail.requireCode
+        })
+      )
+    }
   }
 
   componentDidMount = () => {
@@ -207,7 +209,7 @@ class TaskDetail extends Component {
   }
 
   render() {
-    var { task } = this.props.requirement
+    var { taskDetail } = this.props.requirement
   
     return (
       <View style={styles.container}>
@@ -253,7 +255,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task && task.babyName}
+          value={taskDetail && taskDetail.babyName}
           editable={false}
         >
           姓名：
@@ -261,7 +263,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task && task.requireStartTime}
+          value={taskDetail && taskDetail.requireStartTime}
           editable={false}
         >
           从：
@@ -269,7 +271,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task && task.requireEndTime}
+          value={taskDetail && taskDetail.requireEndTime}
           editable={false}
         >
           到：
@@ -277,7 +279,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task && task.addrName}
+          value={taskDetail && taskDetail.addrName}
           editable={false}
         >
           地点：
@@ -285,7 +287,7 @@ class TaskDetail extends Component {
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
-          value={task && task.requireItems}
+          value={taskDetail && taskDetail.requireItems}
           editable={false}
         >
           服务：
@@ -294,8 +296,8 @@ class TaskDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
-            task && (task.feeAmount + '元' + (task.paid ? '(已付)':'(未付)')+
-            '      ' + '附加小费：' +  task.payMore)
+            taskDetail && (taskDetail.feeAmount + '元' + (taskDetail.paid ? '(已付)':'(未付)')+
+            '      ' + '附加小费：' +  taskDetail.payMore)
           }
           editable={false}
         >
@@ -303,9 +305,9 @@ class TaskDetail extends Component {
         </InputItem>
         <WhiteSpace size="xs" />
         <View style={{ flex: 6 }}>
-          <Timeline list={task ? task.stepList : []} />
+          <Timeline list={taskDetail ? taskDetail.stepList : []} />
         </View>
-        <View style={styles.actionStyle}>{this.renderAction(task)}</View>
+        <View style={styles.actionStyle}>{this.renderAction(taskDetail)}</View>
       </View>
     )
   }

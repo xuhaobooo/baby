@@ -81,6 +81,12 @@ export async function findTaskByRequireCode(params) {
   })
 }
 
+export async function findTaskByTaskCode(params) {
+  return request(`/babyRequire/findTaskByRequireCode/${params.taskCode}`, {
+    method: 'GET',
+  })
+}
+
 export async function arrive(task) {
   return request(`/babyRequire/arrive/${task.taskCode}`, {
     method: 'POST',

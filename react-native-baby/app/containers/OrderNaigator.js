@@ -6,7 +6,7 @@ import {forEach, map} from 'lodash'
 import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { NavigationActions, createAction } from '../utils'
-import { Tabs, List, WhiteSpace } from 'antd-mobile'
+import { Tabs, List, WhiteSpace,Badge } from 'antd-mobile'
 var Platform = require('Platform'); 
 
 const Item = List.Item;
@@ -101,24 +101,15 @@ class OrderNaigator extends Component {
       />
         <View style={{flex:20}}>
         <FlatList data={pendRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
-          renderItem={({item})=><Item key={item.requireCode} style={item.applied?{backgroundColor:'#cfcfcf',marginBottom:3}:{backgroundColor:'white',marginBottom:3}}
+          renderItem={({item})=><Item key={item.requireCode} style={{marginBottom:3}}
             onClick={() => this.onItemClick(item)}
             arrow="horizontal"
-            thumb={
-              <View style={{alignItems:'center',marginRight:ScreenUtil.setSpText(10)}}>
-                <TouchableOpacity disabled={true} style={{width:ScreenUtil.setSpText(32),height:ScreenUtil.setSpText(32),
-                backgroundColor:'#336699',color:'#ffffff',alignContent:'center',
-                alignItems:'center',borderRadius:5,borderWidth:0,paddingTop:Platform.OS === 'android'?0:ScreenUtil.setSpText(5)}}>
-                  <Text style={{fontSize:ScreenUtil.setSpText(20),color:'#ffffff'}}>
-                    {item.applied ? '抢':'新'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            }
+            extra={item.applied? <Badge text={'已抢'}/>:<View/>}
+            
             multipleLine>
               {map(item.items,(value) => value.itemName).join(',')}
-              <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>
-              <Brief>接单者:{item.companyName}</Brief>
+              <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex ==='M'?'男':'女'}</Brief>
+              <Brief>总金额:{item.feeAmount}</Brief>
             </Item>}>
           </FlatList>
           </View>

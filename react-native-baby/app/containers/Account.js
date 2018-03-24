@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as ScreenUtil from '../utils/ScreenUtil'
 
 import { createAction, NavigationActions } from '../utils'
-import { List,Button } from 'antd-mobile'
+import { List,Button,Badge } from 'antd-mobile'
 
 const Item = List.Item
 const Brief = Item.Brief
@@ -27,10 +27,11 @@ class Account extends Component {
     ),
     tabBarLabel: '我的',
     tabBarIcon: ({ focused, tintColor }) => (
-      <Image
-        style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/person.png')}
-      />
+        <Image
+          style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
+          source={require('../images/person.png')}
+        />
+      
     ),
   }
 
@@ -48,7 +49,7 @@ class Account extends Component {
           style={{flex:1,width:'100%',alignItems:'center'}}
         >
           <Image style={{width:ScreenUtil.setSpText(120),height:ScreenUtil.setSpText(120),marginTop:30,borderRadius:ScreenUtil.setSpText(120)/2}} source={require('../images/DefaultAvatarx.png')}/>
-          <Text style={{fontSize:28,color:'#ffffff',height:ScreenUtil.setSpText(80),marginTop:10}}>{userInfo.userName}</Text>
+          <Text style={{fontSize:28,color:'#ffffff',height:ScreenUtil.setSpText(80),marginTop:10}}>{userInfo && userInfo.userName}</Text>
         </ImageBackground>
           
         </View>

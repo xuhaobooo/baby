@@ -21,7 +21,7 @@ class RequireDetail extends Component {
     _this = this
   }
 
-  state = {showAddModal:false,level:null,evalution:null}
+  state = {showAddModal:false,level:null,evalution:null,initFlag:false}
 
   static navigationOptions = {
     headerTitle: (
@@ -279,31 +279,37 @@ class RequireDetail extends Component {
           requireCode:requirement.requireCode,
         })
       )
-      this.props.dispatch(
-        createAction('requirement/findTaskByRequireCode')({
-          requireCode:requirement.requireCode,
-        })
-      )
+      this.initTaskData(requirement)
     } 
     
   }
 
-  componentDidMount = () => {
-    const { requirement } = this.props.requirement
+  initTaskData = (requirement) => {
     if (requirement.requireStatus === 'NEW') {
       this.props.dispatch(
         createAction('requirement/findApply')({
           requireCode: requirement.requireCode,
         })
       )
-    } else {
+    }else if (requirement.requireStatus === 'AF') {
+      this.findEvalution()
+    }
+    else {
       this.props.dispatch(
         createAction('requirement/findTaskByRequireCode')({
           requireCode: requirement.requireCode,
         })
       )
     }
-    this.findEvalution()
+    
+  }
+
+  componentDidMount = () => {
+    const { requirement } = this.props.requirement
+    if(requirement){
+      this.initTaskData(requirement)
+      this.setState({initFlag:true})
+    }
   }
 
   render() {
@@ -311,6 +317,11 @@ class RequireDetail extends Component {
       login: { userInfo },
       requirement: { applies, requirement, task },
     } = this.props
+
+    if(!this.state.initFlag && requirement){
+      this.initTaskData(requirement)
+      this.setState({initFlag:true})
+    }
 
     return (
       <View style={styles.container}>

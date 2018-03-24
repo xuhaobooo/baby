@@ -275,10 +275,6 @@ class PublishRequire extends Component {
     
     const {serviceItems} = this.state
     const {myBabys, trustDict, serviceWithCatalog, position} = this.props
-    if(!myBabys){
-      this.props.dispatch(createAction('requirement/queryMyBaby')({
-      }))
-    }
     !this.state.babyCode && myBabys && myBabys.length>0 && this.babyChanged([myBabys[0].babyCode])
     !this.state.trustCode && trustDict && trustDict.length>0 && this.setState({trustCode:[trustDict[0].dicCode]})
     const babyData=myBabys && map(myBabys,(item)=>{return {value:item.babyCode,label:item.babyName}})

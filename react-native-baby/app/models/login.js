@@ -1,6 +1,8 @@
 import { createAction, NavigationActions, Storage, delay } from '../utils'
 import * as authService from '../services/auth'
-import {Toast} from 'antd-mobile'
+import {Toast, Modal} from 'antd-mobile'
+
+const alert = Modal.alert
 
 export default {
   namespace: 'login',
@@ -47,34 +49,65 @@ export default {
         )
       }
     },
-    *getUserInfo({ payload }, { call, put }) {
+    *getUserInfo({ payload }, { select, call, put }) {
       const { userCode } = payload
       const userInfo = yield call(authService.getUserInfo, userCode)
       if (userInfo) {
-        setTimeout(()=>{
-          var websocket = new WebSocket("ws://10.2.10.116:8090/bgms/ws");
+        console.log(userInfo)
+          var websocket = new WebSocket("ws://192.168.1.192:8080/bgms/ws");
         
         //连接成功建立的回调方法
         websocket.onopen = (event) =>{
           console.log('已连接')
-          websocket.send('sadfasdf')
+          websocket.send("{'CMD':'hello','VALUE':'"+ userInfo.userCode + "'}")
         }
 
         websocket.onmessage =(msg) => {
-          this.setState({word: msg});
+          const data = JSON.parse(msg.data)
+          console.log(data.CMD)
+          switch(data.CMD){
+            case 'apply':
+              alert('有人接单了', '是否跳转到需求详情页?', [
+                { text: '取消' },
+                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updateApply', payload:{value:data.VALUE}})},},
+              ])
+              
+              break
+            case 'select':
+              alert('您抢的单已被确定', '是否跳转到任务详情页?', [
+                { text: '取消' },
+                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updateSelect', payload:{value:data.VALUE}})},},
+              ])
+              break;
+            case 'pay':
+              alert('有支付消息', '是否跳转到任务详情页?', [
+                { text: '取消' },
+                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updatePay', payload:{value:data.VALUE}})},},
+              ])
+              break;
+          }
         }
         websocket.onclose = (e) => {
           // 这里会出现 1001 "Stream end encountered" 错误
           console.log(e.code, e.reason);
         }
-        },2000)
+
+        yield put(createAction('requirement/queryMyBaby')({
+        }))
         
-        yield put(createAction('updateState')({ userInfo }))
+        yield put(createAction('updateState')({ userInfo,websocket }))
         yield put(NavigationActions.navigate({ routeName: 'Main' }))
       }
     },
-    *logout(action, { call, put }) {
+    *logout(action, { select, call, put }) {
       Storage.clear()
+      try{
+      const websocket = yield select(state => state.login.websocket)
+      websocket && websocket.close()
+      }catch(e){
+        
+      }
+      yield put(createAction('updateState')({ websocket:null,userInfo:null }))
       yield put(createAction('requirement/updateState')({ myBabys:null }))
       yield put(
         NavigationActions.navigate({ routeName: 'LoginNavigator' }))

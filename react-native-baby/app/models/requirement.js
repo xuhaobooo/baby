@@ -19,6 +19,7 @@ export default {
     position: null,
     myTaskList: [],
     task: null,
+    taskDetail:null,
   },
   reducers: {
     updateState(state, { payload }) {
@@ -148,7 +149,7 @@ export default {
         }
         return item
       })
-      Toast.success('抢单成功，请等待反馈')
+      Toast.success('抢单成功，请等待反馈',1)
       yield put(createAction('updateState')({ pendRequireList: newArray }))
       yield put(NavigationActions.back())
     },
@@ -165,6 +166,13 @@ export default {
       const task = yield call(requireService.findTaskByRequireCode, payload)
       if (task) {
         yield put(createAction('updateState')({ task }))
+      }
+    },
+    *findTaskByTaskCode({ payload }, { call, put }) {
+      yield put(createAction('updateState')({ taskDetail: null }))
+      const taskDetail = yield call(requireService.findTaskByTaskCode, payload)
+      if (taskDetail) {
+        yield put(createAction('updateState')({ taskDetail }))
       }
     },
     *arrive({ payload }, { select,call, put }) {
