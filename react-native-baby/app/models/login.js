@@ -85,6 +85,12 @@ export default {
                 { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updatePay', payload:{value:data.VALUE}})},},
               ])
               break;
+            case 'publish':
+              alert('有新的需求', '是否跳转到接单详情页?', [
+                { text: '取消' },
+                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updatePublish', payload:{value:data.VALUE}})},},
+              ])
+              break;
           }
         }
         websocket.onclose = (e) => {

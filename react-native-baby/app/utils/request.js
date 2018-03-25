@@ -107,8 +107,8 @@ export default function request(url, options) {
   }
 
   if (!startsWith(url, '/api')) {
-    //url = `http://www.co-mama.cn/bgms${url}`
-    url = `http://192.168.1.192:8080/bgms${url}`
+    url = `http://www.co-mama.cn/bgms${url}`
+    //url = `http://192.168.1.192:8080/bgms${url}`
   }
 
   let code

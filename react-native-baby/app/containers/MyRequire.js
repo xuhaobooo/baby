@@ -15,6 +15,11 @@ var Platform = require('Platform');
 @connect(({ requirement }) => ({ ...requirement }))
 class MyRequire extends Component {
 
+  constructor(props){
+    super(props)
+    _this = this
+  }
+
   state = {
     curTab : 0,
   }
@@ -26,7 +31,11 @@ class MyRequire extends Component {
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
         source={require('../images/house.png')}
-      />
+      />),
+      headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+      <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+        source={require('../images/refresh.png')} resizeMode='stretch' />
+      </TouchableOpacity>
     ),
   }
 
@@ -45,6 +54,10 @@ class MyRequire extends Component {
           startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(date),
         }))
+        this.setState({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getEndOfDate(date),
+        })
         break;
       case 1:
         date.setDate(date.getDate()+1);
@@ -52,6 +65,10 @@ class MyRequire extends Component {
           startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(date),
         }))
+        this.setState({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getEndOfDate(date),
+        })
         break;
       case 2:
         date.setDate(date.getDate()+7);
@@ -59,13 +76,21 @@ class MyRequire extends Component {
           startDate:this.getStartOfDate(new Date()),
           endDate:this.getEndOfDate(date),
         }))
+        this.setState({
+          startDate:this.getStartOfDate(new Date()),
+          endDate:this.getEndOfDate(date),
+        })
         break;
       case 3:
-        date.setDate(date.getMonth() - 1);
+        date.setMonth(date.getMonth() - 1);
         this.props.dispatch(createAction('requirement/queryMyRequire')({
           startDate:this.getStartOfDate(date),
           endDate:this.getStartOfDate(new Date()),
         }))
+        this.setState({
+          startDate:this.getStartOfDate(date),
+          endDate:this.getStartOfDate(new Date()),
+        })
         break;
       default:
          break;
@@ -112,12 +137,24 @@ class MyRequire extends Component {
     }
   }
 
+  refresh = () =>{
+    const {startDate,endDate} = this.state
+    this.props.dispatch(createAction('requirement/queryMyRequire')({
+      startDate,
+      endDate,
+    }))
+  }
+
   componentDidMount = () => {
     const date = new Date()
     this.props.dispatch(createAction('requirement/queryMyRequire')({
       startDate:this.getStartOfDate(date),
       endDate:this.getEndOfDate(date),
     }))
+    this.setState({
+      startDate:this.getStartOfDate(date),
+      endDate:this.getEndOfDate(date),
+    })
   }
 
   render() {
