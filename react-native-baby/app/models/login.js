@@ -54,7 +54,7 @@ export default {
       const userInfo = yield call(authService.getUserInfo, userCode)
       if (userInfo) {
         console.log(userInfo)
-          var websocket = new WebSocket("ws://192.168.1.192:8080/bgms/ws");
+          var websocket = new WebSocket("ws://www.co-mama.cn/bgms/ws");
         
         //连接成功建立的回调方法
         websocket.onopen = (event) =>{
