@@ -60,19 +60,15 @@ export default {
         var heartCheck = {
           timeout: 600000,//60ms
           timeoutObj: null,
-          serverTimeoutObj: null,
           reset: function(){
               clearTimeout(this.timeoutObj);
-              clearTimeout(this.serverTimeoutObj);
       　　　　 this.start();
           },
           start: function(){
               var self = this;
-              this.timeoutObj = setTimeout(function(){
+              this.timeoutObj = setTimeout(() =>{
                 websocket.send("{'CMD':'heart','VALUE':'none'}")
-                  self.serverTimeoutObj = setTimeout(function(){
-                    websocket.close();//如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
-                  }, self.timeout)
+                this.start()
               }, this.timeout)
           },
         }
