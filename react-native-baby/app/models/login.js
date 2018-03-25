@@ -52,17 +52,42 @@ export default {
     *getUserInfo({ payload }, { select, call, put }) {
       const { userCode } = payload
       const userInfo = yield call(authService.getUserInfo, userCode)
+
+      
+
       if (userInfo) {
-        console.log(userInfo)
-          var websocket = new WebSocket("ws://www.co-mama.cn/bgms/ws");
+        var websocket = new WebSocket("ws://www.co-mama.cn/bgms/ws");
+        var heartCheck = {
+          timeout: 600000,//60ms
+          timeoutObj: null,
+          serverTimeoutObj: null,
+          reset: function(){
+              clearTimeout(this.timeoutObj);
+              clearTimeout(this.serverTimeoutObj);
+      　　　　 this.start();
+          },
+          start: function(){
+              var self = this;
+              this.timeoutObj = setTimeout(function(){
+                websocket.send("{'CMD':'heart','VALUE':'none'}")
+                  self.serverTimeoutObj = setTimeout(function(){
+                    websocket.close();//如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+                  }, self.timeout)
+              }, this.timeout)
+          },
+        }
+
         
+
         //连接成功建立的回调方法
         websocket.onopen = (event) =>{
           console.log('已连接')
+          heartCheck.start();
           websocket.send("{'CMD':'hello','VALUE':'"+ userInfo.userCode + "'}")
         }
 
         websocket.onmessage =(msg) => {
+          heartCheck.reset();
           const data = JSON.parse(msg.data)
           console.log(data.CMD)
           switch(data.CMD){
@@ -92,10 +117,15 @@ export default {
               ])
               break;
           }
+          websocket.send("{'CMD':'callback','VALUE':'msg'}")
         }
         websocket.onclose = (e) => {
           // 这里会出现 1001 "Stream end encountered" 错误
-          console.log(e.code, e.reason);
+
+        }
+
+        WebSocket.onerror = () => {
+
         }
 
         yield put(createAction('requirement/queryMyBaby')({
