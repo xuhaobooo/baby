@@ -26,7 +26,7 @@ class MyTask extends Component {
 
   static navigationOptions = {
     headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的任务</Text>),
-    tabBarLabel: '任务',
+    tabBarLabel: '已接订单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}

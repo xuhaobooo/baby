@@ -26,7 +26,7 @@ class MyRequire extends Component {
 
   static navigationOptions = {
     headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的发布</Text>),
-    tabBarLabel: '需求',
+    tabBarLabel: '已发订单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}

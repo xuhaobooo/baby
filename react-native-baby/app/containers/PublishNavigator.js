@@ -36,7 +36,7 @@ class PublishRequire extends Component {
 
   static navigationOptions = {
     headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>发布需求</Text>),
-    tabBarLabel: '发布',
+    tabBarLabel: '发单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}

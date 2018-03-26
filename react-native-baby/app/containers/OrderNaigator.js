@@ -26,7 +26,7 @@ class OrderNaigator extends Component {
 
   static navigationOptions = {
     headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>附近的需求</Text>),
-    tabBarLabel: '接单',
+    tabBarLabel: '抢单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
