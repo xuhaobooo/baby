@@ -25,13 +25,14 @@ class MyRequire extends Component {
   }
 
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的发布</Text>),
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>已发订单</Text>),
     tabBarLabel: '已发订单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/house.png')}
+        source={require('../images/need.png')}
       />),
+      headerLeft:<View/>,
       headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
@@ -107,7 +108,7 @@ class MyRequire extends Component {
     { title: '今天' },
     { title: '明天'},
     { title: '一周內' },
-    { title: '前一月' },
+    { title: '历史记录' },
   ];
 
   getStartOfDate = (date) => {
@@ -166,7 +167,7 @@ class MyRequire extends Component {
       <Tabs tabs={this.tabs2}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1,minHeight:ScreenUtil.setSpText(13)}}
+        style={{flex:1,minHeight:ScreenUtil.setSpText(14)}}
       />
         <View style={{flex:20}}>
         <FlatList data={myRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
@@ -189,7 +190,7 @@ class MyRequire extends Component {
               </View>    
             }
             multipleLine> 
-              {map(item.items,(value) => value.itemName).join(',')}
+              {map(item.items,(value) => value.itemName).join(',') + '    总金额：' + item.feeAmount}
               <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>
               <Brief>从{item.startTime.substring(5,16)} 到 {item.endTime.substring(5,16)}</Brief>
               <Brief>接单者:{item.companyName}</Brief>

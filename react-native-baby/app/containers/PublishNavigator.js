@@ -13,7 +13,7 @@ const Brief = Item.Brief
 const alert = Modal.alert
 const prompt = Modal.prompt
 
-@connect(({ requirement,app, login }) => ({ ...requirement,app,login }))
+@connect(({ requirement,app, userInfo }) => ({ ...requirement,app,userInfo }))
 class PublishRequire extends Component {
 
   state = {
@@ -40,7 +40,7 @@ class PublishRequire extends Component {
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/house.png')}
+        source={require('../images/release.png')}
       />
     ),
   }
@@ -181,7 +181,7 @@ class PublishRequire extends Component {
     this.props.dispatch(createAction('requirement/queryTimePrice')({
     }))
 
-    const {userInfo} = this.props.login
+    const {userInfo} = this.props.userInfo
     if(userInfo){
       const position ={
         posX:userInfo.addrPosX,
@@ -197,31 +197,31 @@ class PublishRequire extends Component {
   validateData = () => {
     
     const {startTime,endTime,babyCode, trustCode, serviceItems, payMore,babyName,babySex,babyAge } = this.state
-    if((endTime - startTime) < 0){
-      Toast.info('结束时间不能小于起始时间',1);
+    if((endTime - startTime) <= 0){
+      Toast.info('结束时间必须大于起始时间');
       return false
     }
     if(!babyCode || !babyName || !babySex || !babyAge){
-      Toast.info('请选择宝贝，如果没有一个添加一个',1);
+      Toast.info('请选择宝贝，如果没有一个添加一个');
       return false
     }
     if(!trustCode){
-      Toast.info('请选择【信任期待】项',1);
+      Toast.info('请选择【信任期待】项');
       return false
     }
 
     if(!this.props.position){
-      Toast.info('请选择【地点】项',1);
+      Toast.info('请选择【地点】项');
       return false
     }
 
     if(Number.isNaN(Number(payMore))){
-      Toast.info('请输入正确的数字【附加小费】',1)
+      Toast.info('请输入正确的数字【附加小费】')
       return false
     }
 
     if(Object.keys(serviceItems).length ===0){
-      Toast.info('请选择【服务项目】',1);
+      Toast.info('请选择【服务项目】');
       return false
     }
 
@@ -229,7 +229,7 @@ class PublishRequire extends Component {
   }
 
   getDays = () => {
-    return parseInt(this.state.endTime - this.state.startTime) / 1000 / 60 / 60
+    return  Math.ceil(parseInt(this.state.endTime - this.state.startTime) / 1000 / 60 / 60)
   }
 
   getTimeFee= ()=>{
@@ -315,51 +315,54 @@ class PublishRequire extends Component {
 
         </Modal>
         <DatePicker
+          style={{height:ScreenUtil.setSpText(25),}}
           value={this.state.startTime}
-          title='选择起始时间'
+          title='起始时间'
           onChange={date => this.setState({ startTime:date })} >
-          <Item style={styles.selectItem} arrow="horizontal">起始时间</Item>
+          <Item style={styles.selectItem} arrow="horizontal">起始时间:</Item>
         </DatePicker>
         <DatePicker 
+          style={{height:ScreenUtil.setSpText(25),}}
           value={this.state.endTime}
-          title='选择结束时间'
+          title='结束时间'
           onChange={date => this.setState({ endTime:date })} >
-          <Item style={styles.selectItem} arrow="horizontal">结束时间</Item>
+          <Item style={styles.selectItem} arrow="horizontal">结束时间:</Item>
         </DatePicker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(31),}}>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(25),marginBottom:1}}>
           <View style={{flex:8}}>
             <Picker data={babyData} cols={1} title="选择宝贝" 
               onChange={this.babyChanged} value={this.state.babyCode}>
-              <Item style={styles.selectItem} arraw="horizontal">宝        贝</Item>
+              <Item style={styles.selectItem} arraw="horizontal">宝贝:</Item>
             </Picker>
           </View>
           <TouchableOpacity onPress={() => this.setState({showAddModal:true})}>
-          <Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+          <Image style={{marginTop:2,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
             source={require('../images/user-add.png')} resizeMode='stretch' />
           </TouchableOpacity>
         </View> 
         
-        <InputItem style={styles.itemStyle} labelNumber={7} value={this.state.babyAge} editable={false}>年    龄</InputItem>
-        <InputItem style={styles.itemStyle} labelNumber={7} value={this.state.babySex==='M'?'男':'女'} editable={false}>性    别</InputItem> 
-        <Picker data={trustData} cols={1} title="信任期待" 
+        <InputItem style={styles.itemStyle} labelNumber={7} value={this.state.babyAge} editable={false}>年龄:</InputItem>
+        <InputItem style={styles.itemStyle} labelNumber={7} value={this.state.babySex==='M'?'男':'女'} editable={false}>性别:</InputItem> 
+        <Picker data={trustData} cols={1} title="信任期待" style={{height:ScreenUtil.setSpText(25),}}
           onChange={this.trustChanged} value={this.state.trustCode}>
-          <List.Item style={styles.selectItem} arraw="horizontal">信任期待</List.Item>
+          <List.Item style={styles.selectItem} arraw="horizontal">信任期待:</List.Item>
         </Picker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(31)}}>
+        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(25)}}>
           <View style={{flex:8}}>
-            <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:20,}} 
-              value={position && position.label} editable={false}>地    点</InputItem>
+            <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:ScreenUtil.setSpText(12),}} 
+              value={position && position.label} editable={false}>地点:</InputItem>
           </View>
 
-          <TouchableOpacity onPress={this.addrClick}><Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+          <TouchableOpacity onPress={this.addrClick}><Image style={{marginTop:2,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
             source={require('../images/map.png')} resizeMode='stretch' />
           </TouchableOpacity>
         </View>
 
         <InputItem type='number' labelNumber={7} style={styles.itemStyle} value={''+this.state.payMore}
           onChange={(value) => Number.isNaN(Number(value)) ? Toast.info('请输入数字',1) : this.setState({payMore:Number(value)})}
-        >附加小费</InputItem>
-        <View style={{flex:10,backgroundColor:'white',marginTop:ScreenUtil.setSpText(5)}}>
+        >附加小费:</InputItem>
+        <WhiteSpace size="xs" />
+        <View style={{flex:10,backgroundColor:'white'}}>
       
             <FlatList data={serviceWithCatalog} extraData={this.state} keyExtractor={(item, index) => item.cataCode} 
             renderItem={({item})=><View>
@@ -402,7 +405,7 @@ const styles = StyleSheet.create({
     height: ScreenUtil.setSpText(28),
   },
   itemStyle: {
-    height:ScreenUtil.setSpText(30),
+    height:ScreenUtil.setSpText(25),
     backgroundColor:'white',
     marginLeft:0,
     paddingLeft:15,

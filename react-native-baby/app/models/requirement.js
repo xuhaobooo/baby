@@ -14,6 +14,7 @@ export default {
     requirement: null,
     myBabys: null,
     trustDict: null,
+    alertDict: null,
     serviceWithCatalog: null,
     timePrice: null,
     position: null,
@@ -56,13 +57,12 @@ export default {
         yield put(createAction('updateState')({ requirement }))
       }
     },
-    *selectApply({ payload }, { select, call, put }) {
+    *selectApply({ payload,callback }, { select, call, put }) {
       const { applyId, requireCode } = payload
       yield call(requireService.selectApply, applyId)
       const requirement = yield call(requireService.findRequire, requireCode)
       yield put(createAction('updateState')({ requirement }))
       const task = yield call(requireService.findTaskByRequireCode, payload)
-      yield put(createAction('updateState')(null))
       if (task) {
         yield put(createAction('updateState')({ task }))
       }
@@ -73,8 +73,10 @@ export default {
         }
         return item
       })
-      Toast.success('已选择')
       yield put(createAction('updateState')({ myRequireList: newArray }))
+      
+      if(callback) callback()
+      
       yield put(NavigationActions.back())
     },
     *queryMyBaby({ payload }, { call, put }) {
@@ -86,6 +88,13 @@ export default {
       if (!tmp) {
         const trustDict = yield call(requireService.queryTrustDict)
         yield put(createAction('updateState')({ trustDict }))
+      }
+    },
+    *queryAlertDict({ payload }, { select, call, put }) {
+      const tmp = yield select(state => state.alertDict)
+      if (!tmp) {
+        const alertDict = yield call(requireService.queryAlertDict)
+        yield put(createAction('updateState')({ alertDict }))
       }
     },
     *queryService({ payload }, { select, call, put }) {

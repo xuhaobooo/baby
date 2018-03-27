@@ -25,13 +25,14 @@ class MyTask extends Component {
   }
 
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>我的任务</Text>),
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>已接订单</Text>),
     tabBarLabel: '已接订单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/house.png')}
+        source={require('../images/task.png')}
       />),
+    headerLeft:<View/>,
     headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
@@ -64,9 +65,9 @@ class MyTask extends Component {
         })
         break;
       case 2:
-        date.setDate(date.getDate()+2);
+        date.setDate(date.getDate()+7);
         this.props.dispatch(createAction('requirement/queryMyTask')({
-          startDate:this.getStartOfDate(date),
+          startDate:this.getStartOfDate(new Date()),
           endDate:this.getEndOfDate(date),
         }))
         this.setState({
@@ -98,8 +99,8 @@ class MyTask extends Component {
   tabs2 = [
     { title: '今天' },
     { title: '明天'},
-    { title: '后天' },
-    { title: '前三月' },
+    { title: '一周内' },
+    { title: '历史记录' },
   ];
 
   getStartOfDate = (date) => {
@@ -159,7 +160,7 @@ class MyTask extends Component {
         initialPage={0}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1,minHeight:16}}
+        style={{flex:1,minHeight:ScreenUtil.setSpText(14)}}
       />
         <View style={{flex:20}}>
         <FlatList data={myTaskList} extraData={this.state} keyExtractor={(item, index) => item.taskCode} 

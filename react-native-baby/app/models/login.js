@@ -1,8 +1,6 @@
 import { createAction, NavigationActions, Storage, delay } from '../utils'
 import * as authService from '../services/auth'
-import {Toast, Modal} from 'antd-mobile'
-
-const alert = Modal.alert
+import {Toast} from 'antd-mobile'
 
 export default {
   namespace: 'login',

@@ -1,5 +1,8 @@
 import { createAction, NavigationActions, Storage, delay } from '../utils'
 import * as userService from '../services/userInfo'
+import {Modal} from 'antd-mobile'
+
+const alert = Modal.alert
 
 export default {
   namespace: 'userInfo',

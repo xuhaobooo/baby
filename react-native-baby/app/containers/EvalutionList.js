@@ -117,8 +117,7 @@ class OrderNaigator extends Component {
               </View>
             }
             multipleLine>
-              {map(item.items,(value) => value.itemName).join(',')}
-              <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex==='M'?'男':'女'}</Brief>
+              {`姓名:${item.babyName}     年龄:${item.babyAge}      性别:${item.babySex==='M'?'男':'女'}`}
               <Brief>开始时间:{item.requireStartTime}</Brief>
               <Brief>{item.notes}</Brief>
             </Item>}>

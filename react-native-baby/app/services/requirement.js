@@ -38,6 +38,12 @@ export async function queryTrustDict() {
   })
 }
 
+export async function queryAlertDict() {
+  return request(`/common/dictOption/getDictByClassName/alert_msg`, {
+    method: 'GET',
+  })
+}
+
 export async function queryService() {
   return request(`/babyRequire/listServiceWithCatalog`, {
     method: 'GET',

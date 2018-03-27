@@ -25,14 +25,15 @@ class OrderNaigator extends Component {
   }
 
   static navigationOptions = {
-    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>附近的需求</Text>),
+    headerTitle: (<Text style={{fontSize:ScreenUtil.setSpText(20),alignSelf:'center', textAlign:'center',flex:1, color:'#FF6600'}}>抢单</Text>),
     tabBarLabel: '抢单',
     tabBarIcon: ({ focused, tintColor }) => (
       <Image
         style={[styles.icon, { tintColor: focused ? tintColor : 'gray' }]}
-        source={require('../images/house.png')}
+        source={require('../images/dan.png')}
       />
     ),
+    headerLeft:<View/>,
     headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
@@ -130,7 +131,7 @@ class OrderNaigator extends Component {
         initialPage={0}
         onChange={this.onTabChange}
         renderTab={tab => <Text>{tab.title}</Text>}
-        style={{flex:1,minHeight:16}}
+        style={{flex:1,minHeight:ScreenUtil.setSpText(14)}}
       />
         <View style={{flex:20}}>
         <FlatList data={pendRequireList} extraData={this.state} keyExtractor={(item, index) => item.requireCode} 
@@ -140,9 +141,8 @@ class OrderNaigator extends Component {
             extra={item.applied? <Badge text={'已抢'}/>:<View/>}
             
             multipleLine>
-              {map(item.items,(value) => value.itemName).join(',')}
+              {map(item.items,(value) => value.itemName).join(',') + '    总金额：' + item.feeAmount}
               <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex ==='M'?'男':'女'}</Brief>
-              <Brief>总金额:{item.feeAmount}</Brief>
             </Item>}>
           </FlatList>
           </View>

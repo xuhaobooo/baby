@@ -20,3 +20,9 @@ export async function findMyEvalution(params) {
     method: 'GET',
   })
 }
+
+export async function findUserEva(params) {
+  return request(`/babyEvaluate/findUserEva?${stringify(params)}`, {
+    method: 'GET',
+  })
+}

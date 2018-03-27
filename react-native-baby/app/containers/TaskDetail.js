@@ -112,10 +112,10 @@ class TaskDetail extends Component {
         )
           break
         case 'CF':
-          return <Text>正在获取支付信息，请稍后在查看</Text>
+          return <Text style={{textAlign:'center',color:'pink'}}>正在获取支付信息，请稍后在查看</Text>
           break
         case 'CC':
-          return <Text>订单已取消</Text>
+          return <Text style={{textAlign:'center',color:'pink'}}>订单已取消</Text>
           break
           case 'AF':
           const {userInfo,evalution} = this.props
@@ -180,7 +180,7 @@ class TaskDetail extends Component {
     const { taskDetail } = this.props.requirement
     this.props.dispatch({
       type:'evalution/addEvalution',
-      payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:task.sendUserCode,
+      payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:taskDetail.sendUserCode,
         requireCode:taskDetail.requireCode,sendUserCode:taskDetail.getUserCode},
       callback:this.afterEvalutionAdd
       }
@@ -205,7 +205,8 @@ class TaskDetail extends Component {
   }
 
   componentDidMount = () => {
-    this.findEvalution()  
+    const { taskDetail } = this.props.requirement
+    taskDetail.taskStatus === 'AF' && this.findEvalution()  
   }
 
   render() {
@@ -298,8 +299,7 @@ class TaskDetail extends Component {
           labelNumber={5}
           style={styles.itemStyle}
           value={
-            taskDetail && (taskDetail.feeAmount + '元' + (taskDetail.paid ? '(已付)':'(未付)')+
-            '      ' + '附加小费：' +  taskDetail.payMore)
+            taskDetail && (taskDetail.feeAmount + '元' + (taskDetail.paid ? '(已付)':'(未付)'))
           }
           editable={false}
         >
@@ -309,7 +309,7 @@ class TaskDetail extends Component {
         <View style={{ flex: 6 }}>
           <Timeline list={taskDetail ? taskDetail.stepList : []} />
         </View>
-        <View style={styles.actionStyle}>{this.renderAction(taskDetail)}</View>
+        {this.renderAction(taskDetail)}
       </View>
     )
   }
@@ -328,7 +328,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   actionStyle: {
-    flex: 4,
     marginTop: 5,
     backgroundColor: 'white',
   },

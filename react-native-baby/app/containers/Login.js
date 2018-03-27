@@ -117,20 +117,34 @@ class Login extends Component {
           <InputItem
             type="phone"
             placeholder="手机号码"
-            style={{ flex: 1 }}
+            labelNumber={2}
+            style={{ flex: 1,paddingLeft:10 }}
             error={this.state.mobileError}
             value={this.state.mobile}
             onChange={this.onChange}
-          />
+          >
+            <Image
+              style={{width:14,height:20,padding:0,margin:0}}
+              source={require('../images/phone.png')}
+              resizeMode="stretch"
+            />
+          </InputItem>
 
           <InputItem
             type="password"
             placeholder="密码"
-            style={{ flex: 1 }}
+            labelNumber={2}
+            style={{ flex: 1,paddingLeft:10 }}
             error={this.state.passwordError}
             value={this.state.password}
             onChange={this.onPasswordChange}
-          />
+          >
+            <Image
+              style={{width:14,height:20,padding:0,margin:0}}
+              source={require('../images/lock.png')}
+              resizeMode="stretch"
+            />
+          </InputItem>
 
           <Button style={styles.loginBtn} onClick={this.onLogin} type="primary">
             登录

@@ -87,6 +87,7 @@ class RequireDetail extends Component {
   payCallback = () => {
     const { requirement: { task } } = this.props
     task.paid = true
+    task.stepList.push({stepContent:'用户支付',doneTime:DateUtil.formatTimeFull(new Date())})
     this.props.dispatch(
       createAction('requirement/updateState')({
         task,
@@ -216,7 +217,7 @@ class RequireDetail extends Component {
             ev=evalution.EvaList[1]
           }
           return (
-            <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10}}>
+            <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10,marginBottom:5,marginTop:5}}>
               <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
               <Text>{ev.notes}</Text>
             </View>
@@ -316,12 +317,15 @@ class RequireDetail extends Component {
       this.initTaskData(requirement)
       this.setState({initFlag:true})
     }
+
+    this.props.dispatch(createAction('requirement/queryAlertDict')({
+    }))
   }
 
   render() {
     const {
       userInfo,
-      requirement: { applies, requirement, task },
+      requirement: { applies, requirement, task, alertDict },
     } = this.props
 
     if(!this.state.initFlag && requirement){
@@ -442,7 +446,7 @@ class RequireDetail extends Component {
                 value={requirement.companyName}
                 editable={false}
               >
-                接单者姓名：
+                接单者：
               </InputItem>
               <InputItem
                 style={styles.itemStyle}
@@ -450,12 +454,14 @@ class RequireDetail extends Component {
                 value={requirement.companyTel}
                 editable={false}
               >
-                接单者电话：
-              </InputItem>
+                电话：
+              </InputItem>            
               <WhiteSpace size="xs" />
               <View style={{ flex: 6 }}>
                 <Timeline list={task ? task.stepList : []} />
               </View>
+              {task && (task.taskStatus ==='CONF' || task.taskStatus ==='ARRV') && alertDict && alertDict.length > 0 && 
+                <Text style={{marginLeft:ScreenUtil.setSpText(15),fontSize:18,color:'red',marginTop:20,marginBottom:20}}>{alertDict[0].dicLabel}</Text>}
               <WhiteSpace size="xs" />
               {task && this.renderAction(task)}
             </View>
