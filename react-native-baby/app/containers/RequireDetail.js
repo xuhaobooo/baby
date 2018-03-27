@@ -13,7 +13,7 @@ import { map } from 'lodash'
 const alert = Modal.alert
 const operation = Modal.operation
 
-@connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
+@connect(({ userInfo, requirement,evalution }) => ({ ...userInfo, requirement,evalution }))
 class RequireDetail extends Component {
 
   constructor(props){
@@ -108,7 +108,7 @@ class RequireDetail extends Component {
   }
 
   renderAction = task => {
-    
+    console.log(task.taskStatus)
     switch (task.taskStatus) {
       case 'CONF':
         return (
@@ -179,14 +179,15 @@ class RequireDetail extends Component {
 
         break
       case 'CF':
-        return <Text>正在获取支付信息，请稍后在查看</Text>
+        return <Text style={{textAlign:'center',color:'pink'}}>正在获取支付信息，请稍后在查看</Text>
         break
       case 'CC':
-        return <Text>订单已取消</Text>
+        return <Text style={{textAlign:'center',color:'pink'}}>订单已取消</Text>
         break
       case 'AF':
-        const {login,evalution} = this.props
-        
+        const {userInfo,evalution} = this.props
+        console.log(userInfo)
+        console.log(evalution)
         if(!evalution.EvaList || evalution.EvaList.length ===0){
           return (
             <Button
@@ -197,7 +198,7 @@ class RequireDetail extends Component {
               发表评论
             </Button>
           )
-        }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==login.userInfo.userCode){
+        }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==userInfo.userCode){
           return (
             <Button
               type="primary"
@@ -209,7 +210,7 @@ class RequireDetail extends Component {
           )
         }else{
           var ev;
-          if(evalution.EvaList[0].sendUserCode === login.userInfo.userCode){
+          if(evalution.EvaList[0].sendUserCode === userInfo.userCode){
             ev = evalution.EvaList[0]
           }else{
             ev=evalution.EvaList[1]
@@ -292,6 +293,11 @@ class RequireDetail extends Component {
         })
       )
     }else if (requirement.requireStatus === 'AF') {
+      this.props.dispatch(
+        createAction('requirement/findTaskByRequireCode')({
+          requireCode: requirement.requireCode,
+        })
+      )
       this.findEvalution()
     }
     else {
@@ -314,7 +320,7 @@ class RequireDetail extends Component {
 
   render() {
     const {
-      login: { userInfo },
+      userInfo,
       requirement: { applies, requirement, task },
     } = this.props
 
@@ -360,6 +366,8 @@ class RequireDetail extends Component {
             value={this.state.evalution}
             rows={6}
             count={100}
+            returnKeyType ='done'
+            underlineColorAndroid="transparent"
             onChange={(value) => this.setState({evalution:value})}
           />
           <WhiteSpace style={{height:10,backgroundColor:'white',}} />
@@ -371,7 +379,7 @@ class RequireDetail extends Component {
           value={requirement && requirement.babyName}
           editable={false}
         >
-          姓 名：
+          姓名：
         </InputItem>
         <InputItem
           labelNumber={5}
@@ -392,7 +400,7 @@ class RequireDetail extends Component {
         <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(31)}}>
           <View style={{flex:8}}>
             <InputItem labelNumber={5} style={{flex:8,backgroundColor:'#ffffff',height:'99%',marginLeft: 0,paddingLeft:20,}} 
-              value={requirement && requirement.addrName} editable={false}>地    点</InputItem>
+              value={requirement && requirement.addrName} editable={false}>地点：</InputItem>
           </View>
 
           <TouchableOpacity onPress={() => this.showBaiduMap(requirement)}>
@@ -414,8 +422,7 @@ class RequireDetail extends Component {
           style={styles.itemStyle}
           value={
             requirement && (
-            requirement.feeAmount + '元' + (requirement.paid ? '(已付)':'(未付)')+
-            '      ' + '附加小费：' +  requirement.payMore )
+            requirement.feeAmount + '元' + (requirement.paid ? '(已付)':'(未付)'))
           }
           editable={false}
         >

@@ -95,10 +95,14 @@ class ApplyDetail extends Component {
         <TextareaItem
           style={{ marginTop: 5 }}
           title="简介"
+          autoHeight={true}
           placeholder="click the button below to focus"
           editable={false}
           value={applyInfo.note}
         />
+        <View style={styles.actionStyle}>
+          
+        </View>
         <Button
           type="primary"
           style={{ margin: 10 }}
@@ -121,9 +125,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginLeft: 0,
     paddingLeft: 20,
+    flex:1,
   },
   actionStyle: {
-    flex: 7,
+    flex: 10,
     marginTop: 5,
   },
 })

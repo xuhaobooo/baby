@@ -22,7 +22,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import * as ScreenUtil from '../utils/ScreenUtil'
 
-@connect(({ login, app, money }) => ({ ...login, app, money }))
+@connect(({ money,app  }) => ({ ...money, app  }))
 class ForgetPassword extends Component {
 
   state = {
@@ -163,7 +163,7 @@ class ForgetPassword extends Component {
   render() {
     const { fetching } = this.props.app
     const { windowHeight } = this.props.app
-    const {balance} = this.props.money
+    const {balance} = this.props
     return (
         
         <View

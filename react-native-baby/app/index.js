@@ -15,12 +15,13 @@ import requireModel from './models/requirement'
 import babyModel from './models/babyInfo'
 import evaModel from './models/evalution'
 import moneyModel from './models/money'
+import userModel from './models/UserInfo'
 
 console.disableYellowBox = true
 
 const app = dva({
   initialState: {},
-  models: [appModel, routerModel, loginModel, requireModel, babyModel,evaModel,moneyModel],
+  models: [appModel, routerModel, loginModel, requireModel, babyModel,evaModel,moneyModel,userModel],
   onAction: [routerMiddleware],
   onError(e) {
     Toast.fail(e.message)

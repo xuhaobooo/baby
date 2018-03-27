@@ -14,12 +14,6 @@ export async function fakeTokenLogin(params) {
   })
 }
 
-export async function getUserInfo(userCode) {
-  return request(`/babyUserInfo/findByCode/${userCode}`, {
-    method: 'GET',
-  })
-}
-
 export async function fakeRegister(params) {
   return request('/user/current', {
     method: 'POST',

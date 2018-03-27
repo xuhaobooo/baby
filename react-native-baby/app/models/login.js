@@ -7,9 +7,7 @@ const alert = Modal.alert
 export default {
   namespace: 'login',
   state: {
-    userInfo: null,
     position: null,
-    websocket:null,
   },
   reducers: {
     updateState(state, { payload }) {
@@ -22,7 +20,9 @@ export default {
 
       const data = yield call(authService.fakeAccountLogin, payload)
       if (data) {
-        yield put(createAction('getUserInfo')({ userCode: data.code }))
+        yield put(createAction('userInfo/getUserInfo')({ userCode: data.code }))
+        yield put(createAction('requirement/queryMyBaby')({}))
+        yield put(NavigationActions.navigate({ routeName: 'Main' }))
         Storage.set('token', data.accessCode)
         Storage.set('userCode', data.code)
       }
@@ -38,7 +38,9 @@ export default {
           userCode,
         })
         if (login) {
-          yield put(createAction('getUserInfo')({ userCode }))
+          yield put(createAction('userInfo/getUserInfo')({ userCode }))
+          yield put(createAction('requirement/queryMyBaby')({}))
+          yield put(NavigationActions.navigate({ routeName: 'Main' }))
         }
         yield put(createAction('app/updateState')({ fetching: false }))
       } else {
@@ -49,97 +51,15 @@ export default {
         )
       }
     },
-    *getUserInfo({ payload }, { select, call, put }) {
-      const { userCode } = payload
-      const userInfo = yield call(authService.getUserInfo, userCode)
-
-      
-
-      if (userInfo) {
-        var websocket = new WebSocket("ws://www.co-mama.cn/bgms/ws");
-        var heartCheck = {
-          timeout: 600000,//60ms
-          timeoutObj: null,
-          reset: function(){
-              clearTimeout(this.timeoutObj);
-      　　　　 this.start();
-          },
-          start: function(){
-              var self = this;
-              this.timeoutObj = setTimeout(() =>{
-                websocket.send("{'CMD':'heart','VALUE':'none'}")
-                this.start()
-              }, this.timeout)
-          },
-        }
-
-        
-
-        //连接成功建立的回调方法
-        websocket.onopen = (event) =>{
-          console.log('已连接')
-          heartCheck.start();
-          websocket.send("{'CMD':'hello','VALUE':'"+ userInfo.userCode + "'}")
-        }
-
-        websocket.onmessage =(msg) => {
-          heartCheck.reset();
-          const data = JSON.parse(msg.data)
-          console.log(data.CMD)
-          switch(data.CMD){
-            case 'apply':
-              alert('有人接单了', '是否跳转到需求详情页?', [
-                { text: '取消' },
-                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updateApply', payload:{value:data.VALUE}})},},
-              ])
-              
-              break
-            case 'select':
-              alert('您抢的单已被确定', '是否跳转到任务详情页?', [
-                { text: '取消' },
-                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updateSelect', payload:{value:data.VALUE}})},},
-              ])
-              break;
-            case 'pay':
-              alert('有支付消息', '是否跳转到任务详情页?', [
-                { text: '取消' },
-                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updatePay', payload:{value:data.VALUE}})},},
-              ])
-              break;
-            case 'publish':
-              alert('有新的需求', '是否跳转到接单详情页?', [
-                { text: '取消' },
-                { text: '确定', onPress: () => { global.app._store.dispatch({type:'app/updatePublish', payload:{value:data.VALUE}})},},
-              ])
-              break;
-          }
-          websocket.send("{'CMD':'callback','VALUE':'msg'}")
-        }
-        websocket.onclose = (e) => {
-          // 这里会出现 1001 "Stream end encountered" 错误
-
-        }
-
-        WebSocket.onerror = () => {
-
-        }
-
-        yield put(createAction('requirement/queryMyBaby')({
-        }))
-        
-        yield put(createAction('updateState')({ userInfo,websocket }))
-        yield put(NavigationActions.navigate({ routeName: 'Main' }))
-      }
-    },
     *logout(action, { select, call, put }) {
       Storage.clear()
       try{
-      const websocket = yield select(state => state.login.websocket)
+      const websocket = yield select(state => state.userInfo.websocket)
       websocket && websocket.close()
       }catch(e){
         
       }
-      yield put(createAction('updateState')({ websocket:null,userInfo:null }))
+      yield put(createAction('userInfo/updateState')({ websocket:null,userInfo:null }))
       yield put(createAction('requirement/updateState')({ myBabys:null }))
       yield put(
         NavigationActions.navigate({ routeName: 'LoginNavigator' }))

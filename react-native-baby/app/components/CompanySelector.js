@@ -15,11 +15,10 @@ renderItems = (list, clickHandle) =>
       onClick={() => clickHandle(item)}
       arrow="horizontal"
     >
-      {item.userName}
+      {`${item.userName}   信任值:${item.creditValue}`}
       <Brief>
-        信任值:{item.creditValue} 距离:{item.distance}
+      地点:{item.addrName}    距离:{item.distance}
       </Brief>
-      <Brief>地点:{item.addrName}</Brief>
     </Item>
   ))
 

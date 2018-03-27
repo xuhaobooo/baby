@@ -132,6 +132,8 @@ class MyRequire extends Component {
         return '验'
       case 'AF':
         return '结'
+      case 'CC':
+        return '消'
       default:
         return '错'
     }
@@ -189,6 +191,7 @@ class MyRequire extends Component {
             multipleLine> 
               {map(item.items,(value) => value.itemName).join(',')}
               <Brief>姓名:{item.babyName}   年龄:{item.babyAge}    性别:{item.babySex}</Brief>
+              <Brief>从{item.startTime.substring(5,16)} 到 {item.endTime.substring(5,16)}</Brief>
               <Brief>接单者:{item.companyName}</Brief>
             </Item>}>
           </FlatList>

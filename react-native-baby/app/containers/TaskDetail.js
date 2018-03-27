@@ -12,7 +12,7 @@ import Timeline from '../components/Timeline'
 
 const alert = Modal.alert
 
-@connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
+@connect(({ userInfo, requirement,evalution }) => ({ ...userInfo, requirement,evalution }))
 class TaskDetail extends Component {
 
   constructor(props){
@@ -118,7 +118,7 @@ class TaskDetail extends Component {
           return <Text>订单已取消</Text>
           break
           case 'AF':
-          const {login,evalution} = this.props
+          const {userInfo,evalution} = this.props
           
           if(!evalution.EvaList || evalution.EvaList.length ===0){
             return (
@@ -130,7 +130,7 @@ class TaskDetail extends Component {
                 发表评论
               </Button>
             )
-          }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==login.userInfo.userCode){
+          }else if(evalution.EvaList.length ===1 && evalution.EvaList[0].sendUserCode !==userInfo.userCode){
             return (
               <Button
                 type="primary"
@@ -142,7 +142,7 @@ class TaskDetail extends Component {
             )
           }else{
             var ev;
-            if(evalution.EvaList[0].sendUserCode === login.userInfo.userCode){
+            if(evalution.EvaList[0].sendUserCode === userInfo.userCode){
               ev = evalution.EvaList[0]
             }else{
               ev=evalution.EvaList[1]
@@ -247,6 +247,8 @@ class TaskDetail extends Component {
             value={this.state.evalution}
             rows={6}
             count={100}
+            returnKeyType ='done'
+            underlineColorAndroid="transparent"
             onChange={(value) => this.setState({evalution:value})}
           />
           <WhiteSpace style={{height:10,backgroundColor:'white',}} />

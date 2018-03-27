@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text,ImageBackground } from 'react-native'
+import { StyleSheet, View, Image, Text,ImageBackground, TouchableWithoutFeedback,  } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as ScreenUtil from '../utils/ScreenUtil'
@@ -9,7 +9,7 @@ import { List,Button,Badge } from 'antd-mobile'
 
 const Item = List.Item
 const Brief = Item.Brief
-@connect(({ login }) => ({ ...login }))
+@connect(({ userInfo }) => ({ ...userInfo }))
 class Account extends Component {
   static navigationOptions = {
     headerTitle: (
@@ -48,8 +48,12 @@ class Account extends Component {
           source={require('../images/BG_daiwanchengv.png')}
           style={{flex:1,width:'100%',alignItems:'center'}}
         >
-          <Image style={{width:ScreenUtil.setSpText(120),height:ScreenUtil.setSpText(120),marginTop:30,borderRadius:ScreenUtil.setSpText(120)/2}} source={require('../images/DefaultAvatarx.png')}/>
+          <TouchableWithoutFeedback onPress={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ModifyUserInfo' }))}>
+            <Image style={{width:ScreenUtil.setSpText(120),height:ScreenUtil.setSpText(120),marginTop:30,borderRadius:ScreenUtil.setSpText(120)/2}} 
+            source={require('../images/DefaultAvatarx.png')}/>
+          </TouchableWithoutFeedback>
           <Text style={{fontSize:28,color:'#ffffff',height:ScreenUtil.setSpText(80),marginTop:10}}>{userInfo && userInfo.userName}</Text>
+          
         </ImageBackground>
           
         </View>

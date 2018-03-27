@@ -13,7 +13,7 @@ import { map } from 'lodash'
 const alert = Modal.alert
 const operation = Modal.operation
 
-@connect(({ login, requirement,evalution }) => ({ login, requirement,evalution }))
+@connect(({ userInfo, requirement,evalution }) => ({ userInfo, requirement,evalution }))
 class RequireDetail extends Component {
   state = {showAddModal:false,level:null,evalution:null}
 
@@ -54,7 +54,7 @@ class RequireDetail extends Component {
 
   render() {
     const {
-      login: { userInfo },
+      userInfo: { userInfo },
       requirement: { applies, requirement, task },
     } = this.props
 
