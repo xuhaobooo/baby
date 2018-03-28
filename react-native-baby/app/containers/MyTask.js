@@ -125,6 +125,8 @@ class MyTask extends Component {
         return '验'
       case 'AF':
         return '结'
+      case 'CC':
+        return '消'
       default:
         return '错'
     }

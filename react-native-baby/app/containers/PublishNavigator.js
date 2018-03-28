@@ -366,13 +366,13 @@ class PublishRequire extends Component {
       
             <FlatList data={serviceWithCatalog} extraData={this.state} keyExtractor={(item, index) => item.cataCode} 
             renderItem={({item})=><View>
-                <Text style={{fontSize:ScreenUtil.setSpText(18), textAlign:'center',marginTop:ScreenUtil.setSpText(10),
+                <Text style={{fontSize:ScreenUtil.setSpText(20), textAlign:'center',marginTop:ScreenUtil.setSpText(10),
                 marginBottom:ScreenUtil.setSpText(10)}}>{item.cataName}</Text>
                 <View style={styles.serviceContainer}>
                   {item.list.map(serv => (
                     <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14), marginBottom:ScreenUtil.setSpText(5)}} key={serv.itemCode}
                     onChange={(e)=>this.serviceChanged(e,serv)} checked={this.state.serviceItems.hasOwnProperty(serv.itemCode)}>
-                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:18,
+                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:16,
                         marginBottom:ScreenUtil.setSpText(5)}}>{ serv.itemName }</Text>
                     </Checkbox>))}
                 </View>

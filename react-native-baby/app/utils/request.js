@@ -169,12 +169,12 @@ export default function request(url, options) {
           })
         }
         
+      }else{
+        const error = new Error(decodeURI(msg))
+        error.name = code
+        error.response = response
+        throw error
       }
-      
-      const error = new Error(decodeURI(msg))
-      error.name = code
-      error.response = response
-      throw error
     })
     .then(data => {
       if (data) {

@@ -50,10 +50,11 @@ class RequireDetail extends Component {
         <InputItem labelNumber={5} style={styles.itemStyle} value={evalutionInfo.requireItems} editable={false}>服务：</InputItem>
         <InputItem labelNumber={5} style={styles.itemStyle} value={''+evalutionInfo.feeAmount} editable={false}>总费用：</InputItem>
         <WhiteSpace size="xs" />
+        <InputItem labelNumber={5} style={styles.itemStyle} value={evalutionInfo.level === 'LOW'? '差评':evalutionInfo.level==='HIGH'?'好评':'中评'} editable={false}>评价：</InputItem>
         <TextareaItem
             placeholder=""
             value={evalutionInfo.notes}
-            rows={6}
+            rows={8}
             editable={false}
           />
       </View>
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
   },
   itemStyle: {
     backgroundColor: 'white',
+    height:30,
     marginLeft: 0,
     paddingLeft: 20,
   },

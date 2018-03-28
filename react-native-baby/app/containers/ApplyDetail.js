@@ -51,6 +51,10 @@ class ApplyDetail extends Component {
     Toast.success('已选择接单者')
   }
 
+  onItemClick = (value) => {
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionDetail', params:{evalutionInfo:value} }))
+  }
+
   componentDidMount = () => {
     const { navigation } = this.props
     const applyInfo = navigation.state.params.applyDetail

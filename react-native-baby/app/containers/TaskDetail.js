@@ -220,7 +220,7 @@ class TaskDetail extends Component {
 
   componentDidMount = () => {
     const { taskDetail } = this.props.requirement
-    taskDetail.taskStatus === 'AF' && this.findEvalution()  
+    taskDetail && taskDetail.taskStatus === 'AF' && this.findEvalution()  
   }
 
   render() {

@@ -60,7 +60,7 @@ export default {
         websocket.onmessage =(msg) => {
           heartCheck.reset();
           const data = JSON.parse(msg.data)
-          console.log(data.CMD)
+          console.log(data)
           switch(data.CMD){
             case 'apply':
               alert('有人接单了', '是否跳转到需求详情页?', [
