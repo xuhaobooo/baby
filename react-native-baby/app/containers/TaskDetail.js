@@ -204,6 +204,20 @@ class TaskDetail extends Component {
     }
   }
 
+  showBaiduMap = task => {
+    const position = {
+      posX: task.addrPosX,
+      posY: task.addrPosY,
+      label: task.addrName,
+    }
+    this.props.dispatch(
+      NavigationActions.navigate({
+        routeName: 'BaiduMapPage',
+        params: { position, showBtn: false },
+      })
+    )
+  }
+
   componentDidMount = () => {
     const { taskDetail } = this.props.requirement
     taskDetail.taskStatus === 'AF' && this.findEvalution()  
@@ -279,14 +293,17 @@ class TaskDetail extends Component {
         >
           到：
         </InputItem>
-        <InputItem
-          labelNumber={5}
-          style={styles.itemStyle}
-          value={taskDetail && taskDetail.addrName}
-          editable={false}
-        >
-          地点：
-        </InputItem>
+        <View style={{flexDirection:'row',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(30)}}>
+          <View style={{flex:8}}>
+            <InputItem labelNumber={5} style={{flex:8,backgroundColor:'#ffffff',height:'99%',marginLeft: 0,paddingLeft:20,}} 
+              value={taskDetail && taskDetail.addrName} editable={false}>地点：</InputItem>
+          </View>
+
+          <TouchableOpacity onPress={() => this.showBaiduMap(taskDetail)}>
+          <Image style={{marginTop:2,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+            source={require('../images/map.png')} resizeMode='stretch' />
+          </TouchableOpacity>
+        </View>
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}
@@ -322,7 +339,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   itemStyle: {
-    flex: 1,
+    height:ScreenUtil.setSpText(30),
     backgroundColor: 'white',
     marginLeft: 0,
     paddingLeft: 20,

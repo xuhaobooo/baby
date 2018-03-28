@@ -370,10 +370,9 @@ class PublishRequire extends Component {
                 marginBottom:ScreenUtil.setSpText(10)}}>{item.cataName}</Text>
                 <View style={styles.serviceContainer}>
                   {item.list.map(serv => (
-                    <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14), 
-                      marginLeft:ScreenUtil.setSpText(5),marginBottom:ScreenUtil.setSpText(5)}} key={serv.itemCode}
+                    <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14), marginBottom:ScreenUtil.setSpText(5)}} key={serv.itemCode}
                     onChange={(e)=>this.serviceChanged(e,serv)} checked={this.state.serviceItems.hasOwnProperty(serv.itemCode)}>
-                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:ScreenUtil.setSpText(14),
+                      <Text style={{width:this.props.app.windowWidth/3-ScreenUtil.setSpText(20),fontSize:18,
                         marginBottom:ScreenUtil.setSpText(5)}}>{ serv.itemName }</Text>
                     </Checkbox>))}
                 </View>
@@ -417,9 +416,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     borderBottomWidth:1,
     borderBottomColor:'#eaeaea',
+    paddingLeft:ScreenUtil.setSpText(10),
   },
   selectItem : {
-    height:ScreenUtil.setSpText(30),
+    height:ScreenUtil.setSpText(25),
     borderBottomWidth: 1,
     borderBottomColor:'#eaeaea',
   }

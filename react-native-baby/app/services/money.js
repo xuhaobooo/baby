@@ -20,3 +20,9 @@ export async function myMoneyFlow(params) {
     method: 'GET',
   })
 }
+
+export async function listMyBank(params) {
+  return request(`/money/listMyBank`, {
+    method: 'GET',
+  })
+}

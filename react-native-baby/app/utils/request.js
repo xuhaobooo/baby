@@ -69,10 +69,22 @@ function convertDate(date, fmt) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
+
 export default function request(url, options) {
   const headers = new Headers()
   headers.append('Content-Type', 'text/plain')
   headers.append('X-My-Custom-Header', 'CustomValue')
+
+  const getCurrentScreen = (navigationState) => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    if (route.routes) {
+      return getCurrentScreen(route)
+    }
+    return route.routeName
+  }
 
   const defaultOptions = {
     credentials: 'include',
@@ -142,11 +154,21 @@ export default function request(url, options) {
         return
       }
       if (code === '10010002' || code === '10010004'||code === '10010005'||code === '10010006') {
-        global.app._store.dispatch({
-          type:'login/logout', 
-          payload:{}
-        })
-        return
+        const currentScreen = getCurrentScreen(global.app._store.getState().router)
+        console.log(currentScreen)
+        if (currentScreen === 'Login') {
+          const error = new Error(decodeURI(msg))
+          error.name = code
+          error.response = response
+          throw error
+
+        }else{
+          global.app._store.dispatch({
+            type:'login/logout', 
+            payload:{}
+          })
+        }
+        
       }
       
       const error = new Error(decodeURI(msg))

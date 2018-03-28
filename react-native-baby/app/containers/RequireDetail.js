@@ -6,6 +6,7 @@ import { Button, InputItem, Text, WhiteSpace, Toast, Modal,Checkbox,TextareaItem
 import { CompanySelector } from '../components'
 import * as ScreenUtil from '../utils/ScreenUtil'
 import Timeline from '../components/Timeline'
+import * as DateUtil from '../utils/TimeUtil'
 
 import { NavigationActions, createAction } from '../utils'
 import { map } from 'lodash'
@@ -13,7 +14,7 @@ import { map } from 'lodash'
 const alert = Modal.alert
 const operation = Modal.operation
 
-@connect(({ userInfo, requirement,evalution }) => ({ ...userInfo, requirement,evalution }))
+@connect(({ userInfo, requirement,evalution,money }) => ({ ...userInfo, requirement,evalution,money }))
 class RequireDetail extends Component {
 
   constructor(props){
@@ -53,9 +54,11 @@ class RequireDetail extends Component {
   }
 
   selectPayWay = () => {
+    const {balance} = this.props.money
     operation([
       { text: '微信支付', onPress: () => this.pay('wechatPay') },
       { text: '支付宝', onPress: () => this.pay('alipay') },
+      { text: '余额支付 ('+balance+'元)', onPress: () => this.pay('balance') },
     ])
   }
 
@@ -74,6 +77,16 @@ class RequireDetail extends Component {
     } else if (payType === 'wechatPay') {
       this.props.dispatch({
         type: 'requirement/wechatPay',
+        payload: {
+          busiCode: requirement.requireCode,
+          payAmount: requirement.feeAmount,
+          busiType: 'BZJ',
+        },
+        callback: this.payCallback,
+      })
+    }else if(payType === 'balance'){
+      this.props.dispatch({
+        type: 'requirement/balancePay',
         payload: {
           busiCode: requirement.requireCode,
           payAmount: requirement.feeAmount,
@@ -104,6 +117,20 @@ class RequireDetail extends Component {
     )
   }
 
+  cancelRequire = task => {
+    alert('请确定', '是否取消此订单，不能恢复?', [
+      { text: '取消' },
+      {
+        text: '确定',
+        onPress: () => this.props.dispatch(
+          createAction('requirement/cancelRequire')({
+            task,
+          })
+        ),
+      },
+    ])
+  }
+
   comment = task => {
     this.setState({showAddModal:true})
   }
@@ -114,13 +141,18 @@ class RequireDetail extends Component {
       case 'CONF':
         return (
           <View>
+          <View style={{flexDirection:'row'}}>
           <Button
             type="primary"
-            style={styles.actionBtn}
+            style={{margin: 5,flex:3}}
             disabled={true}
           >
             支付
           </Button>
+          <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
+          <Image style={{width:35,height:35,padding:0,}} 
+            source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+          </View>
           <Text style={{textAlign:'center',color:'pink'}}>等待接单者到达工作地点后您可以进行支付</Text>
           </View>
         )
@@ -128,16 +160,22 @@ class RequireDetail extends Component {
       case 'ARRV':
         if (!task.paid) {
           return (
+            <View style={{flexDirection:'row'}}>
             <Button
               type="primary"
-              style={styles.actionBtn}
+              style={{margin: 5,flex:3}}
               onClick={() => this.selectPayWay()}
             >
               支付
             </Button>
+            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
+            <Image style={{width:35,height:35,padding:0,}} 
+              source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+            </View>
           )
         }else{
           return (
+            <View>
             <Button
               type="primary"
               style={styles.actionBtn}
@@ -145,19 +183,26 @@ class RequireDetail extends Component {
             >
               完成验收
             </Button>
+            <Text style={{textAlign:'center',color:'pink'}}>等待接单者完成工作后，您可以进行验收</Text>
+            </View>
           )
         }
         break
       case 'PF':
         if (!task.paid) {
           return (
+            <View style={{flexDirection:'row'}}>
             <Button
               type="primary"
-              style={styles.actionBtn}
+              style={{margin: 5,flex:3}}
               onClick={() => this.selectPayWay()}
             >
               支付
             </Button>
+            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
+            <Image style={{width:35,height:35,padding:0,}} 
+              source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+            </View>
           )
         }else{
         return (
@@ -320,6 +365,11 @@ class RequireDetail extends Component {
 
     this.props.dispatch(createAction('requirement/queryAlertDict')({
     }))
+
+    this.props.dispatch(
+      createAction('money/myBalance')({
+      })
+    )
   }
 
   render() {
@@ -401,14 +451,14 @@ class RequireDetail extends Component {
         >
           到：
         </InputItem>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(31)}}>
+        <View style={{flexDirection:'row',backgroundColor:'#ffffff',width:'100%',height:ScreenUtil.setSpText(30)}}>
           <View style={{flex:8}}>
             <InputItem labelNumber={5} style={{flex:8,backgroundColor:'#ffffff',height:'99%',marginLeft: 0,paddingLeft:20,}} 
               value={requirement && requirement.addrName} editable={false}>地点：</InputItem>
           </View>
 
           <TouchableOpacity onPress={() => this.showBaiduMap(requirement)}>
-          <Image style={{marginTop:3,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
+          <Image style={{marginTop:2,width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
             source={require('../images/map.png')} resizeMode='stretch' />
           </TouchableOpacity>
         </View>
@@ -439,7 +489,7 @@ class RequireDetail extends Component {
               客户
             </CompanySelector>
           ) : (
-            <View style={{ flex: 2 }}>
+            <View style={{ flex: 1 }}>
               <InputItem
                 style={styles.itemStyle}
                 labelNumber={7}
@@ -459,9 +509,9 @@ class RequireDetail extends Component {
               <WhiteSpace size="xs" />
               <View style={{ flex: 6 }}>
                 <Timeline list={task ? task.stepList : []} />
-              </View>
-              {task && (task.taskStatus ==='CONF' || task.taskStatus ==='ARRV') && alertDict && alertDict.length > 0 && 
+                {task && (task.taskStatus ==='CONF' || task.taskStatus ==='ARRV') && alertDict && alertDict.length > 0 && 
                 <Text style={{marginLeft:ScreenUtil.setSpText(15),fontSize:18,color:'red',marginTop:20,marginBottom:20}}>{alertDict[0].dicLabel}</Text>}
+              </View>
               <WhiteSpace size="xs" />
               {task && this.renderAction(task)}
             </View>
@@ -479,7 +529,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   itemStyle: {
-    flex: 1,
+    height:ScreenUtil.setSpText(28),
     backgroundColor: 'white',
     marginLeft: 0,
     paddingLeft: 20,

@@ -59,16 +59,16 @@ class Account extends Component {
         </View>
         <View style={{flex:6}}>
         <List >
-            <Item key='tixian' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
+    <Item key='tixian' thumb={<Image style={{height:20,width:20,marginRight:10}} source={require('../images/money2.png')}/>} style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'Balance' }))} arrow="horizontal">
               提取余额
             </Item>
-            <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
+            <Item key='money' thumb={<Image style={{height:20,width:20,marginRight:10}} source={require('../images/purchase.png')}/>} style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'MoneyFlow' }))} arrow="horizontal">
               交易记录
             </Item>
-            <Item key='money' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
+            <Item key='money' thumb={<Image style={{height:20,width:20,marginRight:10}} source={require('../images/good.png')}/>} style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'EvalutionList' }))} arrow="horizontal">
               评价记录
             </Item>
-            <Item key='accountInfo' style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
+            <Item key='accountInfo' thumb={<Image style={{height:20,width:20,marginRight:10}} source={require('../images/key.png')}/>}  style={{marginBottom:1}} onClick={() => this.props.dispatch(NavigationActions.navigate({ routeName: 'ChangePassword' }))} arrow="horizontal">
               密码修改
             </Item>
         </List>

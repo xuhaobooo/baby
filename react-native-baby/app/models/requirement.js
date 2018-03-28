@@ -247,6 +247,44 @@ export default {
 
       Toast.success('确认任务完成！')
     },
+    *cancelRequire({ payload }, { select,call, put }) {
+      const { task } = payload
+      yield call(requireService.cancelRequire, task.requireCode)
+
+      task.stepList.push({stepContent:'用户已取消订单',doneTime:DateUtil.formatTimeFull(new Date())})
+      task.taskStatus = 'CC'
+      yield put(createAction('updateState')({ task }))
+
+      const requireList = yield select(state => state.requirement.myRequireList)
+      const newArray = requireList.map(item => {
+        if (item.requireCode === task.requireCode) {
+          item.requireStatus = 'CC'
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myRequireList: newArray }))
+
+      Toast.success('订单已取消！')
+    },
+    *cancelTask({ payload }, { select,call, put }) {
+      const { task } = payload
+      yield call(requireService.cancelTask, task.taskCode)
+
+      task.stepList.push({stepContent:'订单已被取消',doneTime:DateUtil.formatTimeFull(new Date())})
+      task.taskStatus = 'CC'
+      yield put(createAction('updateState')({ task }))
+
+      const requireList = yield select(state => state.requirement.myRequireList)
+      const newArray = requireList.map(item => {
+        if (item.requireCode === task.requireCode) {
+          item.requireStatus = 'CC'
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myRequireList: newArray }))
+
+      Toast.success('订单已取消！')
+    },
     *alipay({ payload, callback }, { select,call, put }) {
       const result = yield call(requireService.alipay, payload)
       yield payUtil.performAlipay(result, callback)
@@ -275,6 +313,18 @@ export default {
       } else {
         Toast.info('没有安装微信！', 1)
       }
+    },
+    *balancePay({ payload, callback }, { select,call, put }) {
+      const result = yield call(requireService.balancePay, payload)
+      if(callback) callback()
+      const requireList = yield select(state => state.requirement.myRequireList)
+      const newArray = requireList.map(item => {
+        if (item.requireCode === payload.busiCode) {
+          item.paid = true
+        }
+        return item
+      })
+      yield put(createAction('updateState')({ myRequireList: newArray }))
     },
   },
   subscriptions: {

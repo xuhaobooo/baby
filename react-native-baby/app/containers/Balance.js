@@ -1,26 +1,15 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-  Dimensions,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-} from 'react-native'
+import { StyleSheet, View, Text, ActivityIndicator, Dimensions, KeyboardAvoidingView, TouchableOpacity,Image} from 'react-native'
 import { connect } from 'react-redux'
 
 import { createAction, NavigationActions } from '../utils'
-import {
-  Button,
-  InputItem,
-  List,
-  WhiteSpace,
-  Toast,
-} from 'antd-mobile'
+import { Button, InputItem, List, WhiteSpace, Toast,Picker,} from 'antd-mobile'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+import {forEach, map} from 'lodash'
 import * as ScreenUtil from '../utils/ScreenUtil'
+
+const Item = List.Item
 
 @connect(({ money,app  }) => ({ ...money, app  }))
 class ForgetPassword extends Component {
@@ -34,6 +23,7 @@ class ForgetPassword extends Component {
     account:null,
     amount: null,
     amountError: false,
+    accountNo:null,
   }
 
   static navigationOptions = {
@@ -87,7 +77,7 @@ class ForgetPassword extends Component {
   }
 
   afterWithdraw =()=>{
-    Toast.info('提现成功，预计三个工作日内到账',3)
+    Toast.info('提现成功，预计五个工作日内到账')
     this.props.dispatch(NavigationActions.back())
   }
 
@@ -153,9 +143,32 @@ class ForgetPassword extends Component {
     })
   }
 
+  bankSelectChanged =(value)=>{
+    this.setState(
+      {accountNo:value}
+    )
+    const {bankList} = this.props
+    forEach(bankList,(item)=>{
+      if(value[0] === item.accountNo){
+        const {accountName, accountNo, bank} = item
+        this.setState({
+          name:accountName,
+          bank,
+          account:accountNo,
+        })
+        
+        return
+      }
+    })
+  }
+
   componentDidMount() {  
     this.props.dispatch(
       createAction('money/myBalance')({
+      })
+    )
+    this.props.dispatch(
+      createAction('money/listMyBank')({
       })
     )
   }  
@@ -163,7 +176,10 @@ class ForgetPassword extends Component {
   render() {
     const { fetching } = this.props.app
     const { windowHeight } = this.props.app
-    const {balance} = this.props
+    const {balance,bankList} = this.props
+    console.log(bankList)
+    const bankData=bankList && map(bankList,(item)=>{return {value:item.accountNo,label:item.accountName+':'+item.accountNo}})
+
     return (
         
         <View
@@ -174,9 +190,23 @@ class ForgetPassword extends Component {
           }}
         >
           <WhiteSpace size="md"/>
-          <Text style={{fontSize:40,textAlign:'center'}}>{balance}</Text>
+          <View style={{flexDirection:'row',justifyContent: 'center',alignItems: 'center',}}>
+          <Image style={{width:35,height:35,padding:0,}} 
+              source={require('../images/money2.png')} resizeMode='stretch' /><Text style={{fontSize:40,textAlign:'center'}}> {balance}</Text>
+          </View>
           <WhiteSpace />
           <WhiteSpace />
+          <InputItem
+            type="number"
+            placeholder="提现金额"
+            error={this.state.amountError}
+            value={this.state.amount}
+            onChange={this.onAmountChange}
+          />
+          <Picker data={bankData} cols={1} title="选择账号" style={{paddingLeft:20}}
+              onChange={this.bankSelectChanged} value={this.state.accountNo}>
+              <Item style={styles.selectItem} arraw="horizontal">选择账号</Item>
+            </Picker>
           <InputItem
             maxLength={30}
             placeholder="开户名称"
@@ -201,15 +231,6 @@ class ForgetPassword extends Component {
             value={this.state.account}
             onChange={this.onAccountChange}
           />
-
-          <InputItem
-            type="number"
-            placeholder="提现金额"
-            error={this.state.amountError}
-            value={this.state.amount}
-            onChange={this.onAmountChange}
-          />
-
           <WhiteSpace />
           <Button style={styles.registerBtn} onClick={this.withdraw} type="primary">提现</Button>
         </View>

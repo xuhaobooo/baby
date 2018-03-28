@@ -124,3 +124,22 @@ export async function wechatPay(params) {
     body: params,
   })
 }
+
+export async function balancePay(params) {
+  return request(`/money/pay`, {
+    method: 'POST',
+    body: params,
+  })
+}
+
+export async function cancelTask(taskCode) {
+  return request(`/babyRequire/cancelTask/${taskCode}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function cancelRequire(requireCode) {
+  return request(`/babyRequire/cancel/${requireCode}`, {
+    method: 'DELETE',
+  })
+}
