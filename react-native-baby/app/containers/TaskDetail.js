@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, TouchableOpacity,Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity,Image,ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 
 import { Button, InputItem, Text, Modal,WhiteSpace,Checkbox,TextareaItem,Toast } from 'antd-mobile'
@@ -148,9 +148,17 @@ class TaskDetail extends Component {
               ev=evalution.EvaList[1]
             }
             return (
-              <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10}}>
+              <View style={{height:150,backgroundColor:'#ffffff',padding:5}}>
                 <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
-                <Text>{ev.notes}</Text>
+                <ImageBackground
+                  resizeMode='stretch'
+                  source={require('../images/k.png')}
+                  style={{ height:120, width: '100%', padding:5 }}
+                >
+                <View style={{paddingTop:5}}>
+                  <Text>{ev.notes}</Text>
+                </View>
+                </ImageBackground>
               </View>
             )
           }
@@ -272,10 +280,11 @@ class TaskDetail extends Component {
           总费用：
         </InputItem>
         <WhiteSpace size="xs" />
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 6, backgroundColor:'#ffffff',paddingTop:5 }}>
           <Timeline list={taskDetail ? taskDetail.stepList : []} />
         </View>
-        {this.renderAction(taskDetail)}
+        <WhiteSpace size="xs" />
+        {taskDetail && this.renderAction(taskDetail)}
       </View>
     )
   }

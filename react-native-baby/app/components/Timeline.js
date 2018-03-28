@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View,ListView,ImageBackground } from 'react-native'
+import { StyleSheet, Text, View,ListView,ImageBackground,Image } from 'react-native'
 import { List } from 'antd-mobile'
 import { map } from 'lodash'
 
@@ -10,7 +10,7 @@ renderContent = list => {
 
   return (
     <ListView
-      initialListSize={1}
+      initialListSize={6}
       dataSource={dataSource}
       renderRow={this.renderItem}
       style={{ flex: 1 }}
@@ -20,27 +20,28 @@ renderContent = list => {
   )
 }
 // 渲染每一项的数据
-renderItem = data => (
-  <View style={{ flex: 1 }}>
+renderItem = (data,sectionID, rowID) => (
+  <View style={{ flex: 1,flexDirection:'row',paddingLeft:10 }}>
+    {rowID === '0' ? <Image source={require('../images/top.png')} style={{height:35,width:18}}/> : 
+    rowID === '4' ? <Image source={require('../images/bom.png')} style={{height:35,width:18}}/>:
+    <Image source={require('../images/mid.png')} style={{height:35,width:18}}/>}
     <ImageBackground
+      resizeMode='stretch'
       source={require('../images/ic_order_status_item_bg.png')}
-      style={{ height: 35, marginLeft: 10, width: '100%' }}
+      style={{ height: 35, marginLeft: 2, width: '100%' }}
     >
       {this.renderCenterContent(data)}
     </ImageBackground>
-    <View style={{ height: 1 }} />
   </View>
 )
 
 renderCenterContent = data => (
-  <View style={{ marginLeft: 15, marginTop: 5, flex:1 }}>
-    <View style={{ flex: 1,flexDirection: 'row' }}>
+  <View style={{ marginLeft: 15, marginTop: 5, flex:1,flexDirection: 'row' }}>
       <Text style={{ color: 'black', fontSize: 14 }}>{data.stepContent}</Text>
-      <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 10 }}>
-        <Text style={{ color: '#777', fontSize: 12, paddingRight: 10 }}>
+      <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 20 }}>
+        <Text style={{ color: '#777', fontSize: 12, paddingRight: 20 }}>
           {data.doneTime}
         </Text>
-      </View>
     </View>
   </View>
 )

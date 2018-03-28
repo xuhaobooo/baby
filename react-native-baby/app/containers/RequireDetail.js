@@ -262,9 +262,17 @@ class RequireDetail extends Component {
             ev=evalution.EvaList[1]
           }
           return (
-            <View style={{height:100,backgroundColor:'#ffffff',paddingLeft:10,paddingRight:10,marginBottom:5,marginTop:5}}>
+            <View style={{height:150,backgroundColor:'#ffffff',padding:5}}>
               <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
-              <Text>{ev.notes}</Text>
+              <ImageBackground
+                resizeMode='stretch'
+                source={require('../images/k.png')}
+                style={{ height:120, width: '100%', padding:5 }}
+              >
+              <View style={{paddingTop:5}}>
+                <Text>{ev.notes}</Text>
+              </View>
+              </ImageBackground>
             </View>
           )
         }
@@ -446,7 +454,7 @@ class RequireDetail extends Component {
                 电话：
               </InputItem>            
               <WhiteSpace size="xs" />
-              <View style={{ flex: 6 }}>
+              <View style={{ flex: 6,backgroundColor:'#ffffff',paddingTop:5 }}>
                 <Timeline list={task ? task.stepList : []} />
                 {task && (task.taskStatus ==='CONF' || task.taskStatus ==='ARRV') && alertDict && alertDict.length > 0 && 
                 <Text style={{marginLeft:ScreenUtil.setSpText(15),fontSize:18,color:'red',marginTop:20,marginBottom:20}}>{alertDict[0].dicLabel}</Text>}
