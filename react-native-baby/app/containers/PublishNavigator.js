@@ -347,9 +347,9 @@ class PublishRequire extends Component {
           onChange={this.trustChanged} value={this.state.trustCode}>
           <List.Item style={styles.selectItem} arraw="horizontal">信任期待:</List.Item>
         </Picker>
-        <View style={{flexDirection:'row',alignItems: 'center',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(25)}}>
+        <View style={{flexDirection:'row',backgroundColor:'white',width:'100%',height:ScreenUtil.setSpText(25)}}>
           <View style={{flex:8}}>
-            <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:ScreenUtil.setSpText(12),}} 
+            <InputItem labelNumber={7} style={{flex:8,backgroundColor:'white',height:'99%',marginLeft: 0,paddingLeft:20,}} 
               value={position && position.label} editable={false}>地点:</InputItem>
           </View>
 
