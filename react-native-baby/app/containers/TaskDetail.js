@@ -20,7 +20,7 @@ class TaskDetail extends Component {
     _this = this
   }
 
-  state = {showAddModal:false,level:null,evalution:null}
+  state = {}
 
   static navigationOptions = {
     headerTitle: (
@@ -173,24 +173,13 @@ class TaskDetail extends Component {
   }
 
   comment = task => {
-    this.setState({showAddModal:true})
-  }
-
-  addEvalution = () => {
     const { taskDetail } = this.props.requirement
-    this.props.dispatch({
-      type:'evalution/addEvalution',
-      payload:{level:this.state.level,notes:this.state.evalution,receiveUserCode:taskDetail.sendUserCode,
-        requireCode:taskDetail.requireCode,sendUserCode:taskDetail.getUserCode},
-      callback:this.afterEvalutionAdd
-      }
-    )
-  }
-
-  afterEvalutionAdd = () => {
-    this.setState({showAddModal:false,level:null,evalution:null})
-    Toast.success('发表成功',2)
-    this.findEvalution()
+    const requirement = {
+      companyCode : taskDetail.sendUserCode,
+      requireCode: taskDetail.requireCode,
+      userCode: taskDetail.getUserCode,
+    }
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'AddEvalution' ,params:{requirement} }))
   }
 
   findEvalution = () =>{
@@ -228,47 +217,7 @@ class TaskDetail extends Component {
   
     return (
       <View style={styles.container}>
-        <Modal
-          style={{width:'90%'}}
-          visible={this.state.showAddModal}
-          transparent
-          maskClosable={false}
-          title="发表评论"
-          footer={[{ text: '取消', onPress: () => { this.setState({showAddModal:false}) } },
-          { text: '确定', onPress: () => { this.addEvalution() } }]}
-        >
-          <WhiteSpace/>
-          <View style={{flexDirection: 'row',borderBottomWidth:1,borderBottomColor:'#eaeaea'}}>
-            <View style={{flex:1,alignItems:'center'}}><Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='low' 
-              onChange={(e)=>this.setState({level:'LOW'})} checked={this.state.level==='LOW'}>
-              <Text>差评</Text>
-            </Checkbox>
-            </View>
-            <View style={{flex:1,alignItems:'center'}}>
-            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='mid'
-              onChange={(e)=>this.setState({level:'MID'})} checked={this.state.level==='MID'}>
-              <Text>中评</Text>
-            </Checkbox>
-            </View>
-            <View style={{flex:1,alignItems:'center'}}>
-            <Checkbox style={{width:ScreenUtil.setSpText(14),height:ScreenUtil.setSpText(14)}} key='high'
-              onChange={(e)=>this.setState({level:'HIGH'})} checked={this.state.level==='HIGH'}>
-              <Text>好评</Text>
-            </Checkbox>
-            </View>
-          </View>
-          <TextareaItem
-            placeholder="写点评价吧，您的评价对其他人很重要"
-            value={this.state.evalution}
-            rows={6}
-            count={100}
-            returnKeyType ='done'
-            underlineColorAndroid="transparent"
-            onChange={(value) => this.setState({evalution:value})}
-          />
-          <WhiteSpace style={{height:10,backgroundColor:'white',}} />
 
-        </Modal>
         <InputItem
           labelNumber={5}
           style={styles.itemStyle}

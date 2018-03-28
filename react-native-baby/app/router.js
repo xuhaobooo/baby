@@ -33,6 +33,7 @@ import ChangePassword from './containers/ChangePassword'
 import MoneyFlowDetail from './containers/MoneyFlowDetail'
 import EvalutionDetail from './containers/EvalutionDetail'
 import ModifyUserInfo from './containers/ModifyUserInfo'
+import AddEvalution from './containers/AddEvalution'
 
 import OrderNaigator from './containers/OrderNaigator'
 import ApplyRequireDetail from './containers/ApplyRequireDetail'
@@ -75,6 +76,7 @@ const MainNavigator = StackNavigator(
     MoneyFlowDetail:{screen:MoneyFlowDetail},
     EvalutionDetail: {screen: EvalutionDetail},
     ModifyUserInfo: {screen: ModifyUserInfo},
+    AddEvalution: {screen: AddEvalution},
   },
   {
     headerMode: 'float',
