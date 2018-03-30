@@ -33,7 +33,7 @@ class MyTask extends Component {
         source={require('../images/task.png')}
       />),
     headerLeft:<View/>,
-    headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    headerRight:(<TouchableOpacity onPress={() => {_this.refreshTasks()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
       </TouchableOpacity>
@@ -132,9 +132,17 @@ class MyTask extends Component {
     }
   }
 
-  refresh = () =>{
+  refreshTasks = () =>{
     const {startDate,endDate} = this.state
     this.props.dispatch(createAction('requirement/queryMyTask')({
+      startDate,
+      endDate,
+    }))
+  }
+
+  refreshRequires = () =>{
+    const {startDate,endDate} = this.state
+    this.props.dispatch(createAction('requirement/queryMyRequire')({
       startDate,
       endDate,
     }))

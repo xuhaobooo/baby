@@ -49,13 +49,14 @@ export default {
         yield put(createAction('updateState')({ applies }))
       }
     },
-    *findRequire({ payload }, { call, put }) {
+    *findRequire({ payload,callback }, { call, put }) {
       const { requireCode } = payload
       yield put(createAction('updateState')({ requirement:null}))
       const requirement = yield call(requireService.findRequire, requireCode)
       if (requirement) {
         yield put(createAction('updateState')({ requirement }))
       }
+      if(callback) callback()
     },
     *selectApply({ payload,callback }, { select, call, put }) {
       const { applyId, requireCode } = payload

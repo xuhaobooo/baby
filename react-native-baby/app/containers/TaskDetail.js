@@ -36,7 +36,7 @@ class TaskDetail extends Component {
         任务详情
       </Text>
     ),
-    headerRight: <TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    headerRight: <TouchableOpacity onPress={() => {_this.refreshTask()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
     <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
       source={require('../images/refresh.png')} resizeMode='stretch' />
     </TouchableOpacity>,
@@ -189,14 +189,13 @@ class TaskDetail extends Component {
     }}
   }
 
-  refresh =()=>{
+  refreshTask =()=>{
     const { taskDetail } = this.props.requirement
     this.props.dispatch(
       createAction('requirement/findTaskByTaskCode')({
         taskCode:taskDetail.taskCode,
       })
     )
-    
   }
 
   comment = task => {

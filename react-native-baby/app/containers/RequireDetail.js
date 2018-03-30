@@ -38,7 +38,7 @@ class RequireDetail extends Component {
         需求详情
       </Text>
     ),
-    headerRight: <TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    headerRight: <TouchableOpacity onPress={() => {_this.refreshRequire()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
     <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
       source={require('../images/refresh.png')} resizeMode='stretch' />
     </TouchableOpacity>,
@@ -131,7 +131,7 @@ class RequireDetail extends Component {
     ])
   }
 
-  comment = task => {
+  comment = () => {
     const { requirement } = this.props.requirement
     this.props.dispatch(NavigationActions.navigate({ routeName: 'AddEvalution' ,params:{requirement} }))
   }
@@ -226,8 +226,6 @@ class RequireDetail extends Component {
         break
       case 'AF':
         const {userInfo,evalution} = this.props
-        console.log(userInfo)
-        console.log(evalution)
         if(!evalution.EvaList || evalution.EvaList.length ===0){
           return (
             <Button
@@ -301,20 +299,20 @@ class RequireDetail extends Component {
     )
   }
 
-  refresh =()=>{
+  refreshRequire =()=>{
     const { requirement } = this.props.requirement
     if(requirement){
-      this.props.dispatch(
-        createAction('requirement/findRequire')({
-          requireCode:requirement.requireCode,
-        })
-      )
       this.initTaskData(requirement)
     } 
-    
   }
 
   initTaskData = (requirement) => {
+    this.props.dispatch(
+      createAction('requirement/findRequire')({
+        requireCode:requirement.requireCode,
+      })
+    )
+    
     if (requirement.requireStatus === 'NEW') {
       this.props.dispatch(
         createAction('requirement/findApply')({
@@ -327,7 +325,6 @@ class RequireDetail extends Component {
           requireCode: requirement.requireCode,
         })
       )
-      this.findEvalution()
     }
     else {
       this.props.dispatch(
@@ -336,23 +333,21 @@ class RequireDetail extends Component {
         })
       )
     }
-    
+    this.findEvalution()
+    this.props.dispatch(
+      createAction('money/myBalance')({
+      })
+    )
+    this.setState({initFlag:true})
   }
 
   componentDidMount = () => {
     const { requirement } = this.props.requirement
     if(requirement){
       this.initTaskData(requirement)
-      this.setState({initFlag:true})
     }
-
     this.props.dispatch(createAction('requirement/queryAlertDict')({
-    }))
-
-    this.props.dispatch(
-      createAction('money/myBalance')({
-      })
-    )
+    }))  
   }
 
   render() {
@@ -363,7 +358,6 @@ class RequireDetail extends Component {
 
     if(!this.state.initFlag && requirement){
       this.initTaskData(requirement)
-      this.setState({initFlag:true})
     }
 
     return (
