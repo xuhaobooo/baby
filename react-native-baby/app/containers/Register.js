@@ -304,6 +304,7 @@ class Register extends Component {
             error={this.state.mobileError}
             value={this.state.mobile}
             onChange={this.onMobileChange}
+            style={styles.inputStyle}
           />
 
           <View
@@ -312,7 +313,7 @@ class Register extends Component {
               alignItems: 'center',
               backgroundColor: 'white',
               width: '100%',
-              height: 40,
+              height:ScreenUtil.setSpText(32)
             }}
           >
             <View style={{ flex: 8, backgroundColor: 'white' }}>
@@ -338,6 +339,7 @@ class Register extends Component {
             error={this.state.nameError}
             value={this.state.name}
             onChange={this.onNameChange}
+            style={styles.inputStyle}
           />
 
           <View
@@ -346,7 +348,7 @@ class Register extends Component {
               alignItems: 'center',
               backgroundColor: 'white',
               width: '100%',
-              height: 40,
+              height:ScreenUtil.setSpText(32)
             }}
           >
             <View style={{ flex: 8 }}>
@@ -356,6 +358,7 @@ class Register extends Component {
                 style={{ flex: 8, backgroundColor: 'white' }}
                 value={position && position.label}
                 editable={false}
+                style={styles.inputStyle}
                 placeholder="地点"
               />
             </View>
@@ -385,6 +388,7 @@ class Register extends Component {
             error={this.state.passwordError}
             value={this.state.password}
             onChange={this.onPasswordChange}
+            style={styles.inputStyle}
           />
 
           <InputItem
@@ -393,6 +397,7 @@ class Register extends Component {
             error={this.state.passwordConfError}
             value={this.state.passwordConf}
             onChange={this.onPasswordConfChange}
+            style={styles.inputStyle}
           />
 
           <InputItem
@@ -401,6 +406,7 @@ class Register extends Component {
             value={this.state.invite}
             error={this.state.inviteError}
             onChange={this.onInviteChange}
+            style={styles.inputStyle}
           />
 
           <TextareaItem
@@ -408,6 +414,8 @@ class Register extends Component {
             value={this.state.note}
             rows={6}
             count={100}
+            blurOnSubmit={true}
+            underlineColorAndroid="transparent"
             onChange={this.onNoteChange}
             style={{marginLeft:10,marginRight:10}}
           />
@@ -464,6 +472,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
     
   },
+  inputStyle : {
+    height:ScreenUtil.setSpText(32),
+  }
 })
 
 export default Register

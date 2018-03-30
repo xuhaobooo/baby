@@ -25,18 +25,22 @@ renderItem = (data,sectionID, rowID) => (
     {rowID === '0' ? <Image source={require('../images/top.png')} style={{height:35,width:18}}/> : 
     rowID === '4' ? <Image source={require('../images/bom.png')} style={{height:35,width:18}}/>:
     <Image source={require('../images/mid.png')} style={{height:35,width:18}}/>}
-      <View style={{paddingTop:3}}>{this.renderCenterContent(data)}</View>
+      <View style={{flex:1,paddingTop:10,flexDirection:'row',marginLeft:5}}>
+        <View style={{flex:1}}>
+          <Text style={{ color: 'black', fontSize: 14 }}>{data.stepContent}</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <Text style={{ color: '#777', fontSize: 12, paddingRight: 20 }}>
+            {data.doneTime}
+          </Text>
+        </View>
+      </View>
   </View>
 )
 
 renderCenterContent = data => (
   <View style={{ marginLeft: 15, marginTop: 5, flex:1,flexDirection: 'row' }}>
-      <Text style={{ color: 'black', fontSize: 14 }}>{data.stepContent}</Text>
-      <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 20 }}>
-        <Text style={{ color: '#777', fontSize: 12, paddingRight: 20 }}>
-          {data.doneTime}
-        </Text>
-    </View>
+      
   </View>
 )
 

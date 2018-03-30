@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 
 import { createAction, NavigationActions } from '../utils'
 import { Button, InputItem, WhiteSpace, Toast, TextareaItem,} from 'antd-mobile'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import * as ScreenUtil from '../utils/ScreenUtil'
 

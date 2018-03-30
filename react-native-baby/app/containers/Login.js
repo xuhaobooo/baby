@@ -88,8 +88,8 @@ class Login extends Component {
   render() {
     const { fetching } = this.props.app
     const guestData = [
-      { value: '13312312312', label: '需求方' },
-      { value: '13412312312', label: '供应方' },
+      { value: '13312312312', label: '游客一' },
+      { value: '13412312312', label: '游客二' },
     ]
     const { windowHeight } = this.props.app
     return (

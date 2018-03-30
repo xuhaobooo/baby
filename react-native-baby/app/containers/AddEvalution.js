@@ -99,6 +99,7 @@ class EvalutionAdd extends Component {
             value={this.state.evalution}
             rows={8}
             count={100}
+            blurOnSubmit={true}
             underlineColorAndroid="transparent"
             onChange={(value) => this.setState({evalution:value})}
           />
