@@ -21,6 +21,12 @@ export default {
     myTaskList: [],
     task: null,
     taskDetail:null,
+    requireQueryStart:null,
+    requireQueryEnd:null,
+    taskQueryStart:null,
+    taskQueryEnd:null,
+    applyQueryStart:null,
+    applyQueryEnd:null,
   },
   reducers: {
     updateState(state, { payload }) {

@@ -34,7 +34,12 @@ class OrderNaigator extends Component {
       />
     ),
     headerLeft:<View/>,
-    headerRight:(<TouchableOpacity onPress={() => {_this.refresh()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    headerRight:(<TouchableOpacity onPress={() => {
+      global.app._store.dispatch(createAction('requirement/queryPendMyRequire')({
+        startTime:app._store.getState().requirement.applyQueryStart,
+        endTime:app._store.getState().requirement.applyQueryEnd,
+      }))
+    }} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
       </TouchableOpacity>)
@@ -52,10 +57,10 @@ class OrderNaigator extends Component {
           startTime:this.getStartOfDate(date),
           endTime:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          applyQueryStart:this.getStartOfDate(date),
+          applyQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       case 1:
         date.setDate(date.getDate()+1);
@@ -63,10 +68,10 @@ class OrderNaigator extends Component {
           startTime:this.getStartOfDate(date),
           endTime:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          applyQueryStart:this.getStartOfDate(date),
+          applyQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       case 2:
         date.setDate(date.getDate()+2);
@@ -74,10 +79,10 @@ class OrderNaigator extends Component {
           startTime:this.getStartOfDate(date),
           endTime:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          applyQueryStart:this.getStartOfDate(date),
+          applyQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       default:
          break;
@@ -102,24 +107,16 @@ class OrderNaigator extends Component {
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' 23:59:59';
   }
 
-  refresh = () =>{
-    const {startDate,endDate} = this.state
-    this.props.dispatch(createAction('requirement/queryPendMyRequire')({
-      startDate,
-      endDate,
-    }))
-  }
-
   componentDidMount = () => {
     const date = new Date()
     this.props.dispatch(createAction('requirement/queryPendMyRequire')({
       startTime:this.getStartOfDate(date),
       endTime:this.getEndOfDate(date),
     }))
-    this.setState({
-      startDate:this.getStartOfDate(date),
-      endDate:this.getEndOfDate(date),
-    })
+    this.props.dispatch(createAction('requirement/updateState')({ 
+      applyQueryStart:this.getStartOfDate(date),
+      applyQueryEnd:this.getEndOfDate(date),
+     }))
   }
 
   render() {

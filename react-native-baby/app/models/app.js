@@ -30,17 +30,14 @@ export default {
       if(callback) callback()
     },
     *updateApply({payload}, { call, put }){
-      yield put(createAction('requirement/findRequire')({ requireCode:payload.value }))
-      yield put(NavigationActions.navigate({ routeName: 'RequireDetail' }))
+      yield put(NavigationActions.navigate({ routeName: 'RequireDetail',params:{requireCode:payload.value} }))
       
     },
     *updateSelect({payload}, { call, put }){
-      yield put(createAction('requirement/findTaskByTaskCode')({ taskCode:payload.value }))
-      yield put(NavigationActions.navigate({ routeName: 'TaskDetail' }))
+      yield put(NavigationActions.navigate({ routeName: 'TaskDetail',params:{ taskCode:payload.value } }))
     },
     *updatePay({payload}, { call, put }){
-      yield put(createAction('requirement/findTaskByTaskCode')({ taskCode:payload.value }))
-      yield put(NavigationActions.navigate({ routeName: 'TaskDetail' }))
+      yield put(NavigationActions.navigate({ routeName: 'TaskDetail',params:{ taskCode:payload.value } }))
     },
     *updatePublish({payload}, { call, put }){
       const requirement =yield call(requireService.findRequire, payload.value)

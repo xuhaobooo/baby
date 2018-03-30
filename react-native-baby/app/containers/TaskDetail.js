@@ -191,16 +191,16 @@ class TaskDetail extends Component {
 
   refreshTask =()=>{
     const { taskDetail } = this.props.requirement
-    taskDetail && this.initTask(taskDetail)
-  }
-
-  initTask = (taskDetail) => {
-    this.setState({initFlag:true})
     this.props.dispatch(
       createAction('requirement/findTaskByTaskCode')({
         taskCode:taskDetail.taskCode,
       })
     )
+    this.setState({initFlag:false})
+  }
+
+  initTask = (taskDetail) => {
+    this.setState({initFlag:true})
     this.findEvalution(taskDetail)
     
   }
@@ -240,8 +240,13 @@ class TaskDetail extends Component {
   }
 
   componentDidMount = () => {
-    const { taskDetail } = this.props.requirement
-    taskDetail && this.initTask(taskDetail)
+    const { navigation } = this.props
+    const taskCode = navigation.state.params.taskCode
+    this.props.dispatch(
+      createAction('requirement/findTaskByTaskCode')({
+        taskCode,
+      })
+    )
   }
 
   render() {

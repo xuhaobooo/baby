@@ -33,7 +33,12 @@ class MyTask extends Component {
         source={require('../images/task.png')}
       />),
     headerLeft:<View/>,
-    headerRight:(<TouchableOpacity onPress={() => {_this.refreshTasks()}} style={{marginRight:ScreenUtil.setSpText(10)}}>
+    headerRight:(<TouchableOpacity onPress={() => {
+      global.app._store.dispatch(createAction('requirement/queryMyTask')({
+        startDate:global.app._store.getState().requirement.taskQueryStart,
+        endDate:global.app._store.getState().requirement.taskQueryEnd,
+      }))
+    }} style={{marginRight:ScreenUtil.setSpText(10)}}>
       <Image style={{width:ScreenUtil.setSpText(20),height:ScreenUtil.setSpText(20),paddingLeft:0,paddingRight:0,}} 
         source={require('../images/refresh.png')} resizeMode='stretch' />
       </TouchableOpacity>
@@ -48,10 +53,10 @@ class MyTask extends Component {
           startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          taskQueryStart:this.getStartOfDate(date),
+          taskQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       case 1:
         date.setDate(date.getDate()+1);
@@ -59,10 +64,10 @@ class MyTask extends Component {
           startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          taskQueryStart:this.getStartOfDate(date),
+          taskQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       case 2:
         date.setDate(date.getDate()+7);
@@ -70,10 +75,10 @@ class MyTask extends Component {
           startDate:this.getStartOfDate(new Date()),
           endDate:this.getEndOfDate(date),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(date),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          taskQueryStart:this.getStartOfDate(new Date()),
+          taskQueryEnd:this.getEndOfDate(date),
+         }))
         break;
       case 3:
         date.setMonth(date.getMonth() - 3);
@@ -81,10 +86,10 @@ class MyTask extends Component {
           startDate:this.getStartOfDate(date),
           endDate:this.getEndOfDate(new Date()),
         }))
-        this.setState({
-          startDate:this.getStartOfDate(date),
-          endDate:this.getEndOfDate(new Date()),
-        })
+        this.props.dispatch(createAction('requirement/updateState')({ 
+          taskQueryStart:this.getStartOfDate(date),
+          taskQueryEnd:this.getEndOfDate(new Date()),
+         }))
         break;
       default:
          break;
@@ -93,7 +98,7 @@ class MyTask extends Component {
 
   onItemClick = (value) => {
     this.props.dispatch(createAction('requirement/updateState')({ taskDetail:value }))
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'TaskDetail' }))
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'TaskDetail', params:{ taskCode:value.taskCode } }))
   }
 
   tabs2 = [
@@ -132,22 +137,6 @@ class MyTask extends Component {
     }
   }
 
-  refreshTasks = () =>{
-    const {startDate,endDate} = this.state
-    this.props.dispatch(createAction('requirement/queryMyTask')({
-      startDate,
-      endDate,
-    }))
-  }
-
-  refreshRequires = () =>{
-    const {startDate,endDate} = this.state
-    this.props.dispatch(createAction('requirement/queryMyRequire')({
-      startDate,
-      endDate,
-    }))
-  }
-
   componentDidMount = () => {
     const date = new Date()
     this.props.dispatch(createAction('requirement/queryMyTask')({
@@ -155,10 +144,10 @@ class MyTask extends Component {
       endDate:this.getEndOfDate(date),
     }))
 
-    this.setState({
-      startDate:this.getStartOfDate(date),
-      endDate:this.getEndOfDate(date),
-    })
+    this.props.dispatch(createAction('requirement/updateState')({ 
+      taskQueryStart:this.getStartOfDate(date),
+      taskQueryEnd:this.getEndOfDate(date),
+     }))
   }
 
   render() {

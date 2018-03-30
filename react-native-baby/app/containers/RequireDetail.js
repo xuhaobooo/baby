@@ -63,7 +63,7 @@ class RequireDetail extends Component {
   }
 
   pay = payType => {
-    const { requirement: { requirement } } = this.props
+    const { requirement } = this.props.requirement
     if (payType === 'alipay') {
       this.props.dispatch({
         type: 'requirement/alipay',
@@ -98,7 +98,7 @@ class RequireDetail extends Component {
   }
 
   payCallback = () => {
-    const { requirement: { task } } = this.props
+    const { task } = this.props.requirement
     task.paid = true
     task.stepList.push({stepContent:'用户支付',doneTime:DateUtil.formatTimeFull(new Date())})
     this.props.dispatch(
@@ -254,12 +254,12 @@ class RequireDetail extends Component {
             ev=evalution.EvaList[1]
           }
           return (
-            <View style={{height:150,backgroundColor:'#ffffff',padding:5}}>
+            <View style={{height:120,backgroundColor:'#ffffff',padding:5}}>
               <Text>已给评价：{ev.level === 'LOW'? '差评':ev.level==='HIGH'?'好评':'中评'}</Text>
               <ImageBackground
                 resizeMode='stretch'
                 source={require('../images/k.png')}
-                style={{ height:120, width: '100%', padding:5 }}
+                style={{ height:100, width: '100%', padding:5 }}
               >
               <View style={{paddingTop:5}}>
                 <Text>{ev.notes}</Text>
@@ -277,7 +277,7 @@ class RequireDetail extends Component {
   }
 
   findEvalution = () =>{
-    const { requirement: { requirement }} = this.props
+    const { requirement } = this.props.requirement
     this.props.dispatch(
       createAction('evalution/findEvaByBcode')({
         requireCode: requirement.requireCode
@@ -301,19 +301,17 @@ class RequireDetail extends Component {
 
   refreshRequire =()=>{
     const { requirement } = this.props.requirement
-    if(requirement){
-      this.initTaskData(requirement)
-    } 
-  }
-
-  initTaskData = (requirement) => {
-    this.setState({initFlag:true})
     this.props.dispatch(
       createAction('requirement/findRequire')({
         requireCode:requirement.requireCode,
       })
     )
-    
+    this.setState({initFlag:false})
+  }
+
+  initTaskData = (requirement) => {
+    this.setState({initFlag:true})
+
     if (requirement.requireStatus === 'NEW') {
       this.props.dispatch(
         createAction('requirement/findApply')({
@@ -343,10 +341,15 @@ class RequireDetail extends Component {
   }
 
   componentDidMount = () => {
-    const { requirement } = this.props.requirement
-    if(requirement){
-      this.initTaskData(requirement)
-    }
+    const { navigation } = this.props
+    const requireCode = navigation.state.params.requireCode
+
+    this.props.dispatch(
+      createAction('requirement/findRequire')({
+        requireCode,
+      })
+    )
+
     this.props.dispatch(createAction('requirement/queryAlertDict')({
     }))  
   }
