@@ -222,7 +222,7 @@ class RequireDetail extends Component {
         return <Text style={{textAlign:'center',color:'pink'}}>正在获取支付信息，请稍后在查看</Text>
         break
       case 'CC':
-        return <Text style={{textAlign:'center',color:'pink'}}>订单已取消</Text>
+        return <Text style={{height:35,fontSize:18,textAlign:'center',color:'pink',backgroundColor:'#ffffff'}}>订单已取消</Text>
         break
       case 'AF':
         const {userInfo,evalution} = this.props
@@ -435,7 +435,9 @@ class RequireDetail extends Component {
             <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire({requireCode:requirement.requireCode})}>取消</Button>
             <Text style={{textAlign:'center',color:'pink'}}>等待接单者接单后您可以选择接单者</Text>
           </View>
-          ) : (
+          ) : (requirement.requireStatus === 'CC' && !task) ? <View style={{flex:1,alignContent:'center'}}>
+            <Text style={{flex:1,textAlign:'center',color:'pink',paddingTop:100,fontSize:18}}>订单已取消</Text>
+          </View> : 
             <View style={{ flex: 1 }}>
               <InputItem
                 style={styles.itemStyle}
@@ -462,7 +464,7 @@ class RequireDetail extends Component {
               <WhiteSpace size="xs" />
               {task && this.renderAction(task)}
             </View>
-          ))}
+          )}
         </View>
       </View>
     )
