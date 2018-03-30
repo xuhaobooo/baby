@@ -343,7 +343,11 @@ class RequireDetail extends Component {
   componentDidMount = () => {
     const { navigation } = this.props
     const requireCode = navigation.state.params.requireCode
-
+    this.props.dispatch(
+      createAction('requirement/findApply')({
+        requireCode,
+      })
+    )
     this.props.dispatch(
       createAction('requirement/findRequire')({
         requireCode,
