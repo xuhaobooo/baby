@@ -58,14 +58,29 @@ class TaskDetail extends Component {
     )
   }
 
+  cancelTask = task => {
+    alert('请确定', '是否取消此订单，不能恢复?', [
+      { text: '取消' },
+      {
+        text: '确定',
+        onPress: () => this.props.dispatch(
+          createAction('requirement/cancelTask')({
+            task,
+          })
+        ),
+      },
+    ])
+  }
+
   renderAction = task => {
     if(task){
     switch (task.taskStatus) {
       case 'CONF':
         return (
+          <View style={{flexDirection:'row'}}>
           <Button
             type="primary"
-            style={styles.actionBtn}
+            style={{margin: 5,flex:3}}
             onClick={() =>
               alert('请确定', '是否确定到达目的地?', [
                 { text: '取消' },
@@ -78,12 +93,15 @@ class TaskDetail extends Component {
           >
             到达
           </Button>
+          <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelTask(task)}>取消</Button>
+          </View>
         )
       case 'ARRV':
         return (
+          <View style={{flexDirection:'row'}}>
           <Button
             type="primary"
-            style={styles.actionBtn}
+            style={{margin: 5,flex:3}}
             onClick={() =>
               alert('请确定', '是否确定已完成工作?', [
                 { text: '取消' },
@@ -96,18 +114,19 @@ class TaskDetail extends Component {
           >
             完成
           </Button>
+          {(!task.paid) && <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelTask(task)}>取消</Button>}
+          </View>
         )
         case 'PF':
         return (
           <View>
-          <Button
-            type="primary"
-            style={styles.actionBtn}
-            disabled={true}
-          >
-            发表评价
-          </Button>
-          <Text style={{textAlign:'center',color:'pink'}}>等待用户支付并确认后，您可进行评价</Text>
+            <View style={{flexDirection:'row'}}>
+              <Button type="primary" style={{margin: 5,flex:3}} disabled={true}>
+                发表评价
+              </Button>
+              {(!task.paid) && <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelTask(task)}>取消</Button>}
+            </View>
+            <Text style={{textAlign:'center',color:'pink'}}>等待用户支付并确认后，您可进行评价</Text>
           </View>
         )
           break
@@ -280,7 +299,7 @@ class TaskDetail extends Component {
           总费用：
         </InputItem>
         <WhiteSpace size="xs" />
-        <View style={{ flex: 6, backgroundColor:'#ffffff',paddingTop:5 }}>
+        <View style={{ flex: 6,backgroundColor:'#ffffff',paddingTop:5 }}>
           <Timeline list={taskDetail ? taskDetail.stepList : []} />
         </View>
         <WhiteSpace size="xs" />

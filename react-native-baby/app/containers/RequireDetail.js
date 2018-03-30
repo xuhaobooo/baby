@@ -149,9 +149,7 @@ class RequireDetail extends Component {
           >
             支付
           </Button>
-          <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
-          <Image style={{width:35,height:35,padding:0,}} 
-            source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+          <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>取消</Button>
           </View>
           <Text style={{textAlign:'center',color:'pink'}}>等待接单者到达工作地点后您可以进行支付</Text>
           </View>
@@ -168,9 +166,7 @@ class RequireDetail extends Component {
             >
               支付
             </Button>
-            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
-            <Image style={{width:35,height:35,padding:0,}} 
-              source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>取消</Button>
             </View>
           )
         }else{
@@ -199,9 +195,7 @@ class RequireDetail extends Component {
             >
               支付
             </Button>
-            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>
-            <Image style={{width:35,height:35,padding:0,}} 
-              source={require('../images/delete.png')} resizeMode='stretch' /><Text> 取消</Text></Button>
+            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire(task)}>取消</Button>
             </View>
           )
         }else{
@@ -432,9 +426,15 @@ class RequireDetail extends Component {
         <WhiteSpace size="xs" />
         <View style={styles.actionStyle}>
           {requirement && (requirement.requireStatus === 'NEW' ? (
+            <View style={{flex:1}}>
+            <View style={{flex:8}}>
             <CompanySelector list={applies} clickHandle={this.selectCompany}>
               客户
             </CompanySelector>
+            </View>
+            <Button style={{margin: 5,flex:1,flexDirection:'row'}} onClick={() => this.cancelRequire({requireCode:requirement.requireCode})}>取消</Button>
+            <Text style={{textAlign:'center',color:'pink'}}>等待接单者接单后您可以选择接单者</Text>
+          </View>
           ) : (
             <View style={{ flex: 1 }}>
               <InputItem

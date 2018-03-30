@@ -180,6 +180,9 @@ class Register extends Component {
             placeholder="自我介绍，能让人更好的了解您"
             value={this.state.note}
             rows={6}
+            returnKeyType ='done'
+            blurOnSubmit={true}
+            underlineColorAndroid="transparent"
             count={100}
             onChange={this.onNoteChange}
             style={{marginLeft:10,marginRight:10}}

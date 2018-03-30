@@ -251,9 +251,11 @@ export default {
       const { task } = payload
       yield call(requireService.cancelRequire, task.requireCode)
 
-      task.stepList.push({stepContent:'用户已取消订单',doneTime:DateUtil.formatTimeFull(new Date())})
-      task.taskStatus = 'CC'
-      yield put(createAction('updateState')({ task }))
+      if(task.stepList){
+        task.stepList.push({stepContent:'用户已取消订单',doneTime:DateUtil.formatTimeFull(new Date())})
+        task.taskStatus = 'CC'
+        yield put(createAction('updateState')({ task }))
+      }      
 
       const requireList = yield select(state => state.requirement.myRequireList)
       const newArray = requireList.map(item => {

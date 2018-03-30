@@ -112,12 +112,16 @@ android {
       storePassword "123456"
       keyAlias "baby"
       keyPassword "123456"
+      v1SigningEnabled true
+      v2SigningEnabled true
     }
     debug {
       keyAlias 'baby'
       keyPassword '123456'
       storeFile file('../keystores/baby.keystore')
       storePassword '123456'
+      v1SigningEnabled true
+      v2SigningEnabled true
     }
   }
   splits {

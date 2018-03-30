@@ -21,17 +21,11 @@ renderContent = list => {
 }
 // 渲染每一项的数据
 renderItem = (data,sectionID, rowID) => (
-  <View style={{ flex: 1,flexDirection:'row',paddingLeft:10 }}>
+  <View style={{ height:35,flexDirection:'row',paddingLeft:10 }}>
     {rowID === '0' ? <Image source={require('../images/top.png')} style={{height:35,width:18}}/> : 
     rowID === '4' ? <Image source={require('../images/bom.png')} style={{height:35,width:18}}/>:
     <Image source={require('../images/mid.png')} style={{height:35,width:18}}/>}
-    <ImageBackground
-      resizeMode='stretch'
-      source={require('../images/ic_order_status_item_bg.png')}
-      style={{ height: 35, marginLeft: 2, width: '100%' }}
-    >
-      {this.renderCenterContent(data)}
-    </ImageBackground>
+      <View style={{paddingTop:3}}>{this.renderCenterContent(data)}</View>
   </View>
 )
 
