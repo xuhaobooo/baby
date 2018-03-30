@@ -229,7 +229,7 @@ export default {
         status = 'AF'
         task.taskStatus = 'AF'
         task.stepList.push({stepContent:'用户已确认完成',doneTime:DateUtil.formatTimeFull(new Date())})
-        task.stepList.push({stepContent:'服务结束',doneTime:DateUtil.formatTimeFull(new Date())})
+        task.stepList.push({stepContent:'订单已结束',doneTime:DateUtil.formatTimeFull(new Date())})
       } else {
         status = 'CF'
         task.stepList.push({stepContent:'用户已确认完成',doneTime:DateUtil.formatTimeFull(new Date())})

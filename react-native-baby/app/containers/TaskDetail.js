@@ -191,14 +191,21 @@ class TaskDetail extends Component {
 
   refreshTask =()=>{
     const { taskDetail } = this.props.requirement
+    taskDetail && this.initTask(taskDetail)
+  }
+
+  initTask = (taskDetail) => {
+    this.setState({initFlag:true})
     this.props.dispatch(
       createAction('requirement/findTaskByTaskCode')({
         taskCode:taskDetail.taskCode,
       })
     )
+    this.findEvalution(taskDetail)
+    
   }
 
-  comment = task => {
+  comment = () => {
     const { taskDetail } = this.props.requirement
     const requirement = {
       companyCode : taskDetail.sendUserCode,
@@ -208,8 +215,7 @@ class TaskDetail extends Component {
     this.props.dispatch(NavigationActions.navigate({ routeName: 'AddEvalution' ,params:{requirement} }))
   }
 
-  findEvalution = () =>{
-    const { taskDetail } = this.props.requirement
+  findEvalution = (taskDetail) =>{
     if(taskDetail && taskDetail.taskStatus === 'AF'){
       this.props.dispatch(
         createAction('evalution/findEvaByBcode')({
@@ -235,12 +241,14 @@ class TaskDetail extends Component {
 
   componentDidMount = () => {
     const { taskDetail } = this.props.requirement
-    taskDetail && taskDetail.taskStatus === 'AF' && this.findEvalution()  
+    taskDetail && this.initTask(taskDetail)
   }
 
   render() {
     var { taskDetail } = this.props.requirement
-  
+    if(!this.state.initFlag && taskDetail){
+      this.initTask(taskDetail)
+    }
     return (
       <View style={styles.container}>
 

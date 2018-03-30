@@ -307,6 +307,7 @@ class RequireDetail extends Component {
   }
 
   initTaskData = (requirement) => {
+    this.setState({initFlag:true})
     this.props.dispatch(
       createAction('requirement/findRequire')({
         requireCode:requirement.requireCode,
@@ -338,7 +339,7 @@ class RequireDetail extends Component {
       createAction('money/myBalance')({
       })
     )
-    this.setState({initFlag:true})
+    
   }
 
   componentDidMount = () => {
