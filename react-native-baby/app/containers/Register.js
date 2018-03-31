@@ -105,7 +105,7 @@ class Register extends Component {
         addrPosX:position.posX,
         addrPosY:position.posY,
         note:this.state.note,
-        visitCode:this.state.invite.replace(/\s/g, ''),
+        visitCode:this.state.invite ? this.state.invite.replace(/\s/g, ''):null,
         },
         callback: this.afterRegister
       }
