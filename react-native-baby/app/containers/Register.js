@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+﻿import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
@@ -90,7 +90,7 @@ class Register extends Component {
         return
       }
       if(this.state.inviteError){
-        Toast.info('请舒润正确的邀请者手机号码',1)
+        Toast.info('请输入正确的邀请者手机号码',1)
         return
       }
       if(!this.state.agree){
