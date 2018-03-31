@@ -12,7 +12,7 @@ export default {
     windowHeight: null,
     windowWidth: null,
     updateFlag:false,
-    originVersion:6,
+    originVersion:7,
   },
   reducers: {
     updateState(state, { payload }) {
