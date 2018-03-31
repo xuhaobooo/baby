@@ -89,6 +89,10 @@ class Register extends Component {
         Toast.info('两次密码必须相同',1)
         return
       }
+      if(this.state.inviteError){
+        Toast.info('请舒润正确的邀请者手机号码',1)
+        return
+      }
       if(!this.state.agree){
         Toast.info('您必须同意软件许可，才可以使用本软件',1)
         return
